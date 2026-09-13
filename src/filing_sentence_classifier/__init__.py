@@ -1,2 +1,1 @@
-def main() -> None:
-    print("Hello from filing-sentence-classifier!")
+"""Forward-looking statement classification for financial filing sentences."""

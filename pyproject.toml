@@ -6,10 +6,12 @@ authors = [
     { name = "Julio Ballesteros", email = "ballesterosg.julio@gmail.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "typer>=0.27.2",
+]
 
 [project.scripts]
-filing-sentence-classifier = "filing_sentence_classifier:main"
+filing-sentence-classifier = "filing_sentence_classifier.cli:app"
 
 [build-system]
 requires = ["uv_build>=0.9.13,<0.10.0"]
