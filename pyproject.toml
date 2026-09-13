@@ -1,0 +1,17 @@
+[project]
+name = "filing-sentence-classifier"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Julio Ballesteros", email = "ballesterosg.julio@gmail.com" }
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+filing-sentence-classifier = "filing_sentence_classifier:main"
+
+[build-system]
+requires = ["uv_build>=0.9.13,<0.10.0"]
+build-backend = "uv_build"
