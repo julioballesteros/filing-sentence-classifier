@@ -42,3 +42,18 @@ Sampling deliberately selected 75% of sentences with a forward-looking keyword a
 ## Data storage and evaluation policy
 
 Only this description is versioned in `data/`; downloaded and generated datasets are excluded from Git. Source files are treated as immutable, with revisions, file hashes, and split manifests providing provenance. The published test split is reserved for final evaluation.
+
+## Download
+
+From the repository root:
+
+```bash
+uv sync --locked --extra data
+uv run --locked --extra data filing-sentence-classifier download-data
+```
+
+The command saves the published README and both original Parquet files under `data/raw/<revision>/`, retaining their source paths. `manifest.json` records the repository, revision, file sizes, and SHA-256 checksums. Expected hashes are pinned alongside the revision in the downloader; Parquet hashes come from the [source file metadata](https://huggingface.co/api/datasets/FinanceMTEB/FLS/revision/39b6719f1d7197df4498fea9fce20d4ad782a083?blobs=true).
+
+Downloads are staged and verified before the snapshot becomes available. Repeating the command verifies the existing snapshot without network access or overwriting files. If verification fails, move the snapshot aside or use `--output-dir PATH` to select another storage root. Relative paths are resolved from the current working directory.
+
+This step verifies file integrity only. It does not parse sentences, validate row counts, create development partitions, or inspect test labels. Local data quality checks remain pending.
