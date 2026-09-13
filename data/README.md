@@ -62,4 +62,35 @@ The download step verifies file integrity only. It does not parse sentences, val
 
 [01_data_exploration.ipynb](../notebooks/01_data_exploration.ipynb) records the source revision, checksum, environment versions, and sampling seed. Install its dependencies with `uv sync --locked --extra data --group notebooks`, select the `.venv` kernel, and run all cells. Reusable checks live in [data/audit.py](../src/filing_sentence_classifier/data/audit.py); they inspect records without modifying them.
 
-The 2,600 training rows pass structural and label-mapping checks. Eight exact duplicate groups contain nine repeated occurrences, including one three-row group with conflicting labels. There are 135 rows with suspicious Unicode characters. The notebook documents these findings, class balance, length distributions, similar-text candidates, and annotation review examples. Cleaning and development splitting are subsequent steps.
+The 2,600 training rows pass structural and label-mapping checks. Eight exact duplicate groups contain nine repeated occurrences, including one three-row group with conflicting labels. There are 135 rows with suspicious Unicode characters. The notebook documents these findings, class balance, length distributions, similar-text candidates, and annotation review examples. The cleaning policy below follows this audit; development splitting remains pending.
+
+## Cleaning policy (v1)
+
+The fixed, versioned rules live in [data/cleaning.py](../src/filing_sentence_classifier/data/cleaning.py). They use only the published training split and apply in this order:
+
+1. Exclude records with invalid fields or inconsistent label mappings, recording each reason without coercing values.
+2. Repair the six observed C1 characters using their Windows-1252 punctuation equivalents: `U+0092 → U+2019`, `U+0093 → U+201C`, `U+0094 → U+201D`, `U+0095 → U+2022`, `U+0096 → U+2013`, and `U+0097 → U+2014`. Training examples place these characters in possessives, quotations, bullets, and dashes. This is a targeted interpretation of the observed corruption, not proof of the original encoding. Other C1 characters and `U+FFFD` cause exclusion for review, before whitespace normalization can conceal them.
+3. Normalize Unicode to NFC, trim surrounding whitespace, and collapse whitespace runs to a single space. Preserve case, punctuation, numbers, negation, and word order. No tokenization, length cutoff, or label correction is applied.
+4. Group by the cleaned text. Quarantine **every member** of a group with conflicting labels. Retain same-label duplicates with a shared `group_id`; future development partitions must keep each group together. Similar-text candidates are not automatically merged. Qualitatively ambiguous annotations remain unchanged pending stronger evidence.
+
+From the repository root:
+
+```bash
+uv sync --locked --extra data
+uv run --locked --extra data filing-sentence-classifier prepare-data
+```
+
+The command runs offline against the downloaded training file, verifies its size and SHA-256 before parsing, and writes `data/interim/<revision>/clean-v1/`. Use `--raw-dir PATH` or `--output-dir PATH` to change storage roots; paths are relative to the working directory. PyArrow belongs to the `data` extra so preparation does not require notebook dependencies.
+
+| Output | Contents |
+| --- | --- |
+| `records.jsonl` | Eligible cleaned rows, original labels, zero-based `source_row`, stable `sample_id`, and `group_id`. |
+| `excluded.jsonl` | Original row identities and exclusion reasons; conflicting groups retain their group ID. Source texts can be recovered from the pinned input. |
+| `changes.jsonl` | Row identities and the operations that changed their text, including any subsequently quarantined rows. |
+| `manifest.json` | Exact source, effective policy, label mapping, code hashes, environment versions, counts, and output checksums. |
+
+`sample_id` hashes the source identity and original row position, distinguishing duplicate occurrences. `group_id` hashes the cleaned UTF-8 text, so it also serves as a text checksum. Outputs are ordered by source row. Writes are staged; repeated runs verify identical output bytes and leave existing files untouched. Changes to the recipe, code, environment, or existing output are reported as a mismatch: bump the policy version for a new policy, or select another output root to preserve previous artifacts.
+
+**Applied result:** 2,597 eligible rows and 3 quarantined rows (source positions 618, 1136, and 2557). Text changed in 223 rows: 135 punctuation repairs and 94 whitespace normalizations, with 6 rows receiving both. There are 2,590 distinct cleaned-text groups; seven same-label duplicate pairs remain. Retained class counts are 426 `specific fls`, 1,369 `not-fls`, and 802 `non-specific fls`. A post-clean audit reports no structural, label-mapping, or suspicious-Unicode findings and no conflicting groups. A repeated preparation reproduced all artifact bytes.
+
+These are intermediate development candidates, **not frozen train/validation splits**. Test overlap checks and any broader duplicate grouping remain pending. The published test is neither opened nor modified by this step, and raw training bytes remain unchanged.

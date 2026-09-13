@@ -27,3 +27,10 @@ FLS_SOURCE = DatasetSource(
         ),
     ),
 )
+
+# Keep the published split selection at the dataset definition boundary.
+FLS_TRAIN_FILE = next(
+    file
+    for file in FLS_SOURCE.files
+    if file.path == "data/train-00000-of-00001.parquet"
+)
