@@ -1,0 +1,36 @@
+# Python environments and cache
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Package building
+/build/
+/dist/
+*.egg-info/
+
+# IDE, system and notebooks
+.idea/
+.vscode/
+.DS_Store
+.ipynb_checkpoints/
+
+# Local configuration
+.env
+.env.*
+!.env.example
+
+# Reproducible data and results; docs and lockfile are versioned
+/data/*
+!/data/README.md
+/artifacts/
+/mlruns/
+/mlartifacts/
+/mlflow.db
+/mlflow.db-*
