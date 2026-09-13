@@ -34,3 +34,6 @@ FLS_TRAIN_FILE = next(
     for file in FLS_SOURCE.files
     if file.path == "data/train-00000-of-00001.parquet"
 )
+FLS_TEST_FILE = next(
+    file for file in FLS_SOURCE.files if file.path == "data/test-00000-of-00001.parquet"
+)

@@ -6,7 +6,12 @@ from typing import Annotated
 
 import typer
 
-from filing_sentence_classifier.data.fls import FLS_SOURCE, FLS_TRAIN_FILE, LABEL_NAMES
+from filing_sentence_classifier.data.fls import (
+    FLS_SOURCE,
+    FLS_TEST_FILE,
+    FLS_TRAIN_FILE,
+    LABEL_NAMES,
+)
 
 app = typer.Typer()
 
@@ -88,6 +93,67 @@ def prepare_data(
         typer.echo(f"Error: {exc}", err=True)
         raise typer.Exit(code=1) from exc
     typer.echo(f"Verified cleaned training data: {artifact}")
+
+
+@app.command("split-data")
+def split_data(
+    prepared_dir: Annotated[
+        Path | None,
+        typer.Option(
+            "--prepared-dir",
+            file_okay=False,
+            help="Cleaned artifact directory; defaults to the pinned clean-v1 artifact.",
+        ),
+    ] = None,
+    raw_dir: Annotated[
+        Path,
+        typer.Option(
+            "--raw-dir",
+            file_okay=False,
+            help="Source snapshot root for the text-only test overlap check.",
+        ),
+    ] = Path("data/raw"),
+    output_dir: Annotated[
+        Path,
+        typer.Option(
+            "--output-dir",
+            file_okay=False,
+            help="Root for versioned train/validation artifacts.",
+        ),
+    ] = Path("data/processed"),
+) -> None:
+    """Freeze grouped train/validation splits after excluding test text overlaps."""
+    try:
+        from filing_sentence_classifier.data.cleaning import CLEANING_VERSION
+        from filing_sentence_classifier.data.partition import create_development_split
+        from filing_sentence_classifier.data.split import SplitError
+    except ModuleNotFoundError as exc:
+        if exc.name not in {"pyarrow", "sklearn", "numpy", "scipy"}:
+            raise
+        typer.echo(
+            "Data dependencies are missing. Run this command with "
+            "uv run --extra data, or install the package with its [data] extra.",
+            err=True,
+        )
+        raise typer.Exit(code=1) from exc
+    if prepared_dir is None:
+        prepared_dir = (
+            Path("data/interim") / FLS_SOURCE.revision / f"clean-v{CLEANING_VERSION}"
+        )
+    try:
+        artifact = create_development_split(
+            FLS_SOURCE,
+            FLS_TRAIN_FILE,
+            FLS_TEST_FILE,
+            LABEL_NAMES,
+            prepared_dir,
+            raw_dir,
+            output_dir,
+        )
+    except SplitError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(f"Verified development splits: {artifact}")
 
 
 @app.callback(invoke_without_command=True)

@@ -2,7 +2,7 @@
 
 This project uses [FinanceMTEB/FLS](https://huggingface.co/datasets/FinanceMTEB/FLS) for sentence-level classification of forward-looking statements in English financial reports.
 
-**Review status:** Source documentation and repository metadata have been reviewed. The [training audit](../notebooks/01_data_exploration.ipynb) verifies the 2,600 training rows and their schema. Test rows and labels remain uninspected.
+**Review status:** Source documentation, the [training audit](../notebooks/01_data_exploration.ipynb), cleaning, and development splitting are complete. The published test has been accessed only for automated text checks; its examples and labels have not been explored.
 
 ## Published dataset
 
@@ -14,7 +14,7 @@ The selected source revision is `39b6719f1d7197df4498fea9fce20d4ad782a083`, also
 | Test | 1,000 |
 | **Total** | **3,600** |
 
-Files are published as Parquet under the `default` configuration. Each row contains `text` (string), `label` (integer), and `label_text` (string). These figures and fields come from the [publisher's metadata](https://huggingface.co/api/datasets/FinanceMTEB/FLS); the training count and schema have also been verified locally.
+Files are published as Parquet under the `default` configuration. Each row contains `text` (string), `label` (integer), and `label_text` (string). These figures and fields come from the [publisher's metadata](https://huggingface.co/api/datasets/FinanceMTEB/FLS). Both row counts and the training schema have also been verified locally; test labels have not been loaded.
 
 ## Labels
 
@@ -36,7 +36,7 @@ Sampling deliberately selected 75% of sentences with a forward-looking keyword a
 
 - **Version history:** The authors' description uses a 360-sentence test set, while FinanceMTEB publishes 1,000 test sentences. The [FinBERT-FLS model card](https://huggingface.co/yiyanghkust/finbert-fls) also mentions 3,500 annotated sentences. The reviewed sources do not explain these differences or how the current split was constructed.
 - **Annotation process:** Class definitions are available, but the reviewed documentation does not specify the number of annotators, inter-annotator agreement, or how disagreements were resolved.
-- **Evaluation scope:** The published schema contains no company, document, or date identifiers. It does not support verifying separation by company or period. The training audit finds duplicate texts and conflicting labels; published train/test overlap remains unchecked.
+- **Evaluation scope:** The published schema contains no company, document, or date identifiers. It does not support verifying separation by company or period. Development splitting removes exact text overlap after the declared normalization. Near duplicates and paraphrases can still cross partitions.
 - **Dataset license:** The [repository metadata and file listing](https://huggingface.co/api/datasets/FinanceMTEB/FLS) contain neither a declared dataset license nor a license file. Conditions for use and redistribution remain unconfirmed.
 
 ## Data storage and evaluation policy
@@ -62,7 +62,7 @@ The download step verifies file integrity only. It does not parse sentences, val
 
 [01_data_exploration.ipynb](../notebooks/01_data_exploration.ipynb) records the source revision, checksum, environment versions, and sampling seed. Install its dependencies with `uv sync --locked --extra data --group notebooks`, select the `.venv` kernel, and run all cells. Reusable checks live in [data/audit.py](../src/filing_sentence_classifier/data/audit.py); they inspect records without modifying them.
 
-The 2,600 training rows pass structural and label-mapping checks. Eight exact duplicate groups contain nine repeated occurrences, including one three-row group with conflicting labels. There are 135 rows with suspicious Unicode characters. The notebook documents these findings, class balance, length distributions, similar-text candidates, and annotation review examples. The cleaning policy below follows this audit; development splitting remains pending.
+The 2,600 training rows pass structural and label-mapping checks. Eight exact duplicate groups contain nine repeated occurrences, including one three-row group with conflicting labels. There are 135 rows with suspicious Unicode characters. The notebook documents these findings, class balance, length distributions, similar-text candidates, and annotation review examples. The cleaning and splitting policies below follow this audit.
 
 ## Cleaning policy (v1)
 
@@ -93,4 +93,30 @@ The command runs offline against the downloaded training file, verifies its size
 
 **Applied result:** 2,597 eligible rows and 3 quarantined rows (source positions 618, 1136, and 2557). Text changed in 223 rows: 135 punctuation repairs and 94 whitespace normalizations, with 6 rows receiving both. There are 2,590 distinct cleaned-text groups; seven same-label duplicate pairs remain. Retained class counts are 426 `specific fls`, 1,369 `not-fls`, and 802 `non-specific fls`. A post-clean audit reports no structural, label-mapping, or suspicious-Unicode findings and no conflicting groups. A repeated preparation reproduced all artifact bytes.
 
-These are intermediate development candidates, **not frozen train/validation splits**. Test overlap checks and any broader duplicate grouping remain pending. The published test is neither opened nor modified by this step, and raw training bytes remain unchanged.
+These cleaning outputs are intermediate development candidates. The splitting step below checks overlap and freezes train/validation assignments. Cleaning itself neither opens nor modifies the published test, and raw training bytes remain unchanged.
+
+## Development partitions (v1)
+
+```bash
+uv sync --locked --extra data
+uv run --locked --extra data filing-sentence-classifier split-data
+```
+
+The command verifies the prepared manifest and files, then reads only `text` from the pinned test Parquet. Comparison keys apply the six existing C1 repairs, NFC, and whitespace normalization. Every development group whose key matches test is excluded before splitting; no test rows are removed. Comparison does not apply training eligibility filters: one reserved row contains `U+0099`, which remains uncorrected in its key and is counted as a warning. No test examples or labels were inspected to add encoding repairs. Empty or non-string test text stops splitting.
+
+Eligible rows use [StratifiedGroupKFold](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.StratifiedGroupKFold.html) with five folds, shuffle enabled, seed `2026`, and **fold 0 fixed as validation**. Inputs are sorted by original row position. Groups remain disjoint, and the target validation fraction is 20%. Each class needs at least five eligible groups; the selected fold must retain every class in both partitions and stay within five percentage points of the target overall and per class. Failure stops the command without trying another seed or fold. These rules live in [data/split.py](../src/filing_sentence_classifier/data/split.py); input verification and artifact writing live in [data/partition.py](../src/filing_sentence_classifier/data/partition.py).
+
+| Partition | Specific FLS | Not-FLS | Non-specific FLS | Total |
+| --- | ---: | ---: | ---: | ---: |
+| Train | 340 | 1,093 | 641 | **2,074** |
+| Validation | 86 | 273 | 160 | **519** |
+
+Of the 2,597 cleaned candidates, four rows in four groups overlap test and are excluded. The remaining 2,593 rows have no shared groups between train and validation or with test under this comparison rule. The 1,000 published test rows remain unchanged. This controls exact matches after normalization, not semantic similarity, company overlap, or temporal overlap.
+
+Outputs live in `data/processed/<revision>/split-v1/`:
+
+- `train.jsonl` and `val.jsonl` preserve the cleaned text, original labels, IDs, and source positions.
+- `assignments.jsonl` records the split for every eligible sample and group; `excluded.jsonl` records development IDs excluded for test overlap. Earlier cleaning exclusions remain in the referenced parent artifact.
+- `manifest.json` pins the parent manifest hash, input/output hashes, recipes, seed, fold, counts, code hashes, dependency versions, and aggregate overlap findings.
+
+Use `--prepared-dir PATH` to select a cleaned artifact, `--raw-dir PATH` for source snapshots, and `--output-dir PATH` for split artifacts. Inputs are preserved, writes are staged, and repeated execution verifies existing output bytes without replacing them. Training and evaluation should consume these saved assignments rather than rerun splitting. Fit vocabulary, IDF, length limits, and other learned transforms on development train only.

@@ -17,6 +17,7 @@ filing-sentence-classifier = "filing_sentence_classifier.cli:app"
 data = [
     "huggingface-hub>=1.0,<2",
     "pyarrow>=25.0.1",
+    "scikit-learn>=1.9.1,<2",
 ]
 
 [build-system]
