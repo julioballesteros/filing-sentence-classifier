@@ -52,7 +52,7 @@ uv sync --locked --extra data
 uv run --locked --extra data filing-sentence-classifier download-data
 ```
 
-The command saves the published README and both original Parquet files under `data/raw/<revision>/`, retaining their source paths. `manifest.json` records the repository, revision, file sizes, and SHA-256 checksums. Expected hashes are pinned alongside the revision in the downloader; Parquet hashes come from the [source file metadata](https://huggingface.co/api/datasets/FinanceMTEB/FLS/revision/39b6719f1d7197df4498fea9fce20d4ad782a083?blobs=true).
+The command saves the published README and both original Parquet files under `data/raw/<revision>/`, retaining their source paths. `manifest.json` records the repository, revision, file sizes, and SHA-256 checksums. The pinned `FLS_SOURCE` specification lives in [data/fls.py](../src/filing_sentence_classifier/data/fls.py). It is an immutable `DatasetSource` passed by the CLI to `download_dataset`; the downloader does not import the FLS definition. Parquet hashes come from the [source file metadata](https://huggingface.co/api/datasets/FinanceMTEB/FLS/revision/39b6719f1d7197df4498fea9fce20d4ad782a083?blobs=true).
 
 Downloads are staged and verified before the snapshot becomes available. Repeating the command verifies the existing snapshot without network access or overwriting files. If verification fails, move the snapshot aside or use `--output-dir PATH` to select another storage root. Relative paths are resolved from the current working directory.
 

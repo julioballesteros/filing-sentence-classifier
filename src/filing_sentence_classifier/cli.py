@@ -6,6 +6,8 @@ from typing import Annotated
 
 import typer
 
+from filing_sentence_classifier.data.fls import FLS_SOURCE
+
 app = typer.Typer()
 
 
@@ -23,7 +25,10 @@ def download_data(
     """Download the pinned FLS source files, or verify an existing local snapshot."""
     # Keep data dependencies optional for other CLI commands.
     try:
-        from filing_sentence_classifier.data.source import DownloadError, download_fls
+        from filing_sentence_classifier.data.source import (
+            DownloadError,
+            download_dataset,
+        )
     except ModuleNotFoundError as exc:
         if exc.name != "huggingface_hub":
             raise
@@ -35,7 +40,7 @@ def download_data(
         raise typer.Exit(code=1) from exc
 
     try:
-        snapshot = download_fls(output_dir)
+        snapshot = download_dataset(FLS_SOURCE, output_dir)
     except DownloadError as exc:
         typer.echo(f"Error: {exc}", err=True)
         raise typer.Exit(code=1) from exc
