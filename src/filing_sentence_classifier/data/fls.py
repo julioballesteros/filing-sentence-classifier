@@ -2,6 +2,8 @@
 
 from filing_sentence_classifier.data.spec import DatasetSource, SourceFile
 
+LABEL_NAMES = {0: "specific fls", 1: "not-fls", 2: "non-specific fls"}
+
 # Parquet hashes come from the pinned revision's Hub LFS metadata. The README
 # hash was computed from its raw bytes at that same revision.
 FLS_SOURCE = DatasetSource(
