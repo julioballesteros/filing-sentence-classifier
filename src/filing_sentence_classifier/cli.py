@@ -162,6 +162,59 @@ def split_data(
     typer.echo(f"Verified development splits: {artifact}")
 
 
+@app.command("build-vocabulary")
+def vocabulary_build(
+    data_dir: Annotated[
+        Path,
+        typer.Option(
+            "--data-dir", file_okay=False, help="Frozen development split directory."
+        ),
+    ],
+    output_dir: Annotated[
+        Path,
+        typer.Option(
+            "--output-dir",
+            file_okay=False,
+            help="Directory for the vocabulary artifact.",
+        ),
+    ] = Path("artifacts/preprocessing/vocabulary-v1"),
+    min_frequency: Annotated[
+        int,
+        typer.Option(
+            "--min-frequency", min=1, help="Minimum training token occurrences."
+        ),
+    ] = 2,
+    max_size: Annotated[
+        int | None,
+        typer.Option(
+            "--max-size", min=3, help="Maximum vocabulary size including PAD and UNK."
+        ),
+    ] = None,
+    manifest_sha256: Annotated[
+        str | None,
+        typer.Option(
+            "--manifest-sha256", help="Optional expected dataset manifest checksum."
+        ),
+    ] = None,
+) -> None:
+    """Fit a deterministic vocabulary on train and save its counts and provenance."""
+    from filing_sentence_classifier.data.vocabulary import build_vocabulary
+    from filing_sentence_classifier.text.vocabulary import VocabularyError
+
+    try:
+        artifact = build_vocabulary(
+            data_dir,
+            output_dir,
+            min_frequency=min_frequency,
+            max_size=max_size,
+            expected_manifest_sha256=manifest_sha256,
+        )
+    except (DataLoadError, VocabularyError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(f"Verified training vocabulary: {artifact}")
+
+
 @app.command("evaluate")
 def evaluate(
     data_dir: Annotated[

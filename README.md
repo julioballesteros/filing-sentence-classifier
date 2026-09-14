@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, neural-model tokenization, and CI are implemented. PyTorch training is planned.
+**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, neural-model tokenization and vocabulary, and CI are implemented. PyTorch training is planned.
 
 ## Classification task
 
@@ -95,7 +95,37 @@ tokenize("We don’t expect long-term growth of 12.5%.")
 
 Version `1` lowercases text and maps the curly apostrophe `’` to `'`. It keeps Unicode alphanumeric words and internal apostrophes together, preserves numbers such as `2027`, `12.5`, and `1,250.50`, and emits other punctuation and symbols individually. Hyphens, signs, currencies, and percent symbols remain separate tokens. Decimal points require digits on both sides; `.5` becomes `('.', '5')`. Whitespace is discarded; blank inputs raise `ValueError`.
 
-Negation, function words, and word inflections are retained. The tokenizer performs no fitting or truncation. [`tokenization_recipe()`](src/filing_sentence_classifier/text/tokenization.py) exposes the version and exact rules as JSON-serializable metadata for future training artifacts. Source cleaning remains upstream, and the TF-IDF baseline retains its own vectorizer's tokenization. Vocabulary fitting, numerical encoding, and batching are planned next.
+Negation, function words, and word inflections are retained. The tokenizer performs no fitting or truncation. [`tokenization_recipe()`](src/filing_sentence_classifier/text/tokenization.py) exposes the version and exact rules as JSON-serializable metadata for training artifacts. Source cleaning remains upstream, and the TF-IDF baseline retains its own vectorizer's tokenization. Sequence encoding and batching are planned next.
+
+## Build the vocabulary
+
+After preparing the data, build the neural model's vocabulary from the saved training partition:
+
+```bash
+DATASET_DIR=data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1
+uv run --locked filing-sentence-classifier build-vocabulary \
+  --data-dir "$DATASET_DIR" --output-dir artifacts/preprocessing/vocabulary-v1
+```
+
+[`Vocabulary`](src/filing_sentence_classifier/text/vocabulary.py) reserves **`<PAD>=0`** and **`<UNK>=1`**. Ordinary tokens are ordered by descending training occurrence count, with ties resolved by ascending Unicode token value. Counts include repetitions within a sentence. The default `--min-frequency 2` removes singletons; there is no size cap unless `--max-size` is supplied. That cap includes the two reserved entries and is applied after frequency filtering. Empty documents, reserved-token collisions, and settings that retain no ordinary tokens are rejected.
+
+On the 2,074 development training sentences, tokenization produces 68,892 occurrences and 5,561 distinct tokens. The default vocabulary retains **2,965 ordinary tokens**, giving **2,967 IDs including PAD/UNK**. The 2,596 removed occurrences map to UNK: **3.77% of training tokens**. These are training statistics; validation and test text are not read by this command.
+
+The artifact contains `vocabulary.json` (ordered tokens, counts, and vocabulary recipe) and `manifest.json` (input hashes, tokenizer rules, code hashes, environment versions, statistics, and the vocabulary checksum). Identical builds verify existing bytes without rewriting them; changed data, rules, or options require another output directory. `--manifest-sha256` optionally pins the development data manifest. Building and restoring the vocabulary use the standard library without additional dependencies.
+
+```python
+import json
+from pathlib import Path
+
+from filing_sentence_classifier.text.vocabulary import Vocabulary
+
+path = Path("artifacts/preprocessing/vocabulary-v1/vocabulary.json")
+vocabulary = Vocabulary.from_dict(json.loads(path.read_text(encoding="utf-8")))
+token_id = vocabulary["growth"]  # Returns 1 if absent; never changes the vocabulary.
+token = vocabulary.tokens[token_id]
+```
+
+The immutable vocabulary handles counting and lookup independently of data loading. [`build_vocabulary`](src/filing_sentence_classifier/data/vocabulary.py) owns train selection, tokenization, and artifact publication. Restoring the JSON validates the schema, reserved IDs, counts, and ordering without fitting again.
 
 ## Evaluate saved predictions
 
@@ -122,7 +152,7 @@ The same implementation is available through [`classification_metrics`](src/fili
 ```text
 src/filing_sentence_classifier/
   data/          Source acquisition, audit, cleaning, splitting, and loading
-  text/          Versioned tokenization for neural-model inputs
+  text/          Versioned tokenization and immutable fitted vocabularies
   baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting
   cli.py         Command wiring and user-facing errors
