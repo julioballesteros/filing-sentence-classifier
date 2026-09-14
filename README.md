@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, neural-model tokenization and vocabulary, and CI are implemented. PyTorch training is planned.
+**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, neural-model text encoding, and CI are implemented. PyTorch training is planned.
 
 ## Classification task
 
@@ -95,7 +95,7 @@ tokenize("We don’t expect long-term growth of 12.5%.")
 
 Version `1` lowercases text and maps the curly apostrophe `’` to `'`. It keeps Unicode alphanumeric words and internal apostrophes together, preserves numbers such as `2027`, `12.5`, and `1,250.50`, and emits other punctuation and symbols individually. Hyphens, signs, currencies, and percent symbols remain separate tokens. Decimal points require digits on both sides; `.5` becomes `('.', '5')`. Whitespace is discarded; blank inputs raise `ValueError`.
 
-Negation, function words, and word inflections are retained. The tokenizer performs no fitting or truncation. [`tokenization_recipe()`](src/filing_sentence_classifier/text/tokenization.py) exposes the version and exact rules as JSON-serializable metadata for training artifacts. Source cleaning remains upstream, and the TF-IDF baseline retains its own vectorizer's tokenization. Sequence encoding and batching are planned next.
+Negation, function words, and word inflections are retained. The tokenizer performs no fitting or truncation. [`tokenization_recipe()`](src/filing_sentence_classifier/text/tokenization.py) exposes the version and exact rules as JSON-serializable metadata for training artifacts. Source cleaning remains upstream, and the TF-IDF baseline retains its own vectorizer's tokenization.
 
 ## Build the vocabulary
 
@@ -127,6 +127,44 @@ token = vocabulary.tokens[token_id]
 
 The immutable vocabulary handles counting and lookup independently of data loading. [`build_vocabulary`](src/filing_sentence_classifier/data/vocabulary.py) owns train selection, tokenization, and artifact publication. Restoring the JSON validates the schema, reserved IDs, counts, and ordering without fitting again.
 
+## Encode text for the PyTorch model
+
+[`TextEncoder`](src/filing_sentence_classifier/text/encoding.py) combines tokenization, frozen vocabulary lookup, and prefix truncation. Using the vocabulary loaded above:
+
+```python
+from filing_sentence_classifier.text.encoding import TextEncoder
+
+encoder = TextEncoder(vocabulary, max_length=128)
+encoded = encoder.encode("We expect long-term growth.")
+input_ids = encoded.input_ids  # Immutable tuple; unknown tokens use ID 1.
+truncated = encoded.truncated
+
+# Store this JSON state with the model; restoration needs no training data.
+state = json.dumps(encoder.to_dict(), indent=2, sort_keys=True)
+restored = TextEncoder.from_dict(json.loads(state))
+assert restored.encode("We expect long-term growth.") == encoded
+```
+
+The input contract is prepared text. At inference, apply the existing [`clean_text`](src/filing_sentence_classifier/data/cleaning.py) function before calling the same encoder. Empty or invalid text is rejected. Returned IDs contain no padding or added boundary tokens; tensor creation and dynamic padding belong to the upcoming Dataset/batching layer.
+
+Encoding version `1` keeps the first **128 tokens** by default. This initial limit was chosen using train only: its nearest-rank length percentiles are **p95=64** and **p99=91**, with a maximum of 398. The limit preserves 99.66% of training sentences completely. Longer sentences lose their suffix; `original_length`, `truncated`, and `truncated_tokens` make that loss explicit. `original_unknown_count` covers the full sentence, while `unknown_count` counts only retained IDs. The JSON state includes the vocabulary, tokenization rules, and encoding configuration; incompatible saved recipes are rejected.
+
+| Partition | Truncated sentences | Discarded tokens | UNK before truncation | UNK after truncation |
+| --- | ---: | ---: | ---: | ---: |
+| Train | 7 / 2,074 (0.34%) | 445 / 68,892 (0.65%) | 3.77% | 3.78% |
+| Validation | 3 / 519 (0.58%) | 258 / 17,582 (1.47%) | 6.06% | 6.04% |
+
+Validation was encoded for diagnostics after fixing the limit, without refitting or changing it. UNK rates use token occurrences as the denominator. [`encoding_statistics`](src/filing_sentence_classifier/text/encoding.py) reproduces these aggregate diagnostics from encoded sentences, for example:
+
+```python
+from filing_sentence_classifier.data.loading import load_split
+from filing_sentence_classifier.text.encoding import encoding_statistics
+
+data_dir = Path("data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1")
+train = load_split(data_dir, "train")
+statistics = encoding_statistics(encoder.encode(text) for text in train.texts)
+```
+
 ## Evaluate saved predictions
 
 The `evaluate` command accepts `train` or `val` and requires a prediction file supplied by the caller. Each JSONL row must contain exactly `sample_id` and integer `predicted_label`. For example, with the placeholder replaced by an ID from the selected partition:
@@ -152,7 +190,7 @@ The same implementation is available through [`classification_metrics`](src/fili
 ```text
 src/filing_sentence_classifier/
   data/          Source acquisition, audit, cleaning, splitting, and loading
-  text/          Versioned tokenization and immutable fitted vocabularies
+  text/          Tokenization, immutable vocabularies, encoding, and text diagnostics
   baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting
   cli.py         Command wiring and user-facing errors
