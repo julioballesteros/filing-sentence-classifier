@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, and CI are implemented. PyTorch training is planned.
+**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, neural-model tokenization, and CI are implemented. PyTorch training is planned.
 
 ## Classification task
 
@@ -82,6 +82,21 @@ A [four-configuration comparison](reports/tfidf-selection-v1/README.md) tested u
 
 The run contains `config.toml`, `model.joblib` (the fitted vectorizer and classifier), `model.json` (metadata), predictions, metrics, and a manifest. [`load_tfidf_model`](src/filing_sentence_classifier/baselines/tfidf.py) checks the supplied model hash and restores the pipeline without training data. Load joblib files only from trusted runs and use the recorded dependency versions: joblib can execute code during loading. [Configuration options](configs/README.md) are recorded in each run's effective recipe.
 
+## Tokenization for the PyTorch model
+
+The versioned [`tokenize`](src/filing_sentence_classifier/text/tokenization.py) function accepts prepared text and returns an immutable tuple of tokens using only the Python standard library:
+
+```python
+from filing_sentence_classifier.text.tokenization import tokenize
+
+tokenize("We don’t expect long-term growth of 12.5%.")
+# ('we', "don't", 'expect', 'long', '-', 'term', 'growth', 'of', '12.5', '%', '.')
+```
+
+Version `1` lowercases text and maps the curly apostrophe `’` to `'`. It keeps Unicode alphanumeric words and internal apostrophes together, preserves numbers such as `2027`, `12.5`, and `1,250.50`, and emits other punctuation and symbols individually. Hyphens, signs, currencies, and percent symbols remain separate tokens. Decimal points require digits on both sides; `.5` becomes `('.', '5')`. Whitespace is discarded; blank inputs raise `ValueError`.
+
+Negation, function words, and word inflections are retained. The tokenizer performs no fitting or truncation. [`tokenization_recipe()`](src/filing_sentence_classifier/text/tokenization.py) exposes the version and exact rules as JSON-serializable metadata for future training artifacts. Source cleaning remains upstream, and the TF-IDF baseline retains its own vectorizer's tokenization. Vocabulary fitting, numerical encoding, and batching are planned next.
+
 ## Evaluate saved predictions
 
 The `evaluate` command accepts `train` or `val` and requires a prediction file supplied by the caller. Each JSONL row must contain exactly `sample_id` and integer `predicted_label`. For example, with the placeholder replaced by an ID from the selected partition:
@@ -107,6 +122,7 @@ The same implementation is available through [`classification_metrics`](src/fili
 ```text
 src/filing_sentence_classifier/
   data/          Source acquisition, audit, cleaning, splitting, and loading
+  text/          Versioned tokenization for neural-model inputs
   baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting
   cli.py         Command wiring and user-facing errors
