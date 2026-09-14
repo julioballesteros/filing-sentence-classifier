@@ -1,4 +1,4 @@
-"""Shared fixtures for source acquisition tests."""
+"""Offline fixtures for source acquisition and frozen development artifacts."""
 
 import hashlib
 from pathlib import Path
@@ -65,3 +65,49 @@ def hub(
 
     monkeypatch.setattr(source, "hf_hub_download", download)
     return calls
+
+
+@pytest.fixture
+def development_artifact(tmp_path: Path) -> Path:
+    """Build a small artifact through the real producers, using synthetic texts."""
+    import pyarrow as pa
+    import pyarrow.parquet as pq
+
+    from filing_sentence_classifier.data.partition import create_development_split
+    from filing_sentence_classifier.data.prepare import prepare_training_data
+
+    labels = {0: "specific", 1: "historical", 2: "generic"}
+    revision = "e" * 40
+    raw = tmp_path / "raw"
+    snapshot = raw / revision
+    snapshot.mkdir(parents=True)
+    rows = [
+        {"text": f"Plan {label}-{index}.", "label": label, "label_text": name}
+        for label, name in labels.items()
+        for index in range(30)
+    ]
+    rows.extend([dict(rows[0]), dict(rows[30])])
+    rows.extend(
+        {"text": "Conflicting annotation.", "label": label, "label_text": labels[label]}
+        for label in (0, 2)
+    )
+    pq.write_table(pa.Table.from_pylist(rows), snapshot / "train.parquet")
+    pq.write_table(
+        pa.table({"text": ["Plan 0-0.", "Reserved example."]}),
+        snapshot / "test.parquet",
+    )
+    files = tuple(
+        SourceFile(
+            name,
+            (snapshot / name).stat().st_size,
+            hashlib.sha256((snapshot / name).read_bytes()).hexdigest(),
+        )
+        for name in ("train.parquet", "test.parquet")
+    )
+    dataset = DatasetSource("tests/loading", revision, files)
+    prepared = prepare_training_data(
+        dataset, files[0], labels, raw, tmp_path / "interim"
+    )
+    return create_development_split(
+        dataset, files[0], files[1], labels, prepared, raw, tmp_path / "processed"
+    )

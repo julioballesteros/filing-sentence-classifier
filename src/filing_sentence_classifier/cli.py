@@ -1,5 +1,6 @@
 """Command-line interface for the filing sentence classifier."""
 
+import json
 from importlib.metadata import version
 from pathlib import Path
 from typing import Annotated
@@ -12,6 +13,7 @@ from filing_sentence_classifier.data.fls import (
     FLS_TRAIN_FILE,
     LABEL_NAMES,
 )
+from filing_sentence_classifier.data.loading import DataLoadError, SplitName
 
 app = typer.Typer()
 
@@ -154,6 +156,59 @@ def split_data(
         typer.echo(f"Error: {exc}", err=True)
         raise typer.Exit(code=1) from exc
     typer.echo(f"Verified development splits: {artifact}")
+
+
+@app.command("evaluate")
+def evaluate(
+    data_dir: Annotated[
+        Path,
+        typer.Option(
+            "--data-dir",
+            file_okay=False,
+            help="Directory containing a frozen development split manifest.",
+        ),
+    ],
+    predictions: Annotated[
+        Path,
+        typer.Option(
+            "--predictions",
+            dir_okay=False,
+            help="JSONL rows with sample_id and predicted_label.",
+        ),
+    ],
+    split: Annotated[
+        SplitName,
+        typer.Option("--split", help="Saved development partition to evaluate."),
+    ] = SplitName.VAL,
+    manifest_sha256: Annotated[
+        str | None,
+        typer.Option(
+            "--manifest-sha256", help="Optional expected dataset manifest checksum."
+        ),
+    ] = None,
+) -> None:
+    """Evaluate saved predictions by sample ID and print a JSON metrics report."""
+    try:
+        from filing_sentence_classifier.evaluation.evaluate import (
+            evaluate_prediction_file,
+        )
+        from filing_sentence_classifier.evaluation.metrics import EvaluationError
+    except ModuleNotFoundError as exc:
+        if exc.name not in {"sklearn", "numpy", "scipy"}:
+            raise
+        typer.echo(
+            "Evaluation dependencies are missing. Install the package with its [data] extra.",
+            err=True,
+        )
+        raise typer.Exit(code=1) from exc
+    try:
+        report = evaluate_prediction_file(
+            data_dir, split, predictions, expected_manifest_sha256=manifest_sha256
+        )
+    except (DataLoadError, EvaluationError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(json.dumps(report, indent=2, sort_keys=True, allow_nan=False))
 
 
 @app.callback(invoke_without_command=True)

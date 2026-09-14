@@ -120,3 +120,19 @@ Outputs live in `data/processed/<revision>/split-v1/`:
 - `manifest.json` pins the parent manifest hash, input/output hashes, recipes, seed, fold, counts, code hashes, dependency versions, and aggregate overlap findings.
 
 Use `--prepared-dir PATH` to select a cleaned artifact, `--raw-dir PATH` for source snapshots, and `--output-dir PATH` for split artifacts. Inputs are preserved, writes are staged, and repeated execution verifies existing output bytes without replacing them. Training and evaluation should consume these saved assignments rather than rerun splitting. Fit vocabulary, IDF, length limits, and other learned transforms on development train only.
+
+## Loading and shared evaluation
+
+[`load_split(directory, "train" | "val")`](../src/filing_sentence_classifier/data/loading.py) returns immutable records and aligned `texts`, `targets`, and `sample_ids`. It verifies the selected partition and assignment/exclusion ledgers against the saved manifest, including identities, group separation, and class counts. It needs only the standard library and does not open raw data, test, or the other partition's text. Pass `expected_manifest_sha256` to pin an exact artifact.
+
+[`classification_metrics`](../src/filing_sentence_classifier/evaluation/metrics.py) computes macro-F1 (primary), accuracy, per-class precision/recall/F1/support, and the confusion matrix. Pass the loaded `label_ids` to fix class order; every declared class contributes to macro-F1, and undefined scores are zero. Matrix rows are true classes and columns are predictions. Compute metrics over the complete partition, not by averaging batch F1.
+
+[`evaluate_predictions`](../src/filing_sentence_classifier/evaluation/evaluate.py) aligns predictions by `sample_id` and requires exactly one per saved record. For CLI evaluation, use JSONL rows containing exactly `sample_id` and integer `predicted_label`, with IDs copied from the loaded partition:
+
+```bash
+DATASET_DIR=data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1
+uv run --locked --extra data filing-sentence-classifier evaluate \
+  --data-dir "$DATASET_DIR" --split val --predictions predictions.jsonl
+```
+
+The command prints a JSON report with metrics, data/prediction hashes, class mapping, evaluation code hashes, and environment versions. `--manifest-sha256` optionally pins the expected manifest. Predictions may arrive in any order; duplicate, missing, or unexpected IDs fail evaluation. Ground truth always comes from the saved partition.
