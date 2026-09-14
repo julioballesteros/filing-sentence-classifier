@@ -1,0 +1,9 @@
+# Selection study: unigram/bigram features with weaker L2 regularization.
+[tfidf]
+ngram_range = [1, 2]
+min_df = 2
+
+[logistic_regression]
+c = 10.0
+max_iter = 1000
+tol = 0.0001

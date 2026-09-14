@@ -5,8 +5,11 @@ Measured results and selected artifacts from reproducible runs on the frozen FLS
 | Run | Model | Evaluation split | Macro-F1 | Accuracy |
 | --- | --- | --- | ---: | ---: |
 | [majority-v1](majority-v1/README.md) | Majority class | Validation | 0.2298 | 0.5260 |
-| [tfidf-logreg-v1](tfidf-logreg-v1/README.md) | TF-IDF + logistic regression | Validation | 0.6375 | 0.7360 |
+| [tfidf-logreg-v1](tfidf-selection-v1/tfidf-logreg-v1/README.md) | TF-IDF + logistic regression | Validation | 0.6375 | 0.7360 |
+| [tfidf-unigram-c1-v1](tfidf-selection-v1/tfidf-unigram-c1-v1/metrics.val.json) | TF-IDF unigrams, C=1 | Validation | 0.6696 | 0.7437 |
+| [tfidf-unigram-c10-v1](tfidf-selection-v1/tfidf-unigram-c10-v1/metrics.val.json) | TF-IDF unigrams, C=10 | Validation | 0.6892 | 0.7360 |
+| [tfidf-bigram-c10-v1](tfidf-selection-v1/README.md) | TF-IDF unigrams/bigrams, C=10 — selected | Validation | **0.6924** | **0.7495** |
 
-Each run directory contains its summary, fitted model metadata, metrics, and manifest. Complete local runs, including per-sample predictions, live under `artifacts/runs/` outside Git.
+TF-IDF candidate reports are grouped under `tfidf-selection-v1/`. Run directories contain fitted model metadata, metrics, manifests, and the original configuration where applicable. Complete local runs, including fitted pipelines and per-sample predictions, live under `artifacts/runs/` outside Git.
 
-Both references use the same 2,074 training rows and 519 validation rows. TF-IDF improves macro-F1 by 0.4077 on this partition, with the lowest recall on specific FLS. It is the initial fixed configuration; no hyperparameter search or test evaluation has been performed.
+All models use the same 2,074 training rows and 519 validation rows. The [selection study](tfidf-selection-v1/README.md) compares four TF-IDF configurations under a predefined rule and records the selected model's identity. It uses four of the initial ten TF-IDF/MLP configuration slots. Validation was used for model selection; test has not been evaluated.

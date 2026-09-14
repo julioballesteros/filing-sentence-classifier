@@ -1,0 +1,89 @@
+{
+  "completed_at_utc": "2026-09-14T11:16:30.527112+00:00",
+  "machine": "arm64",
+  "plan_sha256": "a6220f6516259dd4a134abe6a4985270ab7a230d0cfe0d541265a7712b0beb2d",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "reproduction": {
+    "checks": [
+      "fresh CLI processes",
+      "all artifact bytes equal",
+      "original modification times preserved"
+    ],
+    "runs": [
+      "tfidf-unigram-c1-v1",
+      "tfidf-unigram-c10-v1",
+      "tfidf-bigram-c10-v1"
+    ],
+    "status": "verified"
+  },
+  "runs": [
+    {
+      "cli_wall_seconds": 1.3366994590032846,
+      "command": [
+        ".venv/bin/filing-sentence-classifier",
+        "baseline",
+        "tfidf",
+        "--data-dir",
+        "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1",
+        "--config",
+        "configs/experiments/tfidf-unigram-c1-v1.toml",
+        "--output-dir",
+        "artifacts/runs/tfidf-unigram-c1-v1",
+        "--manifest-sha256",
+        "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a"
+      ],
+      "exit_code": 0,
+      "run_id": "tfidf-unigram-c1-v1",
+      "status": "completed"
+    },
+    {
+      "cli_wall_seconds": 1.2671975839184597,
+      "command": [
+        ".venv/bin/filing-sentence-classifier",
+        "baseline",
+        "tfidf",
+        "--data-dir",
+        "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1",
+        "--config",
+        "configs/experiments/tfidf-unigram-c10-v1.toml",
+        "--output-dir",
+        "artifacts/runs/tfidf-unigram-c10-v1",
+        "--manifest-sha256",
+        "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a"
+      ],
+      "exit_code": 0,
+      "run_id": "tfidf-unigram-c10-v1",
+      "status": "completed"
+    },
+    {
+      "cli_wall_seconds": null,
+      "run_id": "tfidf-logreg-v1",
+      "status": "reused"
+    },
+    {
+      "cli_wall_seconds": 1.3664218749618158,
+      "command": [
+        ".venv/bin/filing-sentence-classifier",
+        "baseline",
+        "tfidf",
+        "--data-dir",
+        "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1",
+        "--config",
+        "configs/experiments/tfidf-bigram-c10-v1.toml",
+        "--output-dir",
+        "artifacts/runs/tfidf-bigram-c10-v1",
+        "--manifest-sha256",
+        "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a"
+      ],
+      "exit_code": 0,
+      "run_id": "tfidf-bigram-c10-v1",
+      "status": "completed"
+    }
+  ],
+  "schema_version": 1,
+  "started_at_utc": "2026-09-14T11:16:26.533111+00:00",
+  "status": "completed",
+  "study_id": "tfidf-selection-v1",
+  "timing_scope": "Single CLI invocation wall time, including Python startup, loading, fit, prediction, serialization, and evaluation; not an inference benchmark.",
+  "uv_version": "uv 0.9.13 (7ca92dcf6 2025-11-26)"
+}

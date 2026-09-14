@@ -66,18 +66,19 @@ The [validation report](reports/majority-v1/README.md) contains per-class scores
 ```bash
 DATASET_DIR=data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1
 uv run --locked --extra data filing-sentence-classifier baseline tfidf \
-  --data-dir "$DATASET_DIR" --config configs/experiments/tfidf-logreg-v1.toml \
-  --output-dir artifacts/runs/tfidf-logreg-v1
+  --data-dir "$DATASET_DIR" --config configs/experiments/tfidf-bigram-c10-v1.toml \
+  --output-dir artifacts/runs/tfidf-bigram-c10-v1
 ```
 
-The [initial configuration](configs/experiments/tfidf-logreg-v1.toml) uses word unigrams/bigrams, `min_df=2`, sublinear TF, and L2-regularized multinomial logistic regression (`C=1`, L-BFGS). Vocabulary, IDF, and classifier coefficients are fitted together on train in a scikit-learn `Pipeline`. Validation uses only `transform`/`predict`. The solver runs with one native computation thread; nonconvergence stops publication.
+The [selected configuration](configs/experiments/tfidf-bigram-c10-v1.toml) uses word unigrams/bigrams, `min_df=2`, sublinear TF, and L2-regularized multinomial logistic regression (`C=10`, L-BFGS). Vocabulary, IDF, and classifier coefficients are fitted together on train in a scikit-learn `Pipeline`. Validation uses only `transform`/`predict`. The solver runs with one native computation thread; nonconvergence stops publication.
 
 | Model | Evaluation split | Macro-F1 | Accuracy |
 | --- | --- | ---: | ---: |
 | Majority class | Validation (519 sentences) | 0.2298 | 0.5260 |
-| TF-IDF + logistic regression | Validation (519 sentences) | **0.6375** | **0.7360** |
+| TF-IDF + logistic regression, initial `C=1` | Validation (519 sentences) | 0.6375 | 0.7360 |
+| TF-IDF + logistic regression, selected `C=10` | Validation (519 sentences) | **0.6924** | **0.7495** |
 
-This is one fixed initial configuration, without hyperparameter search. The [TF-IDF report](reports/tfidf-logreg-v1/README.md) provides per-class results and the confusion matrix. Specific FLS remains the weakest class, with recall **0.2791**.
+A [four-configuration comparison](reports/tfidf-selection-v1/README.md) tested unigrams versus unigrams/bigrams and `C=1` versus `C=10`, selecting by unrounded validation macro-F1 under a declared tie rule. The selected model improves macro-F1 by 0.0548 over the initial reference. Its advantage over unigrams with `C=10` is only 0.0031 on this partition; specific FLS recall remains **0.4651**. The report includes per-class scores, the confusion matrix, and the selected model's hash. Test remains reserved for final evaluation.
 
 The run contains `config.toml`, `model.joblib` (the fitted vectorizer and classifier), `model.json` (metadata), predictions, metrics, and a manifest. [`load_tfidf_model`](src/filing_sentence_classifier/baselines/tfidf.py) checks the supplied model hash and restores the pipeline without training data. Load joblib files only from trusted runs and use the recorded dependency versions: joblib can execute code during loading. [Configuration options](configs/README.md) are recorded in each run's effective recipe.
 

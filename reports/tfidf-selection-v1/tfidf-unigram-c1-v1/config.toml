@@ -1,0 +1,9 @@
+# Selection study: isolate unigram features at the original regularization strength.
+[tfidf]
+ngram_range = [1, 1]
+min_df = 2
+
+[logistic_regression]
+c = 1.0
+max_iter = 1000
+tol = 0.0001

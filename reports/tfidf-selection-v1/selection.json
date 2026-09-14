@@ -1,0 +1,118 @@
+{
+  "candidates": [
+    {
+      "C": 1.0,
+      "accuracy": 0.74373795761079,
+      "config_sha256": "e1ac4e7e214d6d80a570b23414d0bbef6c49e4a85c90b386216a4c059eb6f679",
+      "macro_f1": 0.6696249466897468,
+      "manifest_sha256": "1132eb5c574566f1d917a26e10e32351984b3a83742e71e1a9ae447e2112161e",
+      "metrics_sha256": "ad697921bdbebde7ea4532c692cea44d4c80ef096cc7adc7eaff649d1d8a0626",
+      "model_sha256": "bb777356d064a3af5604d3c97821c485b613a755a6021e13b68968a387309aa9",
+      "n_iter": [
+        44
+      ],
+      "ngram_range": [
+        1,
+        1
+      ],
+      "run_id": "tfidf-unigram-c1-v1",
+      "specific_fls_recall": 0.37209302325581395,
+      "vocabulary_size": 2751
+    },
+    {
+      "C": 10.0,
+      "accuracy": 0.7360308285163777,
+      "config_sha256": "e5551e8b6e1691f1608bc92d10e0c4ce62c24787aed5cafe94404ca2eb67452a",
+      "macro_f1": 0.689219740832644,
+      "manifest_sha256": "0552646c844ebdc0247ff7672cdd1d80646c95094f72d898b559d7ef9bc0499a",
+      "metrics_sha256": "ba99ce0da6e0ea65b99491f70388f40afa4a77c746928055e4b38467c80a3945",
+      "model_sha256": "452d1a1b7f9e5edf78af8e00035f15906a6fa6d6ca707e0fe29ef41dd2e9e202",
+      "n_iter": [
+        77
+      ],
+      "ngram_range": [
+        1,
+        1
+      ],
+      "run_id": "tfidf-unigram-c10-v1",
+      "specific_fls_recall": 0.5348837209302325,
+      "vocabulary_size": 2751
+    },
+    {
+      "C": 1.0,
+      "accuracy": 0.7360308285163777,
+      "config_sha256": "80574a964537cd587be693280b48e918771522d51108e4b34c79fa0371619c2e",
+      "macro_f1": 0.6375307033614244,
+      "manifest_sha256": "3ecf713699e1b86780f028f44394ba180b28c12a0bfb03339e460cc1f60dd018",
+      "metrics_sha256": "9205a7ede1a74e517b1ffafebc10118e347ffcec30329d79948591bbddd8ab2b",
+      "model_sha256": "210135be13cfacabf666695544356a0c5e640470d1289ca6cb01f4d303d0bd81",
+      "n_iter": [
+        46
+      ],
+      "ngram_range": [
+        1,
+        2
+      ],
+      "run_id": "tfidf-logreg-v1",
+      "specific_fls_recall": 0.27906976744186046,
+      "vocabulary_size": 9459
+    },
+    {
+      "C": 10.0,
+      "accuracy": 0.7495183044315993,
+      "config_sha256": "1a6199141dd46cbbc5f4aa7d34f803d42bbe00cf0bf7865375170d80493f5e00",
+      "macro_f1": 0.6923656512369,
+      "manifest_sha256": "a39ef37233215635063e47f1cc932368438bf584bdbe579e85c829746e86063d",
+      "metrics_sha256": "b576d9c17a2b1615c6d10744185c0c0728461d2eb306c122fe91868c2dbd4eed",
+      "model_sha256": "e59dc2f247ddbd2b1bda85a989367e15a42dfdd58bf14b852e134e0bb94576e5",
+      "n_iter": [
+        59
+      ],
+      "ngram_range": [
+        1,
+        2
+      ],
+      "run_id": "tfidf-bigram-c10-v1",
+      "specific_fls_recall": 0.46511627906976744,
+      "vocabulary_size": 9459
+    }
+  ],
+  "data": {
+    "label_names": {
+      "0": "specific fls",
+      "1": "not-fls",
+      "2": "non-specific fls"
+    },
+    "manifest_sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+    "train_rows": 2074,
+    "train_sha256": "cc0ba0925cf6bec54d822d67ca28db3309dc145bc72444497418b293444a9119",
+    "val_rows": 519,
+    "val_sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d"
+  },
+  "plan_sha256": "a6220f6516259dd4a134abe6a4985270ab7a230d0cfe0d541265a7712b0beb2d",
+  "purpose": "TF-IDF reference for subsequent model comparisons.",
+  "ranking": [
+    "tfidf-bigram-c10-v1",
+    "tfidf-unigram-c10-v1",
+    "tfidf-unigram-c1-v1",
+    "tfidf-logreg-v1"
+  ],
+  "reserved_test_evaluation": false,
+  "schema_version": 1,
+  "selected_model_sha256": "e59dc2f247ddbd2b1bda85a989367e15a42dfdd58bf14b852e134e0bb94576e5",
+  "selected_run_id": "tfidf-bigram-c10-v1",
+  "selected_run_manifest_sha256": "a39ef37233215635063e47f1cc932368438bf584bdbe579e85c829746e86063d",
+  "selection_rule": {
+    "direction": "maximize",
+    "on_failure": "Record failure and stop; no automatic retries with changed settings.",
+    "primary_metric": "macro_f1",
+    "round_before_selection": false,
+    "split": "val",
+    "tie_break": [
+      "smaller_max_ngram",
+      "smaller_C"
+    ]
+  },
+  "study_id": "tfidf-selection-v1",
+  "verification": "All run file checksums, source hashes, environment, data identity, and common evaluation outputs verified."
+}

@@ -1,0 +1,21 @@
+{
+  "class_ids": [
+    0,
+    1,
+    2
+  ],
+  "converged": true,
+  "family": "tfidf_logreg",
+  "model_file": "model.joblib",
+  "n_iter": [
+    44
+  ],
+  "schema_version": 1,
+  "serialization": "joblib",
+  "training_class_counts": {
+    "0": 340,
+    "1": 1093,
+    "2": 641
+  },
+  "vocabulary_size": 2751
+}
