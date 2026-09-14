@@ -1,0 +1,94 @@
+{
+  "code_sha256": {
+    "baselines/majority.py": "29994fd284f6098d3a808f7e4dcd9473f838da98fb34df5b4814525a388e943d",
+    "baselines/run.py": "8689631c64dba9166b16f3002254a7099fe1f6add5ead8e32a47f8ffa160f0a3",
+    "baselines/tfidf.py": "be8241ba4e254dc27a1d234ceab279a85a3c7690b9b88bb7de6f080d468386d2",
+    "baselines/tfidf_run.py": "4637ec1bdcedf04642eff1d24652c37cf69f36a08fbf9ef91305bb52302b8336",
+    "data/loading.py": "84897cecbfd2f6b9453196884bc61523a82da65c9bef70d4ca81a42d21cc4401",
+    "evaluation/evaluate.py": "730adc1741eaa70cc0d17c1f35c1995a43f05188a923db57704f89462e210d21",
+    "evaluation/metrics.py": "f0640b1763625a10a31dd10efc03f84fb13fd69a2a95aa7d8cd61be41d6d2a7d"
+  },
+  "data": {
+    "label_names": {
+      "0": "specific fls",
+      "1": "not-fls",
+      "2": "non-specific fls"
+    },
+    "manifest_sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+    "train_rows": 2074,
+    "train_sha256": "cc0ba0925cf6bec54d822d67ca28db3309dc145bc72444497418b293444a9119",
+    "val_rows": 519,
+    "val_sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d"
+  },
+  "environment": {
+    "filing-sentence-classifier": "0.1.0",
+    "joblib": "1.6.0",
+    "numpy": "2.5.3",
+    "python": "3.13.9",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1",
+    "threadpoolctl": "3.6.0"
+  },
+  "files": {
+    "config.toml": {
+      "sha256": "80574a964537cd587be693280b48e918771522d51108e4b34c79fa0371619c2e",
+      "size_bytes": 164
+    },
+    "metrics.val.json": {
+      "sha256": "9205a7ede1a74e517b1ffafebc10118e347ffcec30329d79948591bbddd8ab2b",
+      "size_bytes": 1741
+    },
+    "model.joblib": {
+      "sha256": "210135be13cfacabf666695544356a0c5e640470d1289ca6cb01f4d303d0bd81",
+      "size_bytes": 302671
+    },
+    "model.json": {
+      "sha256": "ce28ca31b78d56e7c654220b30f8a34eb86186620805ed6b4fc9cc4170c3a990",
+      "size_bytes": 307
+    },
+    "predictions.val.jsonl": {
+      "sha256": "532530111c5a1bc16450c1281f69a1d377db003be18f88aa7306e0da20c52dff",
+      "size_bytes": 53976
+    }
+  },
+  "recipe": {
+    "convergence_warning": "error",
+    "evaluation_split": "val",
+    "family": "tfidf_logreg",
+    "fit_split": "train",
+    "logistic_regression": {
+      "C": 1.0,
+      "class_weight": null,
+      "fit_intercept": true,
+      "l1_ratio": 0.0,
+      "max_iter": 1000,
+      "random_state": null,
+      "solver": "lbfgs",
+      "tol": 0.0001,
+      "warm_start": false
+    },
+    "tfidf": {
+      "analyzer": "word",
+      "binary": false,
+      "dtype": "float64",
+      "lowercase": true,
+      "max_df": 1.0,
+      "max_features": null,
+      "min_df": 2,
+      "ngram_range": [
+        1,
+        2
+      ],
+      "norm": "l2",
+      "smooth_idf": true,
+      "stop_words": null,
+      "strip_accents": null,
+      "sublinear_tf": true,
+      "token_pattern": "(?u)\\b\\w\\w+\\b",
+      "use_idf": true
+    },
+    "thread_limit": 1
+  },
+  "schema_version": 1,
+  "stage": "baseline_run"
+}

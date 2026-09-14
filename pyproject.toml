@@ -16,8 +16,10 @@ filing-sentence-classifier = "filing_sentence_classifier.cli:app"
 [project.optional-dependencies]
 data = [
     "huggingface-hub>=1.0,<2",
+    "joblib>=1.6,<2",
     "pyarrow>=25.0.1",
     "scikit-learn>=1.9.1,<2",
+    "threadpoolctl>=3.6,<4",
 ]
 
 [build-system]

@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, majority-class baseline, and CI are implemented. TF-IDF and PyTorch training are planned.
+**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, and CI are implemented. PyTorch training is planned.
 
 ## Classification task
 
@@ -14,7 +14,7 @@ Inputs are individual sentences already extracted from a filing. The dataset def
 | 1 | `not-fls` | A statement that is not forward-looking. |
 | 2 | `non-specific fls` | A generic forward-looking statement that could apply to any company. |
 
-The comparison starts with a majority-class baseline. Planned models are TF-IDF with logistic regression and a CPU-oriented PyTorch classifier with learned embeddings, masked mean pooling, and an MLP. All models use the same saved development partitions and evaluation functions.
+The implemented baselines are a majority-class classifier and TF-IDF with logistic regression. The planned PyTorch classifier uses learned embeddings, masked mean pooling, and an MLP. All models use the same saved development partitions and evaluation functions.
 
 ## Data preparation results
 
@@ -57,13 +57,29 @@ uv run --locked --extra data filing-sentence-classifier baseline majority \
 
 The classifier counts training labels and predicts the most frequent class for every sentence. Each training row has one vote; ties select the smallest class ID. Validation is loaded after fitting. The fitted class is **`1: not-fls`**, with 1,093 of 2,074 training rows.
 
-| Model | Evaluation split | Macro-F1 | Accuracy |
-| --- | --- | ---: | ---: |
-| Majority class | Validation (519 sentences) | **0.2298** | **0.5260** |
-
 The run saves `model.json`, `predictions.val.jsonl`, `metrics.val.json`, and `manifest.json`. The model can be restored with [`MajorityClassifier.from_dict`](src/filing_sentence_classifier/baselines/majority.py) without fitting or optional dependencies. The run manifest records input/output hashes, the effective recipe, code hashes, and environment versions. Repeating an identical run verifies its files; changed results require another output directory. `--manifest-sha256` optionally pins the input artifact.
 
 The [validation report](reports/majority-v1/README.md) contains per-class scores, the confusion matrix, and selected run artifacts. The published test remains reserved for final evaluation.
+
+## Run TF-IDF + logistic regression
+
+```bash
+DATASET_DIR=data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1
+uv run --locked --extra data filing-sentence-classifier baseline tfidf \
+  --data-dir "$DATASET_DIR" --config configs/experiments/tfidf-logreg-v1.toml \
+  --output-dir artifacts/runs/tfidf-logreg-v1
+```
+
+The [initial configuration](configs/experiments/tfidf-logreg-v1.toml) uses word unigrams/bigrams, `min_df=2`, sublinear TF, and L2-regularized multinomial logistic regression (`C=1`, L-BFGS). Vocabulary, IDF, and classifier coefficients are fitted together on train in a scikit-learn `Pipeline`. Validation uses only `transform`/`predict`. The solver runs with one native computation thread; nonconvergence stops publication.
+
+| Model | Evaluation split | Macro-F1 | Accuracy |
+| --- | --- | ---: | ---: |
+| Majority class | Validation (519 sentences) | 0.2298 | 0.5260 |
+| TF-IDF + logistic regression | Validation (519 sentences) | **0.6375** | **0.7360** |
+
+This is one fixed initial configuration, without hyperparameter search. The [TF-IDF report](reports/tfidf-logreg-v1/README.md) provides per-class results and the confusion matrix. Specific FLS remains the weakest class, with recall **0.2791**.
+
+The run contains `config.toml`, `model.joblib` (the fitted vectorizer and classifier), `model.json` (metadata), predictions, metrics, and a manifest. [`load_tfidf_model`](src/filing_sentence_classifier/baselines/tfidf.py) checks the supplied model hash and restores the pipeline without training data. Load joblib files only from trusted runs and use the recorded dependency versions: joblib can execute code during loading. [Configuration options](configs/README.md) are recorded in each run's effective recipe.
 
 ## Evaluate saved predictions
 

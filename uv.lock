@@ -395,8 +395,10 @@ dependencies = [
 [package.optional-dependencies]
 data = [
     { name = "huggingface-hub" },
+    { name = "joblib" },
     { name = "pyarrow" },
     { name = "scikit-learn" },
+    { name = "threadpoolctl" },
 ]
 
 [package.dev-dependencies]
@@ -417,8 +419,10 @@ notebooks = [
 [package.metadata]
 requires-dist = [
     { name = "huggingface-hub", marker = "extra == 'data'", specifier = ">=1.0,<2" },
+    { name = "joblib", marker = "extra == 'data'", specifier = ">=1.6,<2" },
     { name = "pyarrow", marker = "extra == 'data'", specifier = ">=25.0.1" },
     { name = "scikit-learn", marker = "extra == 'data'", specifier = ">=1.9.1,<2" },
+    { name = "threadpoolctl", marker = "extra == 'data'", specifier = ">=3.6,<4" },
     { name = "typer", specifier = ">=0.27.2" },
 ]
 provides-extras = ["data"]

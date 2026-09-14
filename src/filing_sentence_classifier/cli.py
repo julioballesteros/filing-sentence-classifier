@@ -258,6 +258,55 @@ def majority_baseline(
     typer.echo(f"Verified majority baseline run: {artifact}")
 
 
+@baseline_app.command("tfidf")
+def tfidf_baseline(
+    data_dir: Annotated[
+        Path,
+        typer.Option(
+            "--data-dir", file_okay=False, help="Frozen development split directory."
+        ),
+    ],
+    config: Annotated[
+        Path,
+        typer.Option(
+            "--config", dir_okay=False, help="TF-IDF/logistic regression TOML recipe."
+        ),
+    ],
+    output_dir: Annotated[
+        Path,
+        typer.Option(
+            "--output-dir", file_okay=False, help="Directory for this baseline run."
+        ),
+    ] = Path("artifacts/runs/tfidf-logreg-v1"),
+    manifest_sha256: Annotated[
+        str | None,
+        typer.Option(
+            "--manifest-sha256", help="Optional expected dataset manifest checksum."
+        ),
+    ] = None,
+) -> None:
+    """Fit TF-IDF and logistic regression on train, then evaluate saved validation."""
+    try:
+        from filing_sentence_classifier.baselines.majority import BaselineError
+        from filing_sentence_classifier.baselines.tfidf_run import run_tfidf_baseline
+    except ModuleNotFoundError as exc:
+        if exc.name not in {"sklearn", "numpy", "scipy", "joblib", "threadpoolctl"}:
+            raise
+        typer.echo(
+            "Baseline dependencies are missing. Install the package with its [data] extra.",
+            err=True,
+        )
+        raise typer.Exit(code=1) from exc
+    try:
+        artifact = run_tfidf_baseline(
+            data_dir, output_dir, config, expected_manifest_sha256=manifest_sha256
+        )
+    except (DataLoadError, BaselineError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(f"Verified TF-IDF baseline run: {artifact}")
+
+
 @app.callback(invoke_without_command=True)
 def main(
     ctx: typer.Context,
