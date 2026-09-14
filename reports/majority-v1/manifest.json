@@ -1,0 +1,53 @@
+{
+  "code_sha256": {
+    "baselines/majority.py": "29994fd284f6098d3a808f7e4dcd9473f838da98fb34df5b4814525a388e943d",
+    "baselines/run.py": "8689631c64dba9166b16f3002254a7099fe1f6add5ead8e32a47f8ffa160f0a3",
+    "data/loading.py": "84897cecbfd2f6b9453196884bc61523a82da65c9bef70d4ca81a42d21cc4401",
+    "evaluation/evaluate.py": "730adc1741eaa70cc0d17c1f35c1995a43f05188a923db57704f89462e210d21",
+    "evaluation/metrics.py": "f0640b1763625a10a31dd10efc03f84fb13fd69a2a95aa7d8cd61be41d6d2a7d"
+  },
+  "data": {
+    "label_names": {
+      "0": "specific fls",
+      "1": "not-fls",
+      "2": "non-specific fls"
+    },
+    "manifest_sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+    "train_rows": 2074,
+    "train_sha256": "cc0ba0925cf6bec54d822d67ca28db3309dc145bc72444497418b293444a9119",
+    "val_rows": 519,
+    "val_sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d"
+  },
+  "environment": {
+    "filing-sentence-classifier": "0.1.0",
+    "numpy": "2.5.3",
+    "python": "3.13.9",
+    "scikit-learn": "1.9.1",
+    "scipy": "1.18.1"
+  },
+  "files": {
+    "metrics.val.json": {
+      "sha256": "371626833b62eb108e471ecdb782752a05ce508a52841711431fc7e747c9b1a6",
+      "size_bytes": 1655
+    },
+    "model.json": {
+      "sha256": "6fcc8295142834e1ada9fa772d5d6774baf1931f0ed1dbf49166e869985b0800",
+      "size_bytes": 203
+    },
+    "predictions.val.jsonl": {
+      "sha256": "140a6ea31374ba50d31daaa4ad3a52cfd48160c3fdeecf2aef364d19c64c92be",
+      "size_bytes": 53976
+    }
+  },
+  "recipe": {
+    "evaluation_split": "val",
+    "family": "majority",
+    "fit_split": "train",
+    "seed": null,
+    "text_features": null,
+    "tie_break": "smallest_label_id",
+    "weighting": "one_vote_per_training_row"
+  },
+  "schema_version": 1,
+  "stage": "baseline_run"
+}

@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, and CI are implemented. Model training and inference are planned; measured model scores are not yet available.
+**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, majority-class baseline, and CI are implemented. TF-IDF and PyTorch training are planned.
 
 ## Classification task
 
@@ -14,7 +14,7 @@ Inputs are individual sentences already extracted from a filing. The dataset def
 | 1 | `not-fls` | A statement that is not forward-looking. |
 | 2 | `non-specific fls` | A generic forward-looking statement that could apply to any company. |
 
-The planned comparison uses a majority-class baseline, TF-IDF with logistic regression, and a CPU-oriented PyTorch classifier with learned embeddings, masked mean pooling, and an MLP. All models will use the same saved development partitions and evaluation functions.
+The comparison starts with a majority-class baseline. Planned models are TF-IDF with logistic regression and a CPU-oriented PyTorch classifier with learned embeddings, masked mean pooling, and an MLP. All models use the same saved development partitions and evaluation functions.
 
 ## Data preparation results
 
@@ -45,6 +45,26 @@ Downloads require access to Hugging Face; preparation and splitting then run loc
 
 The `data` extra supplies acquisition, preparation, and evaluation dependencies. Development tools are included by default; notebook dependencies are available separately through `--group notebooks`.
 
+## Run the majority baseline
+
+After preparing the data:
+
+```bash
+DATASET_DIR=data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1
+uv run --locked --extra data filing-sentence-classifier baseline majority \
+  --data-dir "$DATASET_DIR" --output-dir artifacts/runs/majority-v1
+```
+
+The classifier counts training labels and predicts the most frequent class for every sentence. Each training row has one vote; ties select the smallest class ID. Validation is loaded after fitting. The fitted class is **`1: not-fls`**, with 1,093 of 2,074 training rows.
+
+| Model | Evaluation split | Macro-F1 | Accuracy |
+| --- | --- | ---: | ---: |
+| Majority class | Validation (519 sentences) | **0.2298** | **0.5260** |
+
+The run saves `model.json`, `predictions.val.jsonl`, `metrics.val.json`, and `manifest.json`. The model can be restored with [`MajorityClassifier.from_dict`](src/filing_sentence_classifier/baselines/majority.py) without fitting or optional dependencies. The run manifest records input/output hashes, the effective recipe, code hashes, and environment versions. Repeating an identical run verifies its files; changed results require another output directory. `--manifest-sha256` optionally pins the input artifact.
+
+The [validation report](reports/majority-v1/README.md) contains per-class scores, the confusion matrix, and selected run artifacts. The published test remains reserved for final evaluation.
+
 ## Evaluate saved predictions
 
 The `evaluate` command accepts `train` or `val` and requires a prediction file supplied by the caller. Each JSONL row must contain exactly `sample_id` and integer `predicted_label`. For example, with the placeholder replaced by an ID from the selected partition:
@@ -70,6 +90,7 @@ The same implementation is available through [`classification_metrics`](src/fili
 ```text
 src/filing_sentence_classifier/
   data/          Source acquisition, audit, cleaning, splitting, and loading
+  baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting
   cli.py         Command wiring and user-facing errors
 notebooks/       Exploration using reusable package code
@@ -77,9 +98,10 @@ tests/
   unit/          Transformation rules, metrics, and contracts
   integration/   Artifact pipelines, loading, and CLI behavior
 data/README.md   Dataset provenance, preparation policy, and artifact formats
+reports/         Measured results and selected aggregate run artifacts
 ```
 
-The source definition is separate from downloading; cleaning and split rules are separate from artifact I/O. The loader consumes frozen partitions using only the standard library. Evaluation operates independently of model implementation, allowing future baselines and PyTorch training to share the same metric contract.
+The source definition is separate from downloading; cleaning and split rules are separate from artifact I/O. The loader consumes frozen partitions using only the standard library. Baseline decision rules are separate from run orchestration and artifact writing. Evaluation operates independently of model implementation, allowing baselines and PyTorch training to share the same metric contract.
 
 Reproducibility is recorded in the lockfile and artifact manifests: source revisions, SHA-256 checksums, transformation versions, split assignments, seeds, code hashes, and environment versions. Artifact writes are staged. Repeated runs verify existing outputs and report mismatches without silently overwriting them.
 

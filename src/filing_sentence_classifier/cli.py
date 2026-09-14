@@ -16,6 +16,10 @@ from filing_sentence_classifier.data.fls import (
 from filing_sentence_classifier.data.loading import DataLoadError, SplitName
 
 app = typer.Typer()
+baseline_app = typer.Typer(
+    help="Fit reference classifiers and evaluate saved validation."
+)
+app.add_typer(baseline_app, name="baseline")
 
 
 @app.command("download-data")
@@ -209,6 +213,49 @@ def evaluate(
         typer.echo(f"Error: {exc}", err=True)
         raise typer.Exit(code=1) from exc
     typer.echo(json.dumps(report, indent=2, sort_keys=True, allow_nan=False))
+
+
+@baseline_app.command("majority")
+def majority_baseline(
+    data_dir: Annotated[
+        Path,
+        typer.Option(
+            "--data-dir", file_okay=False, help="Frozen development split directory."
+        ),
+    ],
+    output_dir: Annotated[
+        Path,
+        typer.Option(
+            "--output-dir", file_okay=False, help="Directory for this baseline run."
+        ),
+    ] = Path("artifacts/runs/majority-v1"),
+    manifest_sha256: Annotated[
+        str | None,
+        typer.Option(
+            "--manifest-sha256", help="Optional expected dataset manifest checksum."
+        ),
+    ] = None,
+) -> None:
+    """Fit the training majority and save its validation predictions and metrics."""
+    try:
+        from filing_sentence_classifier.baselines.majority import BaselineError
+        from filing_sentence_classifier.baselines.run import run_majority_baseline
+    except ModuleNotFoundError as exc:
+        if exc.name not in {"sklearn", "numpy", "scipy"}:
+            raise
+        typer.echo(
+            "Evaluation dependencies are missing. Install the package with its [data] extra.",
+            err=True,
+        )
+        raise typer.Exit(code=1) from exc
+    try:
+        artifact = run_majority_baseline(
+            data_dir, output_dir, expected_manifest_sha256=manifest_sha256
+        )
+    except (DataLoadError, BaselineError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(f"Verified majority baseline run: {artifact}")
 
 
 @app.callback(invoke_without_command=True)
