@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, text encoder, PyTorch Dataset, and CI are implemented. Model training in PyTorch is planned.
+**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, text encoder, PyTorch Dataset and batch loading, and CI are implemented. Model training in PyTorch is planned.
 
 ## Classification task
 
@@ -145,7 +145,7 @@ restored = TextEncoder.from_dict(json.loads(state))
 assert restored.encode("We expect long-term growth.") == encoded
 ```
 
-The input contract is prepared text. At inference, apply the existing [`clean_text`](src/filing_sentence_classifier/data/cleaning.py) function before calling the same encoder. Empty or invalid text is rejected. Returned IDs contain no padding or added boundary tokens. The Dataset converts them to tensors; dynamic padding belongs to the upcoming batch collator.
+The input contract is prepared text. At inference, apply the existing [`clean_text`](src/filing_sentence_classifier/data/cleaning.py) function before calling the same encoder. Empty or invalid text is rejected. Returned IDs contain no padding or added boundary tokens. The Dataset converts them to tensors; the batch collator adds dynamic padding.
 
 Encoding version `1` keeps the first **128 tokens** by default. This initial limit was chosen using train only: its nearest-rank length percentiles are **p95=64** and **p99=91**, with a maximum of 398. The limit preserves 99.66% of training sentences completely. Longer sentences lose their suffix; `original_length`, `truncated`, and `truncated_tokens` make that loss explicit. `original_unknown_count` covers the full sentence, while `unknown_count` counts only retained IDs. The JSON state includes the vocabulary, tokenization rules, and encoding configuration; incompatible saved recipes are rejected.
 
@@ -178,8 +178,6 @@ The `train` extra adds PyTorch. The lockfile selects version `2.14.0`; uv uses t
 [`SentenceDataset`](src/filing_sentence_classifier/data/dataset.py) implements PyTorch's [integer-indexed Dataset interface](https://docs.pytorch.org/docs/2.14/data.html#map-style-datasets). It consumes a verified `LoadedSplit` and an existing `TextEncoder`. Using the encoder and data directory above:
 
 ```python
-from torch.utils.data import DataLoader
-
 from filing_sentence_classifier.data.dataset import SentenceDataset
 
 train = load_split(data_dir, "train")
@@ -187,15 +185,37 @@ dataset = SentenceDataset(train, encoder)
 example = dataset[0]
 assert example["input_ids"].ndim == 1
 assert example["label"].ndim == 0
-
-# Inspect individual examples before adding a collator for variable-length batches.
-loader = DataLoader(dataset, batch_size=None, num_workers=0)
-first = next(iter(loader))
 ```
 
 Each item contains a CPU `torch.long` tensor of unpadded `input_ids`, a scalar `torch.long` `label`, the original `sample_id`, and the encoder's length, truncation, and unknown-token metadata. Saved row order and class IDs are preserved; IDs must be contiguous from zero for use as cross-entropy targets. `dataset.split` retains the source hashes and class mapping, and `dataset.encodings` exposes immutable cached results for diagnostics.
 
 The Dataset encodes each sentence once during construction, keeping the small corpus in memory. Each access creates fresh tensors, so in-place changes cannot corrupt later reads. It performs no file access or fitting and does not retain the encoder, allowing worker processes to receive the Dataset using `spawn`. Shuffling, sampling, and padding are controlled outside this component.
+
+## Build batches
+
+[`collate_sentences`](src/filing_sentence_classifier/data/collate.py) pads sentences on the right with `PAD=0` up to the longest sequence in each batch. It returns CPU tensors: `input_ids` (`long`) and `attention_mask` (`bool`) with shape `[B, L]`, plus `labels` (`long`) with shape `[B]`. The mask is `True` for real tokens, including `UNK=1`, so padding can be excluded from mean pooling. Empty sequences are rejected.
+
+Using the training Dataset above, [`create_dataloader`](src/filing_sentence_classifier/data/dataloader.py) supplies this collator and a separate seeded generator for each loader:
+
+```python
+from filing_sentence_classifier.data.dataloader import create_dataloader
+
+val = load_split(data_dir, "val", expected_manifest_sha256=train.manifest_sha256)
+val_dataset = SentenceDataset(val, encoder)
+train_loader = create_dataloader(dataset, batch_size=32, shuffle=True, seed=2026)
+val_loader = create_dataloader(val_dataset, batch_size=32)
+
+for batch in train_loader:
+    input_ids = batch["input_ids"]
+    attention_mask = batch["attention_mask"]
+    labels = batch["labels"]
+```
+
+`sample_ids` preserve the order within each batch; `lengths`, `original_lengths`, `truncated`, `truncated_tokens`, `unknown_counts`, and `original_unknown_counts` stay aligned with them. Collation neither encodes again nor truncates or sorts sentences. [`collation_recipe()`](src/filing_sentence_classifier/data/collate.py) exposes the versioned padding and mask rules for training artifacts.
+
+Keep the same loaders across epochs: training order changes reproducibly, while validation preserves saved row order. Recreating a loader with the same seed restarts its sequence. Validation iteration does not consume the training generator or the main process's global RNG. Reproducibility assumes the same environment and iteration schedule.
+
+Defaults are `num_workers=0`, `pin_memory=False`, and `drop_last=False`, so the final partial batch is retained. Positive worker counts use `spawn` with ordered results and fresh workers per iterator; scripts using workers must create and iterate loaders inside an `if __name__ == "__main__":` guard. Batches remain on CPU until the training loop moves the required tensors to its device.
 
 ## Evaluate saved predictions
 
@@ -221,7 +241,7 @@ The same implementation is available through [`classification_metrics`](src/fili
 
 ```text
 src/filing_sentence_classifier/
-  data/          Source data, preparation, verified loading, and PyTorch Dataset
+  data/          Source data, preparation, verified loading, Dataset, and batches
   text/          Tokenization, immutable vocabularies, encoding, and text diagnostics
   baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting

@@ -54,7 +54,7 @@ def test_dataloader_preserves_order_and_values_with_spawn_workers(
         Vocabulary.fit(tokenize(text) for text in train.texts), max_length=4
     )
     dataset = SentenceDataset(train, encoder)
-    # Disable automatic batching: padding and the batch collator are a later step.
+    # Disable automatic batching to test per-example transport in isolation.
     loader = DataLoader(
         dataset,
         batch_size=None,
