@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, text encoder, PyTorch data loading, model architecture, explicit training epoch, and CI are implemented. Neural validation and full-run orchestration are next.
+**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, text encoder, PyTorch data loading, model architecture, training and validation epochs, and CI are implemented. Checkpoint selection and full-run orchestration are planned.
 
 ## Classification task
 
@@ -263,7 +263,30 @@ Create the optimizer once and reuse it across epochs so AdamW retains its moment
 
 The returned `EpochResult` contains detached Python values. Mean loss weights each batch by its actual number of examples, including the last partial batch. It describes the forward passes observed during training, before each update. Cross-entropy uses raw logits, equal example weights, no label smoothing, and no ignored targets.
 
-Non-finite logits, loss, gradients, or updated parameters abort the epoch with the batch number; completed updates are not rolled back. The optimizer must own exactly the model's trainable parameters, and each must receive a gradient. The epoch function consumes batches without loading data, fitting preprocessing, reseeding, or writing artifacts. Validation, checkpoint selection, and the training CLI remain separate upcoming components.
+Non-finite logits, loss, gradients, or updated parameters abort the epoch with the batch number; completed updates are not rolled back. The optimizer must own exactly the model's trainable parameters, and each must receive a gradient. The epoch function consumes batches without loading data, fitting preprocessing, reseeding, or writing artifacts. Checkpoint selection and the training CLI remain separate upcoming components.
+
+## Validate an epoch
+
+[`validate_epoch`](src/filing_sentence_classifier/training/engine.py) evaluates the current model over the saved validation partition. Using `val` and `val_loader` from the batching example:
+
+```python
+from filing_sentence_classifier.training.engine import validate_epoch
+
+validation = validate_epoch(
+    model,
+    val_loader,
+    label_ids=val.label_ids,
+    expected_sample_ids=val.sample_ids,
+    device=config.runtime.device,
+)
+print(validation.mean_loss, validation.metrics.macro_f1)
+```
+
+The function sets `model.eval()` and runs under `torch.inference_mode()`. It leaves the model in evaluation mode; the next `train_epoch` call restores training mode. Validation does not clear existing gradients, update parameters or BatchNorm statistics, or call an optimizer. Tests verify that validation between training epochs preserves model state, gradients, optimizer state, and the training RNG.
+
+`ValidationResult` contains mean cross-entropy, sample/batch counts, shared classification metrics, and aligned `sample_ids`, `targets`, and `predicted_labels` tuples in loader traversal order. Loss is weighted by actual batch size. Macro-F1, accuracy, per-class scores, and the confusion matrix are computed once over all predictions; every declared class contributes, including absent classes. Predictions use the highest logit, with ties selecting the lowest class ID.
+
+Declared classes must match the zero-based logit columns. The expected sample IDs define the complete evaluation scope: duplicates, missing rows, unexpected IDs, and invalid or non-finite outputs raise an error instead of returning partial metrics. Validation requires the existing `data` extra for shared metrics alongside `train`. Data loading and artifact publication stay outside the epoch function.
 
 ## Evaluate saved predictions
 

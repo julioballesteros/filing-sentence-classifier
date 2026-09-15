@@ -1,1 +1,1 @@
-"""Configuration, runtime setup, and explicit PyTorch training epochs."""
+"""Configuration, runtime setup, and explicit training and validation epochs."""
