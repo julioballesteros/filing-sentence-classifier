@@ -21,6 +21,20 @@ data = [
     "scikit-learn>=1.9.1,<2",
     "threadpoolctl>=3.6,<4",
 ]
+train = [
+    "torch>=2.14,<3",
+]
+
+# Use the CPU wheel on Linux/Windows; macOS uses the native PyPI wheel.
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
 
 [build-system]
 requires = ["uv_build>=0.9.13,<0.10.0"]
