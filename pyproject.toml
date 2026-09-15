@@ -57,7 +57,10 @@ warn_unreachable = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = ["--import-mode=importlib", "--strict-config", "--strict-markers", "-ra"]
+addopts = ["--import-mode=importlib", "--strict-config", "--strict-markers", "-ra", "-m", "not training"]
+markers = [
+    "training: Iterative model-fitting checks, run explicitly or in CI.",
+]
 
 [dependency-groups]
 dev = [

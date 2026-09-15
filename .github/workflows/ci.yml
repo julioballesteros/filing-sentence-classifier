@@ -46,5 +46,8 @@ jobs:
       - name: Check types
         run: uv run --no-sync mypy
 
-      - name: Run tests
+      - name: Run standard tests
         run: uv run --no-sync pytest
+
+      - name: Run training checks
+        run: uv run --no-sync pytest -m training

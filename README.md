@@ -288,6 +288,8 @@ The function sets `model.eval()` and runs under `torch.inference_mode()`. It lea
 
 Declared classes must match the zero-based logit columns. The expected sample IDs define the complete evaluation scope: duplicates, missing rows, unexpected IDs, and invalid or non-finite outputs raise an error instead of returning partial metrics. Validation requires the existing `data` extra for shared metrics alongside `train`. Data loading and artifact publication stay outside the epoch function.
 
+The [memorization integration test](tests/integration/test_overfit.py) checks that the complete neural pipeline can fit a tiny synthetic dataset, with a fixed seed, dropout and weight decay disabled, and a bounded epoch count. It requires 100% accuracy and mean cross-entropy ≤ 0.05 on those same examples. A separate manual check on 24 FLS training sentences also passed after 6 epochs (24/24 correct, loss 0.0171); this checks implementation correctness, not generalization.
+
 ## Evaluate saved predictions
 
 The `evaluate` command accepts `train` or `val` and requires a prediction file supplied by the caller. Each JSONL row must contain exactly `sample_id` and integer `predicted_label`. For example, with the placeholder replaced by an ID from the selected partition:
@@ -343,7 +345,9 @@ uv run --no-sync mypy
 uv run --no-sync pytest
 ```
 
-[CI](.github/workflows/ci.yml) runs these checks against a non-editable package installation. Tests use synthetic fixtures without downloading the dataset. Local Git hooks are available with `uv run --no-sync pre-commit install`.
+Tests marked `training`, including the memorization check, are excluded by default. Run them explicitly with `uv run --no-sync pytest -m training`, or run the complete suite with `uv run --no-sync pytest -m ""`.
+
+[CI](.github/workflows/ci.yml) runs the standard suite and training checks as separate steps against a non-editable package installation. Tests use synthetic fixtures without downloading the dataset. Local Git hooks are available with `uv run --no-sync pre-commit install`.
 
 ## Scope and limitations
 
