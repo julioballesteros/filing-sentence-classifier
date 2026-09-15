@@ -236,7 +236,15 @@ assert logits.shape == (len(batch["sample_ids"]), 3)
 
 This inspects an untrained model. Pooling divides by each sentence's real token count, so additional padding or longer batch companions do not change its evaluation logits within numerical tolerance. `PAD=0` is excluded from pooling and has no embedding gradient; `UNK=1` contributes normally and is trainable. Empty rows, out-of-range IDs, and masks inconsistent with padding are rejected. Mean pooling loses word order.
 
-The forward pass consumes only tensors on the model's device and returns logits without softmax, as expected by [`CrossEntropyLoss`](https://docs.pytorch.org/docs/2.14/generated/torch.nn.CrossEntropyLoss.html). Tokenization, labels, loss, seeding, and optimization are handled by their callers. Dropout follows `train()`/`eval()`; the model never changes its own mode. Parameters support PyTorch's standard `state_dict` interface; run configuration and checkpoint orchestration will accompany the training loop.
+The forward pass consumes only tensors on the model's device and returns logits without softmax, as expected by [`CrossEntropyLoss`](https://docs.pytorch.org/docs/2.14/generated/torch.nn.CrossEntropyLoss.html). Tokenization, labels, loss, seeding, and optimization are handled by their callers. Dropout follows `train()`/`eval()`; the model never changes its own mode. Parameters support PyTorch's standard `state_dict` interface; checkpoint orchestration will accompany the training loop.
+
+## Training configuration and reproducibility
+
+The [initial neural configuration](configs/experiments/mean-pool-mlp-v1.toml) declares the architecture, batch size, epoch limit, AdamW learning rate and weight decay, and CPU runtime settings. [`TrainingConfig`](src/filing_sentence_classifier/training/config.py) validates every field and supports TOML input and JSON round trips using only the standard library. Vocabulary size, class mapping, and preprocessing remain properties of the supplied artifacts.
+
+[`configure_runtime`](src/filing_sentence_classifier/training/reproducibility.py) explicitly initializes Python, PyTorch, and NumPy's global RNG if NumPy is installed. The reference uses training seed **17**, CPU, float32, one computation thread, and zero DataLoader workers. It enables deterministic algorithms in error mode. Call it once before creating the model and loaders, and pass the training seed to each loader's independent generator. The saved partition continues to use seed `2026`.
+
+The [configuration documentation](configs/README.md#pytorch-training) shows how to connect these components. Tests reproduce initialization, two epoch orders, and dropout outputs across fresh processes in the same environment. Reproduction across different platforms or dependency versions is outside this guarantee, consistent with [PyTorch's reproducibility guidance](https://docs.pytorch.org/docs/2.14/notes/randomness.html). These settings are ready for the training loop; no neural training result is reported yet.
 
 ## Evaluate saved predictions
 
@@ -265,6 +273,7 @@ src/filing_sentence_classifier/
   data/          Source data, preparation, verified loading, Dataset, and batches
   text/          Tokenization, immutable vocabularies, encoding, and text diagnostics
   models/        PyTorch architectures mapping encoded tensors to logits
+  training/      Validated training configuration and explicit runtime setup
   baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting
   cli.py         Command wiring and user-facing errors

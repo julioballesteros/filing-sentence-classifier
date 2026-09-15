@@ -1,5 +1,7 @@
 # Experiment configurations
 
+## TF-IDF references
+
 [experiments/tfidf-logreg-v1.toml](experiments/tfidf-logreg-v1.toml) defines the initial TF-IDF/logistic regression reference. Pass it to `baseline tfidf --config PATH`; paths are relative to the working directory. All fields are required, and unknown fields are rejected.
 
 | Field | Initial value | Meaning |
@@ -15,3 +17,49 @@ The fixed recipe uses lowercase word features, tokens of at least two word chara
 The complete effective recipe and original TOML bytes are saved with the run. For a new experiment, copy the configuration and choose a distinct output directory. Model fitting always consumes the saved training partition; configuration changes do not resplit data. The pinned dataset source remains in [data/fls.py](../src/filing_sentence_classifier/data/fls.py).
 
 The [bounded selection study](../reports/tfidf-selection-v1/README.md) adds three recipes to the initial reference: [unigrams, C=1](experiments/tfidf-unigram-c1-v1.toml), [unigrams, C=10](experiments/tfidf-unigram-c10-v1.toml), and [unigrams/bigrams, C=10](experiments/tfidf-bigram-c10-v1.toml). Only n-gram range and regularization strength vary. Unigrams/bigrams with `C=10` is the selected TF-IDF reference; all four original configurations remain available.
+
+## PyTorch training
+
+[experiments/mean-pool-mlp-v1.toml](experiments/mean-pool-mlp-v1.toml) is the initial neural reference. Schema version `1` requires every declared field and rejects extras, invalid types, nonfinite numbers, and unsupported devices. Settings are frozen dataclasses, independent of file I/O and PyTorch imports.
+
+| Section | Initial settings |
+| --- | --- |
+| `model` | Embedding dimension `128`, hidden dimension `64`, dropout `0.0` |
+| `training` | Batch size `32`, maximum epochs `30`, AdamW learning rate `0.001`, weight decay `0.0` |
+| `runtime` | Training seed `17`, device `"cpu"`, workers `0`, computation threads `1` |
+
+The initial learning rate and epoch limit are starting choices, not selected results. Dropout and weight decay are disabled for this reference. Stopping/checkpoint controls will be added with epoch orchestration. Data paths and the saved encoder are supplied separately; this configuration never resplits data or rebuilds preprocessing. Vocabulary size and the number of output classes come from those artifacts.
+
+Using the existing `encoder`, verified `train` partition, and `dataset` from the main README:
+
+```python
+from pathlib import Path
+
+from filing_sentence_classifier.data.dataloader import create_dataloader
+from filing_sentence_classifier.models.mean_pool_mlp import MeanPoolMLP
+from filing_sentence_classifier.training.config import TrainingConfig
+from filing_sentence_classifier.training.reproducibility import configure_runtime
+
+config_path = Path("configs/experiments/mean-pool-mlp-v1.toml")
+config = TrainingConfig.from_toml(config_path.read_bytes())
+runtime_metadata = configure_runtime(config.runtime)
+model = MeanPoolMLP(
+    vocab_size=len(encoder.vocabulary),
+    num_classes=len(train.label_ids),
+    embedding_dim=config.model.embedding_dim,
+    hidden_dim=config.model.hidden_dim,
+    dropout=config.model.dropout,
+)
+train_loader = create_dataloader(
+    dataset,
+    batch_size=config.batch_size,
+    shuffle=True,
+    seed=config.runtime.seed,
+    num_workers=config.runtime.num_workers,
+)
+config_metadata = config.to_dict()
+```
+
+For validation, supply its Dataset with `shuffle=False` and the same loader settings. Keep loaders across epochs. `configure_runtime` changes process-wide RNG, default device/dtype, thread count, and determinism settings; call it once per run, not per epoch. It does not reset existing loader generators or independently created Python/NumPy RNG instances. Runtime metadata records whether NumPy was seeded and the applied numerical settings. Configuration and runtime metadata are JSON-serializable for future run manifests.
+
+This version supports CPU explicitly, with float32 and deterministic algorithms that raise on unsupported operations. Positive worker counts use the existing loader's `spawn` behavior; the initial reference uses zero. Accelerators are rejected rather than silently replaced with CPU. Reproducibility requires the same environment and execution schedule; Python hash randomization cannot be changed retroactively by setting an environment variable inside the running process.
