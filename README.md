@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, text encoder, PyTorch Dataset and batch loading, and CI are implemented. Model training in PyTorch is planned.
+**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, text encoder, PyTorch data loading and model architecture, and CI are implemented. The PyTorch training loop is planned.
 
 ## Classification task
 
@@ -14,7 +14,7 @@ Inputs are individual sentences already extracted from a filing. The dataset def
 | 1 | `not-fls` | A statement that is not forward-looking. |
 | 2 | `non-specific fls` | A generic forward-looking statement that could apply to any company. |
 
-The implemented baselines are a majority-class classifier and TF-IDF with logistic regression. The planned PyTorch classifier uses learned embeddings, masked mean pooling, and an MLP. All models use the same saved development partitions and evaluation functions.
+The implemented baselines are a majority-class classifier and TF-IDF with logistic regression. The PyTorch architecture uses learned embeddings, masked mean pooling, and an MLP; it has not yet been trained. All models use the same saved development partitions and evaluation functions.
 
 ## Data preparation results
 
@@ -217,6 +217,27 @@ Keep the same loaders across epochs: training order changes reproducibly, while 
 
 Defaults are `num_workers=0`, `pin_memory=False`, and `drop_last=False`, so the final partial batch is retained. Positive worker counts use `spawn` with ordered results and fresh workers per iterator; scripts using workers must create and iterate loaders inside an `if __name__ == "__main__":` guard. Batches remain on CPU until the training loop moves the required tensors to its device.
 
+## PyTorch model architecture
+
+[`MeanPoolMLP`](src/filing_sentence_classifier/models/mean_pool_mlp.py) maps a batch to three raw logits through learned embeddings, masked mean pooling, and a `Linear → ReLU → Dropout → Linear` classifier. Defaults are `embedding_dim=128`, `hidden_dim=64`, `num_classes=3`, and `dropout=0.0`; each is configurable at construction. With the encoder and validation loader above:
+
+```python
+import torch
+
+from filing_sentence_classifier.models.mean_pool_mlp import MeanPoolMLP
+
+model = MeanPoolMLP(vocab_size=len(encoder.vocabulary))
+batch = next(iter(val_loader))
+model.eval()
+with torch.inference_mode():
+    logits = model(batch["input_ids"], batch["attention_mask"])
+assert logits.shape == (len(batch["sample_ids"]), 3)
+```
+
+This inspects an untrained model. Pooling divides by each sentence's real token count, so additional padding or longer batch companions do not change its evaluation logits within numerical tolerance. `PAD=0` is excluded from pooling and has no embedding gradient; `UNK=1` contributes normally and is trainable. Empty rows, out-of-range IDs, and masks inconsistent with padding are rejected. Mean pooling loses word order.
+
+The forward pass consumes only tensors on the model's device and returns logits without softmax, as expected by [`CrossEntropyLoss`](https://docs.pytorch.org/docs/2.14/generated/torch.nn.CrossEntropyLoss.html). Tokenization, labels, loss, seeding, and optimization are handled by their callers. Dropout follows `train()`/`eval()`; the model never changes its own mode. Parameters support PyTorch's standard `state_dict` interface; run configuration and checkpoint orchestration will accompany the training loop.
+
 ## Evaluate saved predictions
 
 The `evaluate` command accepts `train` or `val` and requires a prediction file supplied by the caller. Each JSONL row must contain exactly `sample_id` and integer `predicted_label`. For example, with the placeholder replaced by an ID from the selected partition:
@@ -243,6 +264,7 @@ The same implementation is available through [`classification_metrics`](src/fili
 src/filing_sentence_classifier/
   data/          Source data, preparation, verified loading, Dataset, and batches
   text/          Tokenization, immutable vocabularies, encoding, and text diagnostics
+  models/        PyTorch architectures mapping encoded tensors to logits
   baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting
   cli.py         Command wiring and user-facing errors
