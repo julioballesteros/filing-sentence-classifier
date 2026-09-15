@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, text encoder, PyTorch data loading and model architecture, and CI are implemented. The PyTorch training loop is planned.
+**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, text encoder, PyTorch data loading, model architecture, explicit training epoch, and CI are implemented. Neural validation and full-run orchestration are next.
 
 ## Classification task
 
@@ -14,7 +14,7 @@ Inputs are individual sentences already extracted from a filing. The dataset def
 | 1 | `not-fls` | A statement that is not forward-looking. |
 | 2 | `non-specific fls` | A generic forward-looking statement that could apply to any company. |
 
-The implemented baselines are a majority-class classifier and TF-IDF with logistic regression. The PyTorch architecture uses learned embeddings, masked mean pooling, and an MLP; it has not yet been trained. All models use the same saved development partitions and evaluation functions.
+The implemented baselines are a majority-class classifier and TF-IDF with logistic regression. The PyTorch architecture uses learned embeddings, masked mean pooling, and an MLP; a complete neural training run has not yet been published. All models use the same saved development partitions and evaluation functions.
 
 ## Data preparation results
 
@@ -244,7 +244,26 @@ The [initial neural configuration](configs/experiments/mean-pool-mlp-v1.toml) de
 
 [`configure_runtime`](src/filing_sentence_classifier/training/reproducibility.py) explicitly initializes Python, PyTorch, and NumPy's global RNG if NumPy is installed. The reference uses training seed **17**, CPU, float32, one computation thread, and zero DataLoader workers. It enables deterministic algorithms in error mode. Call it once before creating the model and loaders, and pass the training seed to each loader's independent generator. The saved partition continues to use seed `2026`.
 
-The [configuration documentation](configs/README.md#pytorch-training) shows how to connect these components. Tests reproduce initialization, two epoch orders, and dropout outputs across fresh processes in the same environment. Reproduction across different platforms or dependency versions is outside this guarantee, consistent with [PyTorch's reproducibility guidance](https://docs.pytorch.org/docs/2.14/notes/randomness.html). These settings are ready for the training loop; no neural training result is reported yet.
+The [configuration documentation](configs/README.md#pytorch-training) shows how to connect these components. Tests reproduce initialization, batch orders, dropout outputs, and two training epochs' losses and final weights across fresh processes in the same environment. Reproduction across different platforms or dependency versions is outside this guarantee, consistent with [PyTorch's reproducibility guidance](https://docs.pytorch.org/docs/2.14/notes/randomness.html). No neural validation result is reported yet.
+
+## Run a training epoch
+
+[`train_epoch`](src/filing_sentence_classifier/training/engine.py) implements `zero_grad → forward → CrossEntropyLoss → backward → optimizer.step` over the supplied batches. With the configured model and loader from the configuration example:
+
+```python
+from filing_sentence_classifier.training.engine import train_epoch
+from filing_sentence_classifier.training.optimizers import create_optimizer
+
+optimizer = create_optimizer(model, config)
+result = train_epoch(model, train_loader, optimizer, device=config.runtime.device)
+print(result.mean_loss, result.num_examples, result.num_batches)
+```
+
+Create the optimizer once and reuse it across epochs so AdamW retains its moment estimates and step counters. Each call sets `model.train()`, enables autograd, and clears gradients before each batch. The optimizer uses the configured learning rate and weight decay; its [fixed numerical choices](configs/README.md#pytorch-training) are explicit.
+
+The returned `EpochResult` contains detached Python values. Mean loss weights each batch by its actual number of examples, including the last partial batch. It describes the forward passes observed during training, before each update. Cross-entropy uses raw logits, equal example weights, no label smoothing, and no ignored targets.
+
+Non-finite logits, loss, gradients, or updated parameters abort the epoch with the batch number; completed updates are not rolled back. The optimizer must own exactly the model's trainable parameters, and each must receive a gradient. The epoch function consumes batches without loading data, fitting preprocessing, reseeding, or writing artifacts. Validation, checkpoint selection, and the training CLI remain separate upcoming components.
 
 ## Evaluate saved predictions
 
@@ -273,7 +292,7 @@ src/filing_sentence_classifier/
   data/          Source data, preparation, verified loading, Dataset, and batches
   text/          Tokenization, immutable vocabularies, encoding, and text diagnostics
   models/        PyTorch architectures mapping encoded tensors to logits
-  training/      Validated training configuration and explicit runtime setup
+  training/      Configuration, runtime setup, optimizer construction, and epochs
   baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting
   cli.py         Command wiring and user-facing errors

@@ -1,4 +1,4 @@
-"""Verify initialization and batch/dropout sequences across fresh processes."""
+"""Verify configured CPU training and batch/dropout sequences across processes."""
 
 import json
 import os
@@ -7,7 +7,7 @@ import sys
 from pathlib import Path
 
 
-def test_cpu_setup_reproduces_model_and_epoch_sequences_across_processes(
+def test_cpu_training_reproduces_weights_losses_and_epoch_sequences_across_processes(
     development_artifact: Path,
     tmp_path: Path,
 ) -> None:
@@ -17,6 +17,7 @@ def test_cpu_setup_reproduces_model_and_epoch_sequences_across_processes(
 import json
 import random
 import sys
+from dataclasses import asdict
 from pathlib import Path
 
 import numpy as np
@@ -30,6 +31,8 @@ from filing_sentence_classifier.text.encoding import TextEncoder
 from filing_sentence_classifier.text.tokenization import tokenize
 from filing_sentence_classifier.text.vocabulary import Vocabulary
 from filing_sentence_classifier.training.config import ModelConfig, RuntimeConfig, TrainingConfig
+from filing_sentence_classifier.training.engine import train_epoch
+from filing_sentence_classifier.training.optimizers import create_optimizer
 from filing_sentence_classifier.training.reproducibility import configure_runtime
 
 config = TrainingConfig(
@@ -70,8 +73,17 @@ with torch.no_grad():
         assert torch.equal(before, torch.get_rng_state())
 assert epochs[0] != epochs[1]
 assert all(sorted(order) == sorted(train.sample_ids) for order in epochs)
+optimizer = create_optimizer(model, config)
+history = [asdict(train_epoch(model, loader, optimizer)) for _ in range(2)]
+trained = {name: value.tolist() for name, value in model.state_dict().items()}
+assert trained != initial
+assert all(result["num_examples"] == len(dataset) for result in history)
+assert all(result["num_batches"] == len(loader) for result in history)
+assert all(state["step"].item() == 2 * len(loader) for state in optimizer.state.values())
+assert torch.count_nonzero(model.embedding.weight[0]) == 0
 fingerprint = hashlib.sha256(json.dumps({
     "weights": initial, "epochs": epochs, "logits": logits,
+    "trained_weights": trained, "training_history": history,
     "python_draw": random.random(), "numpy_draw": np.random.random(3).tolist(),
 }, sort_keys=True).encode()).hexdigest()
 print(json.dumps({"fingerprint": fingerprint, "runtime": metadata}))
