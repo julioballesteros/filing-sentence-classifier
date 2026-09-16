@@ -215,6 +215,87 @@ def vocabulary_build(
     typer.echo(f"Verified training vocabulary: {artifact}")
 
 
+@app.command("train")
+def train_model(
+    data_dir: Annotated[
+        Path,
+        typer.Option(
+            "--data-dir", file_okay=False, help="Frozen development split directory."
+        ),
+    ],
+    vocabulary_dir: Annotated[
+        Path,
+        typer.Option(
+            "--vocabulary-dir",
+            file_okay=False,
+            help="Vocabulary artifact fitted on the same train split.",
+        ),
+    ],
+    config: Annotated[
+        Path,
+        typer.Option(
+            "--config", dir_okay=False, help="Neural training TOML configuration."
+        ),
+    ],
+    output_dir: Annotated[
+        Path,
+        typer.Option(
+            "--output-dir",
+            file_okay=False,
+            help="New directory for this run; existing paths are never overwritten.",
+        ),
+    ],
+    max_length: Annotated[
+        int,
+        typer.Option(
+            "--max-length", min=1, help="Keep at most this many tokens per sentence."
+        ),
+    ] = 128,
+    manifest_sha256: Annotated[
+        str | None,
+        typer.Option(
+            "--manifest-sha256", help="Optional expected dataset manifest checksum."
+        ),
+    ] = None,
+) -> None:
+    """Train MeanPoolMLP, select with validation, and save a complete local run."""
+    try:
+        from filing_sentence_classifier.training.run import (
+            TrainingRunError,
+            run_training,
+        )
+    except ModuleNotFoundError as exc:
+        if exc.name not in {"torch", "sklearn", "numpy", "scipy", "matplotlib"}:
+            raise
+        typer.echo(
+            "Training dependencies are missing. Install the package with its [data,train] extras.",
+            err=True,
+        )
+        raise typer.Exit(code=1) from exc
+
+    from filing_sentence_classifier.training.fit import EpochMetrics
+
+    def progress(row: EpochMetrics) -> None:
+        typer.echo(
+            f"Epoch {row.epoch:02d} | train loss {row.training.mean_loss:.4f} | val loss {row.validation_mean_loss:.4f} | val macro-F1 {row.validation_metrics.macro_f1:.4f}"
+        )
+
+    try:
+        artifact = run_training(
+            data_dir,
+            output_dir,
+            config,
+            vocabulary_dir,
+            max_length=max_length,
+            expected_manifest_sha256=manifest_sha256,
+            on_epoch=progress,
+        )
+    except TrainingRunError as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(f"Completed training run: {artifact}")
+
+
 @app.command("evaluate")
 def evaluate(
     data_dir: Annotated[

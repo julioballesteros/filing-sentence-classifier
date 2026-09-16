@@ -1,7 +1,7 @@
 """Coordinate epochs, early stopping, and restoration of the selected model."""
 
 import math
-from collections.abc import Iterable, Iterator
+from collections.abc import Callable, Iterable, Iterator
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -52,6 +52,7 @@ def fit(
     label_ids: Iterable[int],
     validation_sample_ids: Iterable[str],
     checkpoint_path: Path,
+    on_epoch: Callable[[EpochMetrics], None] | None = None,
 ) -> FitResult:
     """Fit an initialized model with one AdamW instance and reusable batch sources.
 
@@ -69,6 +70,8 @@ def fit(
     checking patience. On success restore its weights and re-evaluate validation;
     the model is left in eval mode with cleared gradients. Numerical or I/O errors
     propagate and leave any previously saved best checkpoint available.
+    on_epoch observes completed epochs after checkpoint selection; callback errors
+    also abort the run. The final restoration evaluation does not emit an epoch.
     """
     if isinstance(train_batches, Iterator) or isinstance(val_batches, Iterator):
         raise TrainingError(
@@ -114,6 +117,8 @@ def fit(
             patience_reference, bad_epochs = score, 0
         else:
             bad_epochs += 1
+        if on_epoch is not None:
+            on_epoch(history[-1])
         if bad_epochs >= config.patience:
             stopped_early = epoch < config.max_epochs
             break

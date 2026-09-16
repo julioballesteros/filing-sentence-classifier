@@ -22,6 +22,7 @@ data = [
     "threadpoolctl>=3.6,<4",
 ]
 train = [
+    "matplotlib>=3.11,<4",
     "torch>=2.14,<3",
 ]
 
