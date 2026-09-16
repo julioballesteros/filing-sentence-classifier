@@ -324,7 +324,7 @@ The [initial neural reference](reports/mean-pool-mlp-v1/README.md) reaches valid
 
 A [30-example validation error review](reports/validation-errors.md) examines temporal meaning, specificity, negation, and annotation ambiguity alongside full-partition diagnostics. The models share 92 errors; only two MLP errors involve truncated sentences, and 31 contain no unknown tokens. Regularization is the first hypothesis proposed for the next experiments.
 
-The [neural selection plan](reports/mlp-selection-v1/README.md) fixes five new candidates before execution: dropout, weight decay, their combination, smaller embeddings, and a singleton-retaining vocabulary. It records input hashes, hypotheses, and the exact-score tie-break order; their results are pending.
+The [six-configuration neural comparison](reports/mlp-selection-v1/README.md) has now evaluated the five additional candidates under the registered plan. Combined dropout (`0.3`) and weight decay (`0.1`) reaches the highest validation macro-F1, **0.7024**, with **0.7437 accuracy** at seed 17. Smaller embeddings and a singleton-retaining vocabulary lower macro-F1. All checkpoints, saved predictions, and MLflow records were verified; formal configuration selection and seed repetitions remain pending. These development results use all ten initial TF-IDF/MLP configuration slots.
 
 After preparing the data and building the vocabulary:
 
