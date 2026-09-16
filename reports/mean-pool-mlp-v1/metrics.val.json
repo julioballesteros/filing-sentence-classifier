@@ -1,0 +1,77 @@
+{
+  "code_sha256": {
+    "evaluate.py": "730adc1741eaa70cc0d17c1f35c1995a43f05188a923db57704f89462e210d21",
+    "metrics.py": "f0640b1763625a10a31dd10efc03f84fb13fd69a2a95aa7d8cd61be41d6d2a7d"
+  },
+  "confusion_matrix_axes": {
+    "columns": "predicted",
+    "rows": "true"
+  },
+  "data_manifest_sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+  "environment": {
+    "filing-sentence-classifier": "0.1.0",
+    "python": "3.13.9",
+    "scikit-learn": "1.9.1"
+  },
+  "label_names": {
+    "0": "specific fls",
+    "1": "not-fls",
+    "2": "non-specific fls"
+  },
+  "metrics": {
+    "accuracy": 0.7360308285163777,
+    "confusion_matrix": [
+      [
+        50,
+        16,
+        20
+      ],
+      [
+        20,
+        225,
+        28
+      ],
+      [
+        17,
+        36,
+        107
+      ]
+    ],
+    "label_ids": [
+      0,
+      1,
+      2
+    ],
+    "macro_f1": 0.6918605265426075,
+    "per_class": [
+      {
+        "f1": 0.5780346820809249,
+        "label": 0,
+        "precision": 0.5747126436781609,
+        "recall": 0.5813953488372093,
+        "support": 86
+      },
+      {
+        "f1": 0.8181818181818182,
+        "label": 1,
+        "precision": 0.8122743682310469,
+        "recall": 0.8241758241758241,
+        "support": 273
+      },
+      {
+        "f1": 0.6793650793650794,
+        "label": 2,
+        "precision": 0.6903225806451613,
+        "recall": 0.66875,
+        "support": 160
+      }
+    ],
+    "sample_count": 519
+  },
+  "predictions_sha256": "b3a6e69ea707b20cb16d2d7d7981cd70e5aeb892fd8a057e29cde4b80017d5c6",
+  "primary_metric": "macro_f1",
+  "records_sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d",
+  "schema_version": 1,
+  "split": "val",
+  "zero_division": 0
+}

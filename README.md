@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, text encoder, PyTorch data loading, model architecture, training and validation epochs, checkpoint selection with early stopping, and CI are implemented. The training CLI and formal neural experiments are planned.
+**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, and CI. Neural model selection and deployment are next.
 
 ## Classification task
 
@@ -14,7 +14,7 @@ Inputs are individual sentences already extracted from a filing. The dataset def
 | 1 | `not-fls` | A statement that is not forward-looking. |
 | 2 | `non-specific fls` | A generic forward-looking statement that could apply to any company. |
 
-The implemented baselines are a majority-class classifier and TF-IDF with logistic regression. The PyTorch architecture uses learned embeddings, masked mean pooling, and an MLP; a complete neural training run has not yet been published. All models use the same saved development partitions and evaluation functions.
+The implemented baselines are a majority-class classifier and TF-IDF with logistic regression. The PyTorch architecture uses learned embeddings, masked mean pooling, and an MLP. All models use the same saved development partitions and evaluation functions.
 
 ## Data preparation results
 
@@ -173,7 +173,7 @@ Install the optional training dependency alongside the data tools:
 uv sync --locked --extra data --extra train
 ```
 
-The `train` extra adds PyTorch. The lockfile selects version `2.14.0`; uv uses the official CPU wheel (`2.14.0+cpu`) on Linux/Windows and the native PyPI wheel on macOS. The index is explicitly scoped to PyTorch, following the [uv integration guidance](https://docs.astral.sh/uv/guides/integration/pytorch/). Data preparation, text encoding, and classical baselines remain usable with their existing extras.
+The `train` extra adds PyTorch and Matplotlib for learning curves. The lockfile selects PyTorch `2.14.0`; uv uses the official CPU wheel (`2.14.0+cpu`) on Linux/Windows and the native PyPI wheel on macOS. The index is explicitly scoped to PyTorch, following the [uv integration guidance](https://docs.astral.sh/uv/guides/integration/pytorch/). Data preparation, text encoding, and classical baselines remain usable with their existing extras.
 
 [`SentenceDataset`](src/filing_sentence_classifier/data/dataset.py) implements PyTorch's [integer-indexed Dataset interface](https://docs.pytorch.org/docs/2.14/data.html#map-style-datasets). It consumes a verified `LoadedSplit` and an existing `TextEncoder`. Using the encoder and data directory above:
 
@@ -244,7 +244,7 @@ The [initial neural configuration](configs/experiments/mean-pool-mlp-v1.toml) de
 
 [`configure_runtime`](src/filing_sentence_classifier/training/reproducibility.py) explicitly initializes Python, PyTorch, and NumPy's global RNG if NumPy is installed. The reference uses training seed **17**, CPU, float32, one computation thread, and zero DataLoader workers. It enables deterministic algorithms in error mode. Call it once before creating the model and loaders, and pass the training seed to each loader's independent generator. The saved partition continues to use seed `2026`.
 
-The [configuration documentation](configs/README.md#pytorch-training) shows how to connect these components. Tests reproduce initialization, batch orders, dropout outputs, and two training epochs' losses and final weights across fresh processes in the same environment. Reproduction across different platforms or dependency versions is outside this guarantee, consistent with [PyTorch's reproducibility guidance](https://docs.pytorch.org/docs/2.14/notes/randomness.html). No neural validation result is reported yet.
+The [configuration documentation](configs/README.md#pytorch-training) shows how to connect these components. Tests reproduce initialization, batch orders, dropout outputs, training histories, saved predictions, and selected weights across fresh processes in the same environment. Reproduction across different platforms or dependency versions is outside this guarantee, consistent with [PyTorch's reproducibility guidance](https://docs.pytorch.org/docs/2.14/notes/randomness.html).
 
 ## Run a training epoch
 
@@ -316,7 +316,40 @@ On completion, the supplied model contains the best weights in evaluation mode, 
 
 [`save_checkpoint` and `load_checkpoint`](src/filing_sentence_classifier/training/checkpoints.py) store a versioned `state_dict`, model type, full training configuration, epoch, and selection score. Each run requires a new checkpoint path; later improvements replace that run's file atomically. Failed writes preserve the previous checkpoint. Loading uses `weights_only=True` on CPU and checks metadata, tensor keys, shapes, dtypes, and finite values before copying weights into a matching model. A fresh-process integration test verifies identical logits after restoration, following [PyTorch's state-dictionary guidance](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html).
 
-This checkpoint restores model weights. The matching encoder remains a separate artifact; optimizer, loader, and RNG states for exact training resumption are not stored. The deployment bundle and full training CLI are separate later components.
+This checkpoint restores model weights. The matching encoder remains a separate artifact; optimizer, loader, and RNG states for exact training resumption are not stored. A deployment bundle is a later component.
+
+## Run neural training
+
+The [initial neural reference](reports/mean-pool-mlp-v1/README.md) reaches validation **macro-F1 0.6919** and **accuracy 0.7360**, compared with 0.6924 and 0.7495 for selected TF-IDF. It selects epoch 8 and stops after epoch 13. A fresh process using the built wheel reproduces the training history, predictions, and selected weights exactly in the same environment. Learning curves show overfitting; this run establishes the starting configuration for subsequent neural model selection.
+
+After preparing the data and building the vocabulary:
+
+```bash
+DATASET_DIR=data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1
+uv run --locked --extra data --extra train filing-sentence-classifier train \
+  --data-dir "$DATASET_DIR" \
+  --vocabulary-dir artifacts/preprocessing/vocabulary-v1 \
+  --config configs/experiments/mean-pool-mlp-v1.toml \
+  --output-dir artifacts/runs/mean-pool-mlp-v1
+```
+
+The command verifies the saved vocabulary's checksum and training provenance, constructs the encoder without fitting, initializes the runtime, and trains on the frozen development partition. Validation macro-F1 selects the checkpoint; saved predictions come from its restored weights and are checked by the shared evaluator. `--max-length` defaults to `128`; `--manifest-sha256` optionally pins the data artifact. Raw data and the published test are not loaded.
+
+| Run artifact | Contents |
+| --- | --- |
+| `config.toml`, `encoder.json` | Original training settings and complete frozen text encoder |
+| `data-manifest.json`, `vocabulary-manifest.json` | Input provenance |
+| `history.jsonl`, `learning-curves.png` | Completed epochs' losses and validation metrics |
+| `checkpoints/best.pt` | Selected model weights and checkpoint metadata |
+| `predictions.val.jsonl`, `metrics.val.json` | Restored-model predictions and shared evaluation report |
+| `summary.json`, `manifest.json` | Selected epoch, timing, run status, effective settings, environment, and file hashes |
+| `source/` | Imported Python sources, plus project configuration, lockfile, and Git state when available |
+
+Each run requires a new output directory. History is flushed after every completed epoch; handled failures retain it and any best checkpoint, with `status: failed` in the manifest. A hard interruption may leave `status: running`, identifying an incomplete run. Successful runs end with `status: completed`. Reproduction uses another directory; timestamps and durations are expected to differ.
+
+Source snapshots include untracked Python files and work with installed wheels. The manifest separately records whether the imported code matches the checkout and whether its commit alone reproduces that source state. Run artifacts remain available locally under `artifacts/runs/`; selected aggregate evidence is published in [reports](reports/README.md).
+
+[`run_training`](src/filing_sentence_classifier/training/run.py) owns this lifecycle; `fit` remains responsible for epochs and selection, exposing an optional `on_epoch` callback. [Artifact I/O](src/filing_sentence_classifier/training/artifacts.py) and [headless plots](src/filing_sentence_classifier/training/plots.py) are separate modules.
 
 ## Evaluate saved predictions
 
@@ -345,7 +378,7 @@ src/filing_sentence_classifier/
   data/          Source data, preparation, verified loading, Dataset, and batches
   text/          Tokenization, immutable vocabularies, encoding, and text diagnostics
   models/        PyTorch architectures mapping encoded tensors to logits
-  training/      Configuration, runtime setup, epochs, early stopping, and checkpoints
+  training/      Runtime setup, epochs, selection, checkpoints, run artifacts, and curves
   baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting
   cli.py         Command wiring and user-facing errors
@@ -359,7 +392,7 @@ reports/         Measured results and selected aggregate run artifacts
 
 The source definition is separate from downloading; cleaning and split rules are separate from artifact I/O. The loader consumes frozen partitions using only the standard library. Baseline decision rules are separate from run orchestration and artifact writing. Evaluation operates independently of model implementation, allowing baselines and PyTorch training to share the same metric contract.
 
-Reproducibility is recorded in the lockfile and artifact manifests: source revisions, SHA-256 checksums, transformation versions, split assignments, seeds, code hashes, and environment versions. Artifact writes are staged. Repeated runs verify existing outputs and report mismatches without silently overwriting them.
+Reproducibility is recorded in the lockfile and artifact manifests: source revisions, SHA-256 checksums, transformation versions, split assignments, seeds, code hashes, and environment versions. Data and baseline commands verify existing outputs on repetition. Neural training requires a new run directory, preserves failed attempts, and atomically updates its manifest and best checkpoint.
 
 ## Development checks
 

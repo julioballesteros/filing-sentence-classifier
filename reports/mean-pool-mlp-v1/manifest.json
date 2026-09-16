@@ -1,0 +1,410 @@
+{
+  "config": {
+    "model": {
+      "dropout": 0.0,
+      "embedding_dim": 128,
+      "hidden_dim": 64
+    },
+    "runtime": {
+      "device": "cpu",
+      "num_threads": 1,
+      "num_workers": 0,
+      "seed": 17
+    },
+    "schema_version": 2,
+    "training": {
+      "batch_size": 32,
+      "learning_rate": 0.001,
+      "max_epochs": 30,
+      "min_delta": 0.0,
+      "patience": 5,
+      "weight_decay": 0.0
+    }
+  },
+  "data": {
+    "label_names": {
+      "0": "specific fls",
+      "1": "not-fls",
+      "2": "non-specific fls"
+    },
+    "manifest_sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+    "train_rows": 2074,
+    "train_sha256": "cc0ba0925cf6bec54d822d67ca28db3309dc145bc72444497418b293444a9119",
+    "val_rows": 519,
+    "val_sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d"
+  },
+  "duration_seconds": 2.6568973339162767,
+  "environment": {
+    "logical_cpus": 14,
+    "machine": "arm64",
+    "packages": {
+      "filing-sentence-classifier": "0.1.0",
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.3",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "torch": "2.14.0"
+    },
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.9"
+  },
+  "files": {
+    "checkpoints/best.pt": {
+      "sha256": "9344b080829c32ff657b612b559011ac66f00a2295aece5a5b0b74c5113a66ac",
+      "size_bytes": 1556057
+    },
+    "config.toml": {
+      "sha256": "d3071f64f6a41980a5459ce1ead64147de83c26ad0e669eb3582b7ce5db5cfc9",
+      "size_bytes": 543
+    },
+    "data-manifest.json": {
+      "sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+      "size_bytes": 4441
+    },
+    "encoder.json": {
+      "sha256": "67d19b3dd62ae1514e8dca03dffa0a16ef6ef112230874ab685f0e8ea84b676e",
+      "size_bytes": 80078
+    },
+    "history.jsonl": {
+      "sha256": "3fb02c3a931aa83998f9025f628b549e18f4212c540c07402abbebfbac396bf6",
+      "size_bytes": 8991
+    },
+    "learning-curves.png": {
+      "sha256": "bdd2f6da496079c24fbb3eb735b24063e5e51506ffba44141a50d62b681aad6e",
+      "size_bytes": 79665
+    },
+    "metrics.val.json": {
+      "sha256": "7d06c4d089d747f4c0b7791f9b918525a4be680521549824ddb95474aceffd34",
+      "size_bytes": 1755
+    },
+    "predictions.val.jsonl": {
+      "sha256": "b3a6e69ea707b20cb16d2d7d7981cd70e5aeb892fd8a057e29cde4b80017d5c6",
+      "size_bytes": 53976
+    },
+    "source/.python-version": {
+      "sha256": "02e735b3dfe1c32833eb550b7ff8ffa17f5f2bc3fa1e7bae61a8f5a3883ce398",
+      "size_bytes": 5
+    },
+    "source/pyproject.toml": {
+      "sha256": "564c4e4c420303e999d3d3844108e32bd5264f145d3b0bd9d1e7f4934d60e6a9",
+      "size_bytes": 1738
+    },
+    "source/src/filing_sentence_classifier/__init__.py": {
+      "sha256": "e1d13c02abf15d9d5744bbb593db19e396ac8d7c94d5b72a24d6b184e035995c",
+      "size_bytes": 79
+    },
+    "source/src/filing_sentence_classifier/__main__.py": {
+      "sha256": "7355d87bce8624ba466fcef31fe7f5a2904e5461bfa44500e4d82fabe48985c8",
+      "size_bytes": 147
+    },
+    "source/src/filing_sentence_classifier/baselines/__init__.py": {
+      "sha256": "a4cb10fdc93defb0711dbd6268f887cb0a2c1b8e1bcb0c1ad1dd8d67c3425c89",
+      "size_bytes": 69
+    },
+    "source/src/filing_sentence_classifier/baselines/majority.py": {
+      "sha256": "29994fd284f6098d3a808f7e4dcd9473f838da98fb34df5b4814525a388e943d",
+      "size_bytes": 3906
+    },
+    "source/src/filing_sentence_classifier/baselines/run.py": {
+      "sha256": "8689631c64dba9166b16f3002254a7099fe1f6add5ead8e32a47f8ffa160f0a3",
+      "size_bytes": 6006
+    },
+    "source/src/filing_sentence_classifier/baselines/tfidf.py": {
+      "sha256": "be8241ba4e254dc27a1d234ceab279a85a3c7690b9b88bb7de6f080d468386d2",
+      "size_bytes": 7799
+    },
+    "source/src/filing_sentence_classifier/baselines/tfidf_run.py": {
+      "sha256": "4637ec1bdcedf04642eff1d24652c37cf69f36a08fbf9ef91305bb52302b8336",
+      "size_bytes": 6454
+    },
+    "source/src/filing_sentence_classifier/cli.py": {
+      "sha256": "b3e81c5b9673e0ec327531c608aad0a3b04532ac8d749532f3b68348734dec94",
+      "size_bytes": 14766
+    },
+    "source/src/filing_sentence_classifier/data/__init__.py": {
+      "sha256": "615559e361359c93a151f774ffad1c15ccd5e4b44aaa96c6dad1766e6ba0c28a",
+      "size_bytes": 47
+    },
+    "source/src/filing_sentence_classifier/data/audit.py": {
+      "sha256": "9e09fa4d0b9c208c86f5c43465ba0acfbb23d454c7651bb7339ebac40a8a7e4c",
+      "size_bytes": 5119
+    },
+    "source/src/filing_sentence_classifier/data/cleaning.py": {
+      "sha256": "fe3acfe815aee727389bc961441adbce7dd6b6b12224a179458fc8af30425243",
+      "size_bytes": 5819
+    },
+    "source/src/filing_sentence_classifier/data/collate.py": {
+      "sha256": "c98d06fd4be8a4484f28b20f48d192607e5c5541e98a4580aab25f0198f9cee2",
+      "size_bytes": 5119
+    },
+    "source/src/filing_sentence_classifier/data/dataloader.py": {
+      "sha256": "4f577bf03a46ea2924402270910f2b799ea8857408f25a98eb832b03ab151d4c",
+      "size_bytes": 2337
+    },
+    "source/src/filing_sentence_classifier/data/dataset.py": {
+      "sha256": "7e6b3837b9e6728694d00b4c5ca75b84e4688f67fff6dc5ad0cab6b692bae056",
+      "size_bytes": 4620
+    },
+    "source/src/filing_sentence_classifier/data/fls.py": {
+      "sha256": "1eef777d4ee154382ea598bb72f6c1eedecb66b6880ae0b0a69ce8aafc36640e",
+      "size_bytes": 1303
+    },
+    "source/src/filing_sentence_classifier/data/loading.py": {
+      "sha256": "84897cecbfd2f6b9453196884bc61523a82da65c9bef70d4ca81a42d21cc4401",
+      "size_bytes": 10811
+    },
+    "source/src/filing_sentence_classifier/data/partition.py": {
+      "sha256": "bd2b8be9d00725f10fdde87366a1ff0c1f8a5e87032346327e6115c18e470b23",
+      "size_bytes": 13225
+    },
+    "source/src/filing_sentence_classifier/data/prepare.py": {
+      "sha256": "6898476e92c0e9d2db84e443af797f52bed66c7edc36031be261a094a813b00f",
+      "size_bytes": 7663
+    },
+    "source/src/filing_sentence_classifier/data/source.py": {
+      "sha256": "760d27548ca7c2cfefc4465853ab9731e355a2707168ed22e941110e6566e571",
+      "size_bytes": 4304
+    },
+    "source/src/filing_sentence_classifier/data/spec.py": {
+      "sha256": "093e6a67065d7656699aa1689bd03d6f5bcb5f211e16779ab699a7ef17aab9f5",
+      "size_bytes": 441
+    },
+    "source/src/filing_sentence_classifier/data/split.py": {
+      "sha256": "d924147dfef6253edb88a29e0c9989d55614cdb95c1ebd485cbb4ed6071c44b2",
+      "size_bytes": 6129
+    },
+    "source/src/filing_sentence_classifier/data/vocabulary.py": {
+      "sha256": "4b5c6026ff9aa05674bb8f8bc65d29b41b67ce13240022ee216b165884e38bdf",
+      "size_bytes": 4692
+    },
+    "source/src/filing_sentence_classifier/evaluation/__init__.py": {
+      "sha256": "84a6e4d9c16813494f2e48c0bcda5f05d9cc1ef7c4e80b1eba758453beda9c26",
+      "size_bytes": 72
+    },
+    "source/src/filing_sentence_classifier/evaluation/evaluate.py": {
+      "sha256": "730adc1741eaa70cc0d17c1f35c1995a43f05188a923db57704f89462e210d21",
+      "size_bytes": 4359
+    },
+    "source/src/filing_sentence_classifier/evaluation/metrics.py": {
+      "sha256": "f0640b1763625a10a31dd10efc03f84fb13fd69a2a95aa7d8cd61be41d6d2a7d",
+      "size_bytes": 3181
+    },
+    "source/src/filing_sentence_classifier/models/__init__.py": {
+      "sha256": "c25fa2cc1dbdfba148a06dee626cd771987033223d8a89351b265ab286f00f48",
+      "size_bytes": 78
+    },
+    "source/src/filing_sentence_classifier/models/mean_pool_mlp.py": {
+      "sha256": "d161f394ffb5a245e9a9ba66a57865fc75382a450f8d2379412e60ca07177350",
+      "size_bytes": 4063
+    },
+    "source/src/filing_sentence_classifier/text/__init__.py": {
+      "sha256": "78c9f4ff9b6e14a37ad94532830c75a110cd40bed5eec44216b786acba6d9b78",
+      "size_bytes": 54
+    },
+    "source/src/filing_sentence_classifier/text/encoding.py": {
+      "sha256": "65b4bbd7a48d307f1e55faedf1b958b35480c3a4f86dd257de6c8b728c2dd101",
+      "size_bytes": 7031
+    },
+    "source/src/filing_sentence_classifier/text/tokenization.py": {
+      "sha256": "37cd7696d0c2bc92712883952ed7cf06bce08c79e32c7e7132434cab04924895",
+      "size_bytes": 2376
+    },
+    "source/src/filing_sentence_classifier/text/vocabulary.py": {
+      "sha256": "ad7146afc3fcfa2b04d819f6ef81caf0420ccdf0befd27d6b7300eab3620f59f",
+      "size_bytes": 7883
+    },
+    "source/src/filing_sentence_classifier/training/__init__.py": {
+      "sha256": "1e672970ee688cdbfeb4157e0351256b4dcbc288b48c6343b2f9e9b0d656914c",
+      "size_bytes": 77
+    },
+    "source/src/filing_sentence_classifier/training/artifacts.py": {
+      "sha256": "bad3848be382856c7c9385f950d0b16f753f6fce1c6b3229d736d2c5d76eff4a",
+      "size_bytes": 5505
+    },
+    "source/src/filing_sentence_classifier/training/checkpoints.py": {
+      "sha256": "735d079465ada0a0668f7dcf816c7d0bf323bffff07ae7ebedea1c75cda1741c",
+      "size_bytes": 5973
+    },
+    "source/src/filing_sentence_classifier/training/config.py": {
+      "sha256": "a03fa606140a9df898bf9a09e8a3c5d91e43d1e57268f133702f2148123f1b68",
+      "size_bytes": 5693
+    },
+    "source/src/filing_sentence_classifier/training/engine.py": {
+      "sha256": "468187f3cb5e823755066c2934bc3dc94653d02e0484ac96cf968968f7498cd8",
+      "size_bytes": 11610
+    },
+    "source/src/filing_sentence_classifier/training/fit.py": {
+      "sha256": "6fc7690d7f1542abafdd0c79be0f49acff7f3787edfe43d5463ce227c06bf911",
+      "size_bytes": 5039
+    },
+    "source/src/filing_sentence_classifier/training/optimizers.py": {
+      "sha256": "8a5e241ec70b0a9dc33d087b7785bb11372c563ee40ee33e5f8149ff92518d85",
+      "size_bytes": 1041
+    },
+    "source/src/filing_sentence_classifier/training/plots.py": {
+      "sha256": "a7687045343b477a1d0087fa38c59b494a9de107af147863edbcc40f5b04da85",
+      "size_bytes": 1916
+    },
+    "source/src/filing_sentence_classifier/training/reproducibility.py": {
+      "sha256": "e0be49217d1447e452b846c8481c3a72b775173a828832eac3c182319ccc022f",
+      "size_bytes": 2331
+    },
+    "source/src/filing_sentence_classifier/training/run.py": {
+      "sha256": "404c5d1ce1827b4d49f518440daefdf10bd40f13aedda461755132f5b164dd58",
+      "size_bytes": 11988
+    },
+    "source/uv.lock": {
+      "sha256": "7e8df732e341abda309e71771670faa51423300e6cd97fe38094e4ef80c04a7a",
+      "size_bytes": 377893
+    },
+    "source/working-tree.patch": {
+      "sha256": "02ae95de8d6adc1b3d5675978dd69102533cf0599981e78c0fc34cecfabde3fa",
+      "size_bytes": 5976
+    },
+    "summary.json": {
+      "sha256": "0df383dc81baf0b969226bf591e500e241cfd747d8b7ec7ffa7f09efa847256b",
+      "size_bytes": 251
+    },
+    "vocabulary-manifest.json": {
+      "sha256": "891b82294554711a19c6ef84ef5a3ceda0995f3ef23b16ccc8e8ac83b873da6b",
+      "size_bytes": 2138
+    }
+  },
+  "finished_at_utc": "2026-09-16T08:28:57.051048+00:00",
+  "model": {
+    "num_classes": 3,
+    "num_parameters": 388227
+  },
+  "preprocessing": {
+    "max_length": 128,
+    "train": {
+      "discarded_token_rate": 0.006459385705161702,
+      "discarded_tokens": 445,
+      "encoded_tokens": 68447,
+      "encoded_unknown_rate": 0.03778105687612313,
+      "encoded_unknown_tokens": 2586,
+      "original_lengths": {
+        "max": 398,
+        "min": 7,
+        "p50": 29,
+        "p90": 54,
+        "p95": 64,
+        "p99": 91
+      },
+      "original_tokens": 68892,
+      "original_unknown_rate": 0.037682169192359054,
+      "original_unknown_tokens": 2596,
+      "percentile_method": "nearest_rank",
+      "rows": 2074,
+      "truncated_row_rate": 0.0033751205400192863,
+      "truncated_rows": 7
+    },
+    "val": {
+      "discarded_token_rate": 0.014674098509839608,
+      "discarded_tokens": 258,
+      "encoded_tokens": 17324,
+      "encoded_unknown_rate": 0.06043638882475179,
+      "encoded_unknown_tokens": 1047,
+      "original_lengths": {
+        "max": 228,
+        "min": 7,
+        "p50": 30,
+        "p90": 52,
+        "p95": 63,
+        "p99": 89
+      },
+      "original_tokens": 17582,
+      "original_unknown_rate": 0.06057331361619839,
+      "original_unknown_tokens": 1065,
+      "percentile_method": "nearest_rank",
+      "rows": 519,
+      "truncated_row_rate": 0.005780346820809248,
+      "truncated_rows": 3
+    },
+    "vocabulary_size": 2967
+  },
+  "recipe": {
+    "checkpoint_tie_break": "earliest_epoch",
+    "evaluation_split": "val",
+    "family": "mean_pool_mlp",
+    "fit_split": "train",
+    "loss": "unweighted_cross_entropy",
+    "optimizer": "AdamW",
+    "selection_metric": "macro_f1"
+  },
+  "run_id": "mean-pool-mlp-v1",
+  "runtime": {
+    "deterministic_algorithms": true,
+    "deterministic_warn_only": false,
+    "device": "cpu",
+    "dtype": "float32",
+    "fill_uninitialized_memory": true,
+    "num_interop_threads": 14,
+    "num_threads": 1,
+    "num_workers": 0,
+    "numpy_seeded": true,
+    "seed": 17,
+    "torch_build": "PyTorch built with:\n  - GCC 4.2\n  - C++ Version: 202002\n  - clang 21.0.0\n  - OpenMP 202011\n  - LAPACK is enabled (usually provided by MKL)\n  - NNPACK is enabled\n  - CPU capability usage: DEFAULT\n  - Build settings: BLAS_INFO=accelerate, BUILD_TYPE=Release, COMMIT_SHA=08187d9e0fba026dc8217405802ab5381dc88d90, CUDA_FLAGS= -DLIBCUDACXX_ENABLE_SIMPLIFIED_COMPLEX_OPERATIONS -Xfatbin -compress-all  -Wno-deprecated-gpu-targets --expt-extended-lambda -DCUB_WRAPPED_NAMESPACE=at_cuda_detail -DDISABLE_CUSPARSE_DEPRECATED -DCUDA_HAS_FP16=1 -D__CUDA_NO_HALF_OPERATORS__ -D__CUDA_NO_HALF_CONVERSIONS__ -D__CUDA_NO_HALF2_OPERATORS__ -D__CUDA_NO_BFLOAT16_CONVERSIONS__ -DC10_NODEPRECATED, CXX_COMPILER=/usr/bin/c++, CXX_FLAGS= -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -DNDEBUG -DUSE_KINETO -DUSE_PYTORCH_QNNPACK -DAT_BUILD_ARM_VEC256_WITH_SLEEF -DUSE_PYTORCH_METAL_EXPORT -DSYMBOLICATE_MOBILE_DEBUG_HANDLE -DUSE_COREML_DELEGATE -O2 -fPIC -DC10_NODEPRECATED -Wall -Wextra -Werror=return-type -Werror=non-virtual-dtor -Werror=braced-scalar-init -Werror=range-loop-construct -Werror=bool-operation -Wnarrowing -Wno-missing-field-initializers -Wno-unknown-pragmas -Wno-unused-parameter -Wno-strict-overflow -Wno-strict-aliasing -Wvla-extension -Wsuggest-override -Wnewline-eof -Winconsistent-missing-override -Winconsistent-missing-destructor-override -Wno-pass-failed -Wno-error=old-style-cast -Wconstant-conversion -Qunused-arguments -faligned-new -fno-math-errno -fno-trapping-math -Werror=format -fclang-abi-compat=17 -DUSE_MPS -Wno-missing-braces, LAPACK_INFO=accelerate, TORCH_VERSION=2.14.0, USE_CUDA=OFF, USE_CUDNN=OFF, USE_CUSPARSELT=OFF, USE_EIGEN_FOR_BLAS=ON, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_GLOO=ON, USE_HIPSPARSELT=OFF, USE_MKL=OFF, USE_MKLDNN=OFF, USE_MPI=OFF, USE_NCCL=OFF, USE_NNPACK=ON, USE_OPENMP=ON, USE_ROCM=OFF, USE_ROCM_KERNEL_ASSERT=OFF, USE_XCCL=OFF, USE_XPU=OFF, \n"
+  },
+  "schema_version": 1,
+  "source": {
+    "code_sha256": {
+      "__init__.py": "e1d13c02abf15d9d5744bbb593db19e396ac8d7c94d5b72a24d6b184e035995c",
+      "__main__.py": "7355d87bce8624ba466fcef31fe7f5a2904e5461bfa44500e4d82fabe48985c8",
+      "baselines/__init__.py": "a4cb10fdc93defb0711dbd6268f887cb0a2c1b8e1bcb0c1ad1dd8d67c3425c89",
+      "baselines/majority.py": "29994fd284f6098d3a808f7e4dcd9473f838da98fb34df5b4814525a388e943d",
+      "baselines/run.py": "8689631c64dba9166b16f3002254a7099fe1f6add5ead8e32a47f8ffa160f0a3",
+      "baselines/tfidf.py": "be8241ba4e254dc27a1d234ceab279a85a3c7690b9b88bb7de6f080d468386d2",
+      "baselines/tfidf_run.py": "4637ec1bdcedf04642eff1d24652c37cf69f36a08fbf9ef91305bb52302b8336",
+      "cli.py": "b3e81c5b9673e0ec327531c608aad0a3b04532ac8d749532f3b68348734dec94",
+      "data/__init__.py": "615559e361359c93a151f774ffad1c15ccd5e4b44aaa96c6dad1766e6ba0c28a",
+      "data/audit.py": "9e09fa4d0b9c208c86f5c43465ba0acfbb23d454c7651bb7339ebac40a8a7e4c",
+      "data/cleaning.py": "fe3acfe815aee727389bc961441adbce7dd6b6b12224a179458fc8af30425243",
+      "data/collate.py": "c98d06fd4be8a4484f28b20f48d192607e5c5541e98a4580aab25f0198f9cee2",
+      "data/dataloader.py": "4f577bf03a46ea2924402270910f2b799ea8857408f25a98eb832b03ab151d4c",
+      "data/dataset.py": "7e6b3837b9e6728694d00b4c5ca75b84e4688f67fff6dc5ad0cab6b692bae056",
+      "data/fls.py": "1eef777d4ee154382ea598bb72f6c1eedecb66b6880ae0b0a69ce8aafc36640e",
+      "data/loading.py": "84897cecbfd2f6b9453196884bc61523a82da65c9bef70d4ca81a42d21cc4401",
+      "data/partition.py": "bd2b8be9d00725f10fdde87366a1ff0c1f8a5e87032346327e6115c18e470b23",
+      "data/prepare.py": "6898476e92c0e9d2db84e443af797f52bed66c7edc36031be261a094a813b00f",
+      "data/source.py": "760d27548ca7c2cfefc4465853ab9731e355a2707168ed22e941110e6566e571",
+      "data/spec.py": "093e6a67065d7656699aa1689bd03d6f5bcb5f211e16779ab699a7ef17aab9f5",
+      "data/split.py": "d924147dfef6253edb88a29e0c9989d55614cdb95c1ebd485cbb4ed6071c44b2",
+      "data/vocabulary.py": "4b5c6026ff9aa05674bb8f8bc65d29b41b67ce13240022ee216b165884e38bdf",
+      "evaluation/__init__.py": "84a6e4d9c16813494f2e48c0bcda5f05d9cc1ef7c4e80b1eba758453beda9c26",
+      "evaluation/evaluate.py": "730adc1741eaa70cc0d17c1f35c1995a43f05188a923db57704f89462e210d21",
+      "evaluation/metrics.py": "f0640b1763625a10a31dd10efc03f84fb13fd69a2a95aa7d8cd61be41d6d2a7d",
+      "models/__init__.py": "c25fa2cc1dbdfba148a06dee626cd771987033223d8a89351b265ab286f00f48",
+      "models/mean_pool_mlp.py": "d161f394ffb5a245e9a9ba66a57865fc75382a450f8d2379412e60ca07177350",
+      "text/__init__.py": "78c9f4ff9b6e14a37ad94532830c75a110cd40bed5eec44216b786acba6d9b78",
+      "text/encoding.py": "65b4bbd7a48d307f1e55faedf1b958b35480c3a4f86dd257de6c8b728c2dd101",
+      "text/tokenization.py": "37cd7696d0c2bc92712883952ed7cf06bce08c79e32c7e7132434cab04924895",
+      "text/vocabulary.py": "ad7146afc3fcfa2b04d819f6ef81caf0420ccdf0befd27d6b7300eab3620f59f",
+      "training/__init__.py": "1e672970ee688cdbfeb4157e0351256b4dcbc288b48c6343b2f9e9b0d656914c",
+      "training/artifacts.py": "bad3848be382856c7c9385f950d0b16f753f6fce1c6b3229d736d2c5d76eff4a",
+      "training/checkpoints.py": "735d079465ada0a0668f7dcf816c7d0bf323bffff07ae7ebedea1c75cda1741c",
+      "training/config.py": "a03fa606140a9df898bf9a09e8a3c5d91e43d1e57268f133702f2148123f1b68",
+      "training/engine.py": "468187f3cb5e823755066c2934bc3dc94653d02e0484ac96cf968968f7498cd8",
+      "training/fit.py": "6fc7690d7f1542abafdd0c79be0f49acff7f3787edfe43d5463ce227c06bf911",
+      "training/optimizers.py": "8a5e241ec70b0a9dc33d087b7785bb11372c563ee40ee33e5f8149ff92518d85",
+      "training/plots.py": "a7687045343b477a1d0087fa38c59b494a9de107af147863edbcc40f5b04da85",
+      "training/reproducibility.py": "e0be49217d1447e452b846c8481c3a72b775173a828832eac3c182319ccc022f",
+      "training/run.py": "404c5d1ce1827b4d49f518440daefdf10bd40f13aedda461755132f5b164dd58"
+    },
+    "git": {
+      "changes": "M pyproject.toml\n M src/filing_sentence_classifier/cli.py\n M src/filing_sentence_classifier/training/fit.py\n M uv.lock\n?? src/filing_sentence_classifier/training/artifacts.py\n?? src/filing_sentence_classifier/training/plots.py\n?? src/filing_sentence_classifier/training/run.py",
+      "commit": "cd081e56b24cce7ba21d537da58716e51ac0e8f0",
+      "matches_imported_code": true,
+      "reproducible_from_commit": false,
+      "scope": [
+        "src",
+        "pyproject.toml",
+        "uv.lock",
+        ".python-version"
+      ]
+    }
+  },
+  "stage": "neural_training_run",
+  "started_at_utc": "2026-09-16T08:28:54.394188+00:00",
+  "status": "completed"
+}

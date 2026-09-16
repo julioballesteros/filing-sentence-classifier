@@ -1,0 +1,9 @@
+{
+  "best_epoch": 8,
+  "epochs_completed": 13,
+  "stopped_early": true,
+  "training_seconds": 1.9325612080283463,
+  "validation_accuracy": 0.7360308285163777,
+  "validation_macro_f1": 0.6918605265426075,
+  "validation_mean_loss": 0.6355959559954085
+}

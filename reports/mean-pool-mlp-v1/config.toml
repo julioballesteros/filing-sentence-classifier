@@ -1,0 +1,24 @@
+# Initial neural reference. Dataset partitions and encoder are supplied separately.
+schema_version = 2
+
+[model]
+embedding_dim = 128
+hidden_dim = 64
+dropout = 0.0
+
+[training]
+batch_size = 32
+max_epochs = 30
+# Stop after five epochs without a strict macro-F1 improvement.
+patience = 5
+min_delta = 0.0
+# AdamW, with regularization disabled for the initial reference.
+learning_rate = 0.001
+weight_decay = 0.0
+
+[runtime]
+# Training seed; the saved train/validation partition uses seed 2026.
+seed = 17
+device = "cpu"
+num_workers = 0
+num_threads = 1

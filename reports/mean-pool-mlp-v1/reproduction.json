@@ -1,0 +1,42 @@
+{
+  "checks": {
+    "all_manifest_file_hashes_and_sizes_valid": true,
+    "byte_identical_files": {
+      "config.toml": "d3071f64f6a41980a5459ce1ead64147de83c26ad0e669eb3582b7ce5db5cfc9",
+      "data-manifest.json": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+      "encoder.json": "67d19b3dd62ae1514e8dca03dffa0a16ef6ef112230874ab685f0e8ea84b676e",
+      "history.jsonl": "3fb02c3a931aa83998f9025f628b549e18f4212c540c07402abbebfbac396bf6",
+      "learning-curves.png": "bdd2f6da496079c24fbb3eb735b24063e5e51506ffba44141a50d62b681aad6e",
+      "metrics.val.json": "7d06c4d089d747f4c0b7791f9b918525a4be680521549824ddb95474aceffd34",
+      "predictions.val.jsonl": "b3a6e69ea707b20cb16d2d7d7981cd70e5aeb892fd8a057e29cde4b80017d5c6",
+      "vocabulary-manifest.json": "891b82294554711a19c6ef84ef5a3ceda0995f3ef23b16ccc8e8ac83b873da6b"
+    },
+    "checkpoint_metadata_identical": true,
+    "checkpoint_tensor_comparison": "torch.equal on CPU; zero tolerance",
+    "checkpoint_tensor_count": 5,
+    "checkpoint_tensors_equal": true,
+    "identical_source_hashes_environment_and_runtime": true
+  },
+  "execution": {
+    "original": "Installed editable CLI, fresh process",
+    "reproduction": "Fresh isolated Python process importing the extracted built wheel; package location asserted outside the checkout",
+    "wheel_sha256": "21a0e6db4cae0e26424132f1bc3d503b1a56fa05dd595f9024fc816c4804678f"
+  },
+  "expected_differences": [
+    "Run IDs",
+    "Timestamps",
+    "Durations"
+  ],
+  "original": {
+    "manifest_sha256": "b9af87f639a737c22cf650847fde0e4bb7dfe03020ab37152f4ed0afcf5b40a9",
+    "run_id": "mean-pool-mlp-v1"
+  },
+  "reproduction": {
+    "manifest_sha256": "22fab5d52a408a367663d5e0407a158394b7e5706d6632cd2f3dadfc91760c9a",
+    "run_id": "mean-pool-mlp-v1-reproduction"
+  },
+  "schema_version": 1,
+  "scope": "Same data, vocabulary, configuration, source, Python/dependency versions, and host. No guarantee across platforms or library versions.",
+  "status": "passed",
+  "verified_at_utc": "2026-09-16T08:32:38.888148+00:00"
+}
