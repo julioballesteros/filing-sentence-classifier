@@ -1,0 +1,949 @@
+{
+  "analysis_id": "validation-errors-v1",
+  "changes_to_data_models_or_labels": false,
+  "diagnostics": {
+    "all_validation": {
+      "median_original_length": 30,
+      "mlp_errors": 137,
+      "retained_unknown_token_rate": 0.06043638882475179,
+      "rows": 519,
+      "tfidf_errors": 130,
+      "truncated_rows": 3
+    },
+    "both_wrong_different_predictions": 7,
+    "both_wrong_same_prediction": 85,
+    "by_gold_and_mlp_correctness": {
+      "0_correct": {
+        "median_original_length": 31.5,
+        "mlp_errors": 0,
+        "retained_unknown_token_rate": 0.08740204942736589,
+        "rows": 50,
+        "tfidf_errors": 15,
+        "truncated_rows": 0
+      },
+      "0_wrong": {
+        "median_original_length": 31.0,
+        "mlp_errors": 36,
+        "retained_unknown_token_rate": 0.07852564102564102,
+        "rows": 36,
+        "tfidf_errors": 31,
+        "truncated_rows": 0
+      },
+      "1_correct": {
+        "median_original_length": 29,
+        "mlp_errors": 0,
+        "retained_unknown_token_rate": 0.06262680914378466,
+        "rows": 225,
+        "tfidf_errors": 9,
+        "truncated_rows": 1
+      },
+      "1_wrong": {
+        "median_original_length": 33.5,
+        "mlp_errors": 48,
+        "retained_unknown_token_rate": 0.06558237145855195,
+        "rows": 48,
+        "tfidf_errors": 26,
+        "truncated_rows": 2
+      },
+      "2_correct": {
+        "median_original_length": 29,
+        "mlp_errors": 0,
+        "retained_unknown_token_rate": 0.03691476590636254,
+        "rows": 107,
+        "tfidf_errors": 14,
+        "truncated_rows": 0
+      },
+      "2_wrong": {
+        "median_original_length": 33,
+        "mlp_errors": 53,
+        "retained_unknown_token_rate": 0.052071668533034715,
+        "rows": 53,
+        "tfidf_errors": 35,
+        "truncated_rows": 0
+      }
+    },
+    "by_length": {
+      "1-20": {
+        "median_original_length": 17.0,
+        "mlp_errors": 19,
+        "retained_unknown_token_rate": 0.05405405405405406,
+        "rows": 96,
+        "tfidf_errors": 19,
+        "truncated_rows": 0
+      },
+      "21-40": {
+        "median_original_length": 29.0,
+        "mlp_errors": 75,
+        "retained_unknown_token_rate": 0.06632173095014111,
+        "rows": 290,
+        "tfidf_errors": 72,
+        "truncated_rows": 0
+      },
+      "41-64": {
+        "median_original_length": 47,
+        "mlp_errors": 37,
+        "retained_unknown_token_rate": 0.050313271311942284,
+        "rows": 109,
+        "tfidf_errors": 32,
+        "truncated_rows": 0
+      },
+      "65+": {
+        "median_original_length": 78.0,
+        "mlp_errors": 6,
+        "retained_unknown_token_rate": 0.0670335167583792,
+        "rows": 24,
+        "tfidf_errors": 7,
+        "truncated_rows": 3
+      }
+    },
+    "by_mlp_correctness": {
+      "correct": {
+        "median_original_length": 29.0,
+        "mlp_errors": 0,
+        "retained_unknown_token_rate": 0.059027777777777776,
+        "rows": 382,
+        "tfidf_errors": 38,
+        "truncated_rows": 1
+      },
+      "wrong": {
+        "median_original_length": 32,
+        "mlp_errors": 137,
+        "retained_unknown_token_rate": 0.06396761133603239,
+        "rows": 137,
+        "tfidf_errors": 92,
+        "truncated_rows": 2
+      }
+    },
+    "by_unknown_rate": {
+      "0": {
+        "median_original_length": 24.5,
+        "mlp_errors": 31,
+        "retained_unknown_token_rate": 0.0,
+        "rows": 144,
+        "tfidf_errors": 33,
+        "truncated_rows": 0
+      },
+      "0-5%": {
+        "median_original_length": 35.5,
+        "mlp_errors": 36,
+        "retained_unknown_token_rate": 0.033577533577533576,
+        "rows": 128,
+        "tfidf_errors": 33,
+        "truncated_rows": 1
+      },
+      "10%+": {
+        "median_original_length": 29,
+        "mlp_errors": 32,
+        "retained_unknown_token_rate": 0.14911042078508896,
+        "rows": 109,
+        "tfidf_errors": 28,
+        "truncated_rows": 1
+      },
+      "5-10%": {
+        "median_original_length": 32.0,
+        "mlp_errors": 38,
+        "retained_unknown_token_rate": 0.0718052738336714,
+        "rows": 138,
+        "tfidf_errors": 36,
+        "truncated_rows": 1
+      }
+    },
+    "error_directions": {
+      "0->1": {
+        "median_original_length": 33.0,
+        "mlp_errors": 16,
+        "retained_unknown_token_rate": 0.09119496855345911,
+        "reviewed": 5,
+        "rows": 16,
+        "tfidf_errors": 13,
+        "truncated_rows": 0
+      },
+      "0->2": {
+        "median_original_length": 31.0,
+        "mlp_errors": 20,
+        "retained_unknown_token_rate": 0.06535947712418301,
+        "reviewed": 5,
+        "rows": 20,
+        "tfidf_errors": 18,
+        "truncated_rows": 0
+      },
+      "1->0": {
+        "median_original_length": 37.0,
+        "mlp_errors": 20,
+        "retained_unknown_token_rate": 0.11320754716981132,
+        "reviewed": 5,
+        "rows": 20,
+        "tfidf_errors": 6,
+        "truncated_rows": 0
+      },
+      "1->2": {
+        "median_original_length": 31.5,
+        "mlp_errors": 28,
+        "retained_unknown_token_rate": 0.0352233676975945,
+        "reviewed": 5,
+        "rows": 28,
+        "tfidf_errors": 20,
+        "truncated_rows": 2
+      },
+      "2->0": {
+        "median_original_length": 23,
+        "mlp_errors": 17,
+        "retained_unknown_token_rate": 0.08163265306122448,
+        "reviewed": 5,
+        "rows": 17,
+        "tfidf_errors": 9,
+        "truncated_rows": 0
+      },
+      "2->1": {
+        "median_original_length": 36.0,
+        "mlp_errors": 36,
+        "retained_unknown_token_rate": 0.04237918215613383,
+        "reviewed": 5,
+        "rows": 36,
+        "tfidf_errors": 26,
+        "truncated_rows": 0
+      }
+    },
+    "paired_correctness": {
+      "mlp_correct__tfidf_correct": 344,
+      "mlp_correct__tfidf_wrong": 38,
+      "mlp_wrong__tfidf_correct": 45,
+      "mlp_wrong__tfidf_wrong": 92
+    },
+    "review_sample": {
+      "median_original_length": 35.5,
+      "mlp_errors": 30,
+      "retained_unknown_token_rate": 0.06082289803220036,
+      "rows": 30,
+      "tfidf_errors": 21,
+      "truncated_rows": 1
+    },
+    "truncated_examples": [
+      {
+        "encoded_length": 128,
+        "gold": 1,
+        "mlp": 2,
+        "original_length": 228,
+        "sample_id": "982ea2fd608335956bd4e3f4e28e2035d1753883c93dc78c8c858921ff78f4a5",
+        "source_row": 283,
+        "tfidf": 1,
+        "truncated_tokens": 100,
+        "unknown_count": 4,
+        "unknown_rate": 0.03125
+      },
+      {
+        "encoded_length": 128,
+        "gold": 1,
+        "mlp": 1,
+        "original_length": 190,
+        "sample_id": "8899734457b247f026b4df4b366183bfc9cea586bc572fb793e0c88f74088993",
+        "source_row": 1380,
+        "tfidf": 0,
+        "truncated_tokens": 62,
+        "unknown_count": 15,
+        "unknown_rate": 0.1171875
+      },
+      {
+        "encoded_length": 128,
+        "gold": 1,
+        "mlp": 2,
+        "original_length": 224,
+        "sample_id": "9fb164b4236434602eb793536251d8c8007bae5a4a2f3eba28f1ed78e80eebc0",
+        "source_row": 1933,
+        "tfidf": 2,
+        "truncated_tokens": 96,
+        "unknown_count": 7,
+        "unknown_rate": 0.0546875
+      }
+    ],
+    "unknown_token_origins": {
+      "all_validation": {
+        "training_singleton": 357,
+        "unseen_in_train": 690
+      },
+      "mlp_errors": {
+        "training_singleton": 110,
+        "unseen_in_train": 206
+      }
+    },
+    "zero_unknown_errors": 31
+  },
+  "label_context_review_count": 10,
+  "new_training_configurations": 0,
+  "provenance": {
+    "analysis_code_sha256": "3defcb67aa3199661d00f1a2e3209489950f62bb2d96c5f4b26ff19b181e39f9",
+    "data_manifest_sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+    "runs": {
+      "mlp": {
+        "manifest_sha256": "b9af87f639a737c22cf650847fde0e4bb7dfe03020ab37152f4ed0afcf5b40a9",
+        "metrics_recomputed_and_matched": true,
+        "run_id": "mean-pool-mlp-v1",
+        "selected_model_sha256": "9344b080829c32ff657b612b559011ac66f00a2295aece5a5b0b74c5113a66ac",
+        "used_files": {
+          "encoder.json": "67d19b3dd62ae1514e8dca03dffa0a16ef6ef112230874ab685f0e8ea84b676e",
+          "history.jsonl": "3fb02c3a931aa83998f9025f628b549e18f4212c540c07402abbebfbac396bf6",
+          "metrics.val.json": "7d06c4d089d747f4c0b7791f9b918525a4be680521549824ddb95474aceffd34",
+          "predictions.val.jsonl": "b3a6e69ea707b20cb16d2d7d7981cd70e5aeb892fd8a057e29cde4b80017d5c6",
+          "summary.json": "0df383dc81baf0b969226bf591e500e241cfd747d8b7ec7ffa7f09efa847256b"
+        }
+      },
+      "tfidf": {
+        "manifest_sha256": "a39ef37233215635063e47f1cc932368438bf584bdbe579e85c829746e86063d",
+        "metrics_recomputed_and_matched": true,
+        "run_id": "tfidf-bigram-c10-v1",
+        "selected_model_sha256": "e59dc2f247ddbd2b1bda85a989367e15a42dfdd58bf14b852e134e0bb94576e5",
+        "used_files": {
+          "metrics.val.json": "b576d9c17a2b1615c6d10744185c0c0728461d2eb306c122fe91868c2dbd4eed",
+          "predictions.val.jsonl": "56785f9ee752639512daf96db0010f426ddaf9e8b627363e3b0301a07cbf19df"
+        }
+      }
+    },
+    "training_sha256": "cc0ba0925cf6bec54d822d67ca28db3309dc145bc72444497418b293444a9119",
+    "validation_sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d"
+  },
+  "review": [
+    {
+      "assessment": "A concrete company goal is classified as non-forward-looking by both models; almost every token is known.",
+      "encoded_length": 46,
+      "gold": 0,
+      "label_review": false,
+      "mlp": 1,
+      "original_length": 46,
+      "paraphrase": "The company sets an operating-income and margin target for the coming fiscal year.",
+      "phenomena": [
+        "explicit_company_outlook",
+        "numeric_target",
+        "condition"
+      ],
+      "review_id": "R01",
+      "sample_id": "917b91fc48c234a40843459f9e15a82253fe89062ee9a3f3d990ed540681320f",
+      "source_row": 1620,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 1,
+      "unknown_rate": 0.021739130434782608
+    },
+    {
+      "assessment": "The explicit planning cue is retained. One unknown verb does not remove the sentence's prospective meaning.",
+      "encoded_length": 21,
+      "gold": 0,
+      "label_review": false,
+      "mlp": 1,
+      "original_length": 21,
+      "paraphrase": "Management plans to use more external vendors to improve capabilities and reduce costs.",
+      "phenomena": [
+        "explicit_company_outlook",
+        "intention"
+      ],
+      "review_id": "R02",
+      "sample_id": "eccad065b975a12fddb77f8e428d1f09610db1e86d596e9376dc600c1198085d",
+      "source_row": 591,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 1,
+      "unknown_rate": 0.047619047619047616
+    },
+    {
+      "assessment": "All tokens are known and none are truncated. A page-number fragment and broken quotation remain in the prepared text; their effect is untested.",
+      "encoded_length": 63,
+      "gold": 0,
+      "label_review": false,
+      "mlp": 1,
+      "original_length": 63,
+      "paraphrase": "The company expects regulated recovery of pension and other employee-benefit costs.",
+      "phenomena": [
+        "explicit_company_outlook",
+        "extraction_noise",
+        "technical_language"
+      ],
+      "review_id": "R03",
+      "sample_id": "2f4272f27a8e12f3bc1786cbdbd077d4e566dd2e949932b064077a7382409bc8",
+      "source_row": 1350,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 0,
+      "unknown_rate": 0.0
+    },
+    {
+      "assessment": "Optimism about future brand performance is treated as a present fact. Four descriptive or action words map to UNK.",
+      "encoded_length": 28,
+      "gold": 0,
+      "label_review": false,
+      "mlp": 1,
+      "original_length": 28,
+      "paraphrase": "Management expresses optimism about the future growth of its brands under another owner.",
+      "phenomena": [
+        "implicit_company_outlook",
+        "unknown_words"
+      ],
+      "review_id": "R04",
+      "sample_id": "3fb232e76dac17773a639351c25f28868a847afff5e001bf97b4d42ad30e28a5",
+      "source_row": 949,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 4,
+      "unknown_rate": 0.14285714285714285
+    },
+    {
+      "assessment": "The future projection is clear, while the company-versus-market distinction needs context. Eight of 31 tokens are unknown.",
+      "encoded_length": 31,
+      "gold": 0,
+      "label_review": true,
+      "mlp": 1,
+      "original_length": 31,
+      "paraphrase": "A regional crop forecast is linked to the company's sourcing markets.",
+      "phenomena": [
+        "explicit_outlook",
+        "specificity_boundary",
+        "unknown_words"
+      ],
+      "review_id": "R05",
+      "sample_id": "94d763103b9423c9129959fcb51432da0f71e340e33180744a28977744c13186",
+      "source_row": 1012,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 8,
+      "unknown_rate": 0.25806451612903225
+    },
+    {
+      "assessment": "Company dividend discretion is expressed as reusable boilerplate. Both models choose the generic class; the specificity boundary merits review.",
+      "encoded_length": 31,
+      "gold": 0,
+      "label_review": true,
+      "mlp": 2,
+      "original_length": 31,
+      "paraphrase": "The board may revise the company's dividend policy when conditions change.",
+      "phenomena": [
+        "specificity_boundary",
+        "boilerplate",
+        "condition"
+      ],
+      "review_id": "R06",
+      "sample_id": "668945534fad5e67ca5f47555ca3fccc6e81453aaa73a9c424742de23267ca89",
+      "source_row": 1758,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 1,
+      "unknown_rate": 0.03225806451612903
+    },
+    {
+      "assessment": "Firm-specific funding needs and generic uncertainty coexist. Both models choose generic FLS; the sentence alone offers little distinguishing detail.",
+      "encoded_length": 36,
+      "gold": 0,
+      "label_review": true,
+      "mlp": 2,
+      "original_length": 36,
+      "paraphrase": "Actual financing needs depend on uncertain factors and could arise earlier than anticipated.",
+      "phenomena": [
+        "specificity_boundary",
+        "boilerplate",
+        "uncertainty"
+      ],
+      "review_id": "R07",
+      "sample_id": "65cbf52d5d922adea18b89e6597bc010966edf4267bde418ac35d9580f082b5f",
+      "source_row": 516,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 1,
+      "unknown_rate": 0.027777777777777776
+    },
+    {
+      "assessment": "The stated cash allocation and named corporate group support a specific outlook, despite standard corporate-purpose language.",
+      "encoded_length": 26,
+      "gold": 0,
+      "label_review": false,
+      "mlp": 2,
+      "original_length": 26,
+      "paraphrase": "Cash exceeding a stated year's requirements will fund corporate uses and subsidiary investments.",
+      "phenomena": [
+        "explicit_company_outlook",
+        "specificity_boundary"
+      ],
+      "review_id": "R08",
+      "sample_id": "60651a410b26dcf105e59bb5c268fce34d26fb71c1bd23d50ea7d5d7142bc059",
+      "source_row": 1576,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 1,
+      "unknown_rate": 0.038461538461538464
+    },
+    {
+      "assessment": "The outlook names company business segments, but both models classify the risk wording as generic.",
+      "encoded_length": 36,
+      "gold": 0,
+      "label_review": false,
+      "mlp": 2,
+      "original_length": 36,
+      "paraphrase": "A continuing trend is expected to depress company margins and segment earnings.",
+      "phenomena": [
+        "specificity_boundary",
+        "company_risk"
+      ],
+      "review_id": "R09",
+      "sample_id": "1143cc946ac152d5ac2cd427f23a92e6431e5299fdec4ab40632276066869a86",
+      "source_row": 1857,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 2,
+      "unknown_rate": 0.05555555555555555
+    },
+    {
+      "assessment": "The conditional clause still makes a specific company forecast. Conditional wording does not by itself imply generic FLS.",
+      "encoded_length": 31,
+      "gold": 0,
+      "label_review": false,
+      "mlp": 2,
+      "original_length": 31,
+      "paraphrase": "Historical registration duration is followed by a company revenue expectation conditional on renewals.",
+      "phenomena": [
+        "specificity_boundary",
+        "mixed_temporal_content",
+        "condition"
+      ],
+      "review_id": "R10",
+      "sample_id": "0eee91f09b4f18b9422d0df268f2fcb204289b9c4d5fe2d0e83d8ddd52cb984a",
+      "source_row": 2377,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 3,
+      "unknown_rate": 0.0967741935483871
+    },
+    {
+      "assessment": "The main assertion reports a completed action. TF-IDF retains the published non-FLS label; the MLP treats the stated purpose as an outlook.",
+      "encoded_length": 22,
+      "gold": 1,
+      "label_review": false,
+      "mlp": 0,
+      "original_length": 22,
+      "paraphrase": "An inventory increase in a past quarter was undertaken to cover later sales commitments.",
+      "phenomena": [
+        "historical_action",
+        "future_purpose"
+      ],
+      "review_id": "R11",
+      "sample_id": "9293ea79d30f7cff248dfdd71c90692410715639feb2d526cede7240f3cc8986",
+      "source_row": 782,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 0,
+      "unknown_rate": 0.0
+    },
+    {
+      "assessment": "Historical seasonal averages are mistaken for a company forecast by the MLP. Repeated statistical wording and numeric values map to UNK.",
+      "encoded_length": 54,
+      "gold": 1,
+      "label_review": false,
+      "mlp": 0,
+      "original_length": 54,
+      "paraphrase": "Quarterly credit-loss patterns are described using averages from previous years.",
+      "phenomena": [
+        "historical_statistics",
+        "numeric_detail",
+        "unknown_words"
+      ],
+      "review_id": "R12",
+      "sample_id": "581597bf5457c6ecfaea5a96dfbd679934e1b8c5971c30f054cbb01ab11e72fe",
+      "source_row": 226,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 8,
+      "unknown_rate": 0.14814814814814814
+    },
+    {
+      "assessment": "The published non-FLS label coexists with an explicit future company expectation. The MLP's specific-FLS reading is plausible; label adjudication would require the annotation convention.",
+      "encoded_length": 40,
+      "gold": 1,
+      "label_review": true,
+      "mlp": 0,
+      "original_length": 40,
+      "paraphrase": "Past lending balances are followed by an explicit expectation that next year's portfolio share will remain below a limit.",
+      "phenomena": [
+        "mixed_temporal_content",
+        "negated_future_bound",
+        "numeric_target"
+      ],
+      "review_id": "R13",
+      "sample_id": "8e35e5830c47591acfbb822ccf76bb203857661aaeaa52883cf35233283f40f4",
+      "source_row": 117,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 5,
+      "unknown_rate": 0.125
+    },
+    {
+      "assessment": "Future-tense receipts occur inside a description of an existing mechanism. TF-IDF follows the published non-FLS label.",
+      "encoded_length": 53,
+      "gold": 1,
+      "label_review": false,
+      "mlp": 0,
+      "original_length": 53,
+      "paraphrase": "Existing hedges are explained in terms of their price-locking mechanism and resulting receipts.",
+      "phenomena": [
+        "current_mechanism",
+        "future_grammar"
+      ],
+      "review_id": "R14",
+      "sample_id": "485b6d641b118471936d94dc5ab246907c2dc90f294f6da439e11a2cfae40b35",
+      "source_row": 472,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 3,
+      "unknown_rate": 0.05660377358490566
+    },
+    {
+      "assessment": "Both models detect a specific prospective commitment in a sentence labeled non-FLS. Its past and future clauses make the published label worth reviewing.",
+      "encoded_length": 40,
+      "gold": 1,
+      "label_review": true,
+      "mlp": 0,
+      "original_length": 40,
+      "paraphrase": "A completed contract agreement is followed by the contractor's future staffing commitment to a named project.",
+      "phenomena": [
+        "mixed_temporal_content",
+        "explicit_company_outlook"
+      ],
+      "review_id": "R15",
+      "sample_id": "c15fbb51fae1bc13f64097cf6497fbb7e06a6b67a4cceaa6e65901472d6f970a",
+      "source_row": 569,
+      "tfidf": 0,
+      "truncated_tokens": 0,
+      "unknown_count": 5,
+      "unknown_rate": 0.125
+    },
+    {
+      "assessment": "The present accounting assessment contains predictive vocabulary. Both models label it generic FLS despite complete vocabulary coverage.",
+      "encoded_length": 35,
+      "gold": 1,
+      "label_review": false,
+      "mlp": 2,
+      "original_length": 35,
+      "paraphrase": "Management explains its current uncertain-tax estimates while acknowledging difficulty predicting resolution.",
+      "phenomena": [
+        "current_assessment",
+        "uncertainty"
+      ],
+      "review_id": "R16",
+      "sample_id": "d4f0f0ee79475b6e05a7c45090d048cfb5e14ab88f153609d42a16886e53b697",
+      "source_row": 1559,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 0,
+      "unknown_rate": 0.0
+    },
+    {
+      "assessment": "A reference to future reserves is embedded in a present-tense explanation; both models predict generic FLS.",
+      "encoded_length": 43,
+      "gold": 1,
+      "label_review": false,
+      "mlp": 2,
+      "original_length": 43,
+      "paraphrase": "The current effects of commodity-price changes on revenue and accounting estimates are listed.",
+      "phenomena": [
+        "current_mechanism",
+        "future_vocabulary"
+      ],
+      "review_id": "R17",
+      "sample_id": "8e6dd37bf492c3667fdb20bd4dc2073f27f0fe4e9c90f6fb20b79736f1ed9c5c",
+      "source_row": 2039,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 1,
+      "unknown_rate": 0.023255813953488372
+    },
+    {
+      "assessment": "The encoder discards 100 of 228 tokens. The retained opening already identifies a definition, so truncation is a possible contributor rather than an established cause. TF-IDF is correct.",
+      "encoded_length": 128,
+      "gold": 1,
+      "label_review": false,
+      "mlp": 2,
+      "original_length": 228,
+      "paraphrase": "A long definition of an earnings measure lists accounting adjustments, some involving future recognition.",
+      "phenomena": [
+        "current_definition",
+        "long_sentence",
+        "truncation",
+        "future_vocabulary"
+      ],
+      "review_id": "R18",
+      "sample_id": "982ea2fd608335956bd4e3f4e28e2035d1753883c93dc78c8c858921ff78f4a5",
+      "source_row": 283,
+      "tfidf": 1,
+      "truncated_tokens": 100,
+      "unknown_count": 4,
+      "unknown_rate": 0.03125
+    },
+    {
+      "assessment": "Both models choose generic FLS. The negation scopes over a reported risk statement and is preserved by the encoder.",
+      "encoded_length": 21,
+      "gold": 1,
+      "label_review": false,
+      "mlp": 2,
+      "original_length": 21,
+      "paraphrase": "No bank has communicated that it might fail to meet its commitments.",
+      "phenomena": [
+        "negation_scope",
+        "reported_statement",
+        "modal_risk"
+      ],
+      "review_id": "R19",
+      "sample_id": "08776abd01b678dd45af7e883f095e22f6806bc14a227e8d82b7fae65de0fd40",
+      "source_row": 1374,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 1,
+      "unknown_rate": 0.047619047619047616
+    },
+    {
+      "assessment": "Current inability to estimate and a future-risk disclaimer are both defensible readings. The published non-FLS label warrants contextual review.",
+      "encoded_length": 42,
+      "gold": 1,
+      "label_review": true,
+      "mlp": 2,
+      "original_length": 42,
+      "paraphrase": "Management says it cannot currently estimate the capital impact of possible future regulatory action.",
+      "phenomena": [
+        "current_assessment",
+        "negation_scope",
+        "condition",
+        "uncertainty"
+      ],
+      "review_id": "R20",
+      "sample_id": "4a983ce90b1e0c0393eb711e2859b9ea718c39434297826e9c04dd2154e96d4b",
+      "source_row": 248,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 2,
+      "unknown_rate": 0.047619047619047616
+    },
+    {
+      "assessment": "A numeric forecast can describe a general rule. TF-IDF predicts generic FLS; the MLP predicts specific FLS.",
+      "encoded_length": 14,
+      "gold": 2,
+      "label_review": false,
+      "mlp": 0,
+      "original_length": 14,
+      "paraphrase": "A statutory tax rate is scheduled to decline between two specified percentages.",
+      "phenomena": [
+        "specificity_boundary",
+        "numeric_detail",
+        "general_rule"
+      ],
+      "review_id": "R21",
+      "sample_id": "0324c8894e66538edce2da2e9eabe877ecbd1d034bf1d60ae5c60efdd25613ad",
+      "source_row": 934,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 1,
+      "unknown_rate": 0.07142857142857142
+    },
+    {
+      "assessment": "The wording resembles a company-specific future expense, although it may express a generic accounting treatment. The generic gold label needs context.",
+      "encoded_length": 25,
+      "gold": 2,
+      "label_review": true,
+      "mlp": 0,
+      "original_length": 25,
+      "paraphrase": "The company says it will recognize additional borrowing-related interest expense.",
+      "phenomena": [
+        "specificity_boundary",
+        "accounting_treatment"
+      ],
+      "review_id": "R22",
+      "sample_id": "91b46e8783f1e0f62ac1441220d7150f5551cb8fe7b3311de515a86953fada71",
+      "source_row": 1207,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 1,
+      "unknown_rate": 0.04
+    },
+    {
+      "assessment": "A generic capital-allocation intention uses a company subject. Both models choose specific FLS.",
+      "encoded_length": 35,
+      "gold": 2,
+      "label_review": false,
+      "mlp": 0,
+      "original_length": 35,
+      "paraphrase": "Management states a broad intention to pursue profitable investment and shareholder returns.",
+      "phenomena": [
+        "specificity_boundary",
+        "boilerplate",
+        "intention"
+      ],
+      "review_id": "R23",
+      "sample_id": "7c4d91123763cbbdf4a77c29cbcdfe1401097ad7cda648ed4cf2b4a5d915dc74",
+      "source_row": 2471,
+      "tfidf": 0,
+      "truncated_tokens": 0,
+      "unknown_count": 4,
+      "unknown_rate": 0.11428571428571428
+    },
+    {
+      "assessment": "The company wording describes broadly applicable regulation; both models predict specific FLS.",
+      "encoded_length": 40,
+      "gold": 2,
+      "label_review": false,
+      "mlp": 0,
+      "original_length": 40,
+      "paraphrase": "Manufacturing facilities will continue to face industry regulatory inspections and compliance requirements.",
+      "phenomena": [
+        "specificity_boundary",
+        "general_rule"
+      ],
+      "review_id": "R24",
+      "sample_id": "551fcbe5356dc40565136b2c74f5e1665fc3ba1e82730162bc56ad786132155d",
+      "source_row": 608,
+      "tfidf": 0,
+      "truncated_tokens": 0,
+      "unknown_count": 4,
+      "unknown_rate": 0.1
+    },
+    {
+      "assessment": "The subject of the forecast is the market. A first-person expectation does not make it company-specific; the liquidity descriptor is unknown to the MLP.",
+      "encoded_length": 9,
+      "gold": 2,
+      "label_review": false,
+      "mlp": 0,
+      "original_length": 9,
+      "paraphrase": "Management expects adverse market-liquidity conditions to persist.",
+      "phenomena": [
+        "specificity_boundary",
+        "market_outlook",
+        "unknown_words"
+      ],
+      "review_id": "R25",
+      "sample_id": "ae059c5993265d0ab85e413df4c80a17d012172f6431ae1acac141662bd898de",
+      "source_row": 1104,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 1,
+      "unknown_rate": 0.1111111111111111
+    },
+    {
+      "assessment": "Both models read the possible future use as a description of current practice. The modal policy statement is labeled generic FLS.",
+      "encoded_length": 37,
+      "gold": 2,
+      "label_review": false,
+      "mlp": 1,
+      "original_length": 37,
+      "paraphrase": "A company may use derivatives periodically to reduce commodity-price exposure.",
+      "phenomena": [
+        "policy_or_assessment_boundary",
+        "modal_policy"
+      ],
+      "review_id": "R26",
+      "sample_id": "001d4563897477d1579965a11d0cb58dc76c070af8a2708df5b9becc60760701",
+      "source_row": 2182,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 2,
+      "unknown_rate": 0.05405405405405406
+    },
+    {
+      "assessment": "A standing accounting policy and prospective qualifying conditions coexist. TF-IDF follows the generic label; the present-policy interpretation is also plausible.",
+      "encoded_length": 44,
+      "gold": 2,
+      "label_review": true,
+      "mlp": 1,
+      "original_length": 44,
+      "paraphrase": "Environmental expenditure is capitalized when it meets asset-benefit or future-contamination conditions.",
+      "phenomena": [
+        "policy_or_assessment_boundary",
+        "condition",
+        "current_policy"
+      ],
+      "review_id": "R27",
+      "sample_id": "97fe1e7bc20aa2d1fde9c592488392eed7ab2d04b52029cb8420bbca33c7482f",
+      "source_row": 2373,
+      "tfidf": 2,
+      "truncated_tokens": 0,
+      "unknown_count": 1,
+      "unknown_rate": 0.022727272727272728
+    },
+    {
+      "assessment": "Both models choose non-FLS for an apparently current recognition policy. The generic-FLS label depends on how prospective conditions are annotated.",
+      "encoded_length": 36,
+      "gold": 2,
+      "label_review": true,
+      "mlp": 1,
+      "original_length": 36,
+      "paraphrase": "Revenue is recognized on delivery once listed recognition conditions have been satisfied.",
+      "phenomena": [
+        "policy_or_assessment_boundary",
+        "condition",
+        "current_policy"
+      ],
+      "review_id": "R28",
+      "sample_id": "e84bdc87233c8d40cbcca8808d0d7e734842d2fe49c86256e5163f34914347c1",
+      "source_row": 1600,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 0,
+      "unknown_rate": 0.0
+    },
+    {
+      "assessment": "Future forecasts are inputs to a present assessment, rather than a stated prediction. Both models' non-FLS reading is plausible despite the generic gold label.",
+      "encoded_length": 33,
+      "gold": 2,
+      "label_review": true,
+      "mlp": 1,
+      "original_length": 33,
+      "paraphrase": "A current assessment is explained by reference to plans, forecasts, and other inputs.",
+      "phenomena": [
+        "policy_or_assessment_boundary",
+        "current_assessment",
+        "future_vocabulary"
+      ],
+      "review_id": "R29",
+      "sample_id": "dcf2b10a0a1e785d533c874d1f0d83e74457649345c50cca39ff9140518cfb6c",
+      "source_row": 910,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 0,
+      "unknown_rate": 0.0
+    },
+    {
+      "assessment": "A prospective downside scenario is missed by both models. The MLP loses the depreciation term, adverse-action verb, and asset noun to UNK.",
+      "encoded_length": 18,
+      "gold": 2,
+      "label_review": false,
+      "mlp": 1,
+      "original_length": 18,
+      "paraphrase": "A weaker currency could undermine residual values of assets denominated in it.",
+      "phenomena": [
+        "conditional_risk",
+        "unknown_words"
+      ],
+      "review_id": "R30",
+      "sample_id": "f62a5fbbf38f6a60bbc0638903401f173941a8d3fc2e5fc7050c0415830d6779",
+      "source_row": 1168,
+      "tfidf": 1,
+      "truncated_tokens": 0,
+      "unknown_count": 3,
+      "unknown_rate": 0.16666666666666666
+    }
+  ],
+  "review_method": "Assistant qualitative review of the frozen sentences using the documented dataset definitions; context-review flags are judgments, not adjudicated label corrections.",
+  "sampling": {
+    "hash_prefix": "validation-errors-v1|2026|",
+    "qualitative_counts_are_not_population_estimates": true,
+    "quota_per_direction": 5,
+    "review_population": "Incorrect predictions from the initial MLP selected checkpoint",
+    "schema_version": 1,
+    "selection": "Sort each stratum by SHA256(UTF8('validation-errors-v1|2026|' + sample_id)), then take the first five",
+    "selection_does_not_use": [
+      "text",
+      "tfidf_prediction",
+      "length",
+      "unknown_rate"
+    ],
+    "selection_uses": [
+      "sample_id",
+      "gold_label",
+      "mlp_prediction"
+    ],
+    "split": "val",
+    "stratification": "Five examples from each of the six gold-to-predicted error directions"
+  },
+  "schema_version": 1,
+  "test_accessed": false
+}

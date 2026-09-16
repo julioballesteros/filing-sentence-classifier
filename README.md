@@ -322,6 +322,8 @@ This checkpoint restores model weights. The matching encoder remains a separate 
 
 The [initial neural reference](reports/mean-pool-mlp-v1/README.md) reaches validation **macro-F1 0.6919** and **accuracy 0.7360**, compared with 0.6924 and 0.7495 for selected TF-IDF. It selects epoch 8 and stops after epoch 13. A fresh process using the built wheel reproduces the training history, predictions, and selected weights exactly in the same environment. Learning curves show overfitting; this run establishes the starting configuration for subsequent neural model selection.
 
+A [30-example validation error review](reports/validation-errors.md) examines temporal meaning, specificity, negation, and annotation ambiguity alongside full-partition diagnostics. The models share 92 errors; only two MLP errors involve truncated sentences, and 31 contain no unknown tokens. Regularization is the first hypothesis proposed for the next experiments.
+
 After preparing the data and building the vocabulary:
 
 ```bash
