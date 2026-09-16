@@ -63,6 +63,8 @@ class TrainingConfig:
     runtime: RuntimeConfig = field(default_factory=RuntimeConfig)
     batch_size: int = 32
     max_epochs: int = 30
+    patience: int = 5
+    min_delta: float = 0.0
     learning_rate: float = 0.001
     weight_decay: float = 0.0
 
@@ -73,6 +75,10 @@ class TrainingConfig:
             raise ConfigurationError("Expected ModelConfig and RuntimeConfig sections.")
         _integer("training.batch_size", self.batch_size, 1)
         _integer("training.max_epochs", self.max_epochs, 1)
+        _integer("training.patience", self.patience, 1)
+        _nonnegative_number("training.min_delta", self.min_delta)
+        if self.min_delta >= 1:
+            raise ConfigurationError("training.min_delta must be in [0, 1).")
         _nonnegative_number("training.learning_rate", self.learning_rate)
         if self.learning_rate == 0:
             raise ConfigurationError("training.learning_rate must be positive.")
@@ -94,14 +100,24 @@ class TrainingConfig:
             not isinstance(state, dict)
             or set(state) != {"schema_version", "model", "training", "runtime"}
             or type(state["schema_version"]) is not int
-            or state["schema_version"] != 1
+            or state["schema_version"] != 2
         ):
             raise ConfigurationError(
-                "Expected training configuration schema_version=1."
+                "Expected training configuration schema_version=2."
             )
         for name, keys in (
             ("model", {"embedding_dim", "hidden_dim", "dropout"}),
-            ("training", {"batch_size", "max_epochs", "learning_rate", "weight_decay"}),
+            (
+                "training",
+                {
+                    "batch_size",
+                    "max_epochs",
+                    "patience",
+                    "min_delta",
+                    "learning_rate",
+                    "weight_decay",
+                },
+            ),
             ("runtime", {"seed", "device", "num_workers", "num_threads"}),
         ):
             if not isinstance(state[name], dict) or set(state[name]) != keys:
@@ -115,7 +131,7 @@ class TrainingConfig:
     def to_dict(self) -> dict[str, object]:
         """Return complete, JSON-serializable settings for future run artifacts."""
         return {
-            "schema_version": 1,
+            "schema_version": 2,
             "model": {
                 "embedding_dim": self.model.embedding_dim,
                 "hidden_dim": self.model.hidden_dim,
@@ -124,6 +140,8 @@ class TrainingConfig:
             "training": {
                 "batch_size": self.batch_size,
                 "max_epochs": self.max_epochs,
+                "patience": self.patience,
+                "min_delta": float(self.min_delta),
                 "learning_rate": float(self.learning_rate),
                 "weight_decay": float(self.weight_decay),
             },

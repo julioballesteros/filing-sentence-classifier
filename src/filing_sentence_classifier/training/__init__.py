@@ -1,1 +1,1 @@
-"""Configuration, runtime setup, and explicit training and validation epochs."""
+"""Training configuration, epochs, early stopping, and model checkpoints."""

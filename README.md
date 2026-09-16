@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, text encoder, PyTorch data loading, model architecture, training and validation epochs, and CI are implemented. Checkpoint selection and full-run orchestration are planned.
+**Work in progress:** the installable Python package, data pipeline, evaluation API/CLI, both classical baselines, text encoder, PyTorch data loading, model architecture, training and validation epochs, checkpoint selection with early stopping, and CI are implemented. The training CLI and formal neural experiments are planned.
 
 ## Classification task
 
@@ -236,11 +236,11 @@ assert logits.shape == (len(batch["sample_ids"]), 3)
 
 This inspects an untrained model. Pooling divides by each sentence's real token count, so additional padding or longer batch companions do not change its evaluation logits within numerical tolerance. `PAD=0` is excluded from pooling and has no embedding gradient; `UNK=1` contributes normally and is trainable. Empty rows, out-of-range IDs, and masks inconsistent with padding are rejected. Mean pooling loses word order.
 
-The forward pass consumes only tensors on the model's device and returns logits without softmax, as expected by [`CrossEntropyLoss`](https://docs.pytorch.org/docs/2.14/generated/torch.nn.CrossEntropyLoss.html). Tokenization, labels, loss, seeding, and optimization are handled by their callers. Dropout follows `train()`/`eval()`; the model never changes its own mode. Parameters support PyTorch's standard `state_dict` interface; checkpoint orchestration will accompany the training loop.
+The forward pass consumes only tensors on the model's device and returns logits without softmax, as expected by [`CrossEntropyLoss`](https://docs.pytorch.org/docs/2.14/generated/torch.nn.CrossEntropyLoss.html). Tokenization, labels, loss, seeding, and optimization are handled by their callers. Dropout follows `train()`/`eval()`; the model never changes its own mode. Parameters support PyTorch's standard `state_dict` interface, used by the [checkpoint implementation](src/filing_sentence_classifier/training/checkpoints.py).
 
 ## Training configuration and reproducibility
 
-The [initial neural configuration](configs/experiments/mean-pool-mlp-v1.toml) declares the architecture, batch size, epoch limit, AdamW learning rate and weight decay, and CPU runtime settings. [`TrainingConfig`](src/filing_sentence_classifier/training/config.py) validates every field and supports TOML input and JSON round trips using only the standard library. Vocabulary size, class mapping, and preprocessing remain properties of the supplied artifacts.
+The [initial neural configuration](configs/experiments/mean-pool-mlp-v1.toml) declares the architecture, batch size, epoch limit, early-stopping patience and minimum improvement, AdamW learning rate and weight decay, and CPU runtime settings. [`TrainingConfig`](src/filing_sentence_classifier/training/config.py) validates every field and supports TOML input and JSON round trips using only the standard library. Vocabulary size, class mapping, and preprocessing remain properties of the supplied artifacts.
 
 [`configure_runtime`](src/filing_sentence_classifier/training/reproducibility.py) explicitly initializes Python, PyTorch, and NumPy's global RNG if NumPy is installed. The reference uses training seed **17**, CPU, float32, one computation thread, and zero DataLoader workers. It enables deterministic algorithms in error mode. Call it once before creating the model and loaders, and pass the training seed to each loader's independent generator. The saved partition continues to use seed `2026`.
 
@@ -263,7 +263,7 @@ Create the optimizer once and reuse it across epochs so AdamW retains its moment
 
 The returned `EpochResult` contains detached Python values. Mean loss weights each batch by its actual number of examples, including the last partial batch. It describes the forward passes observed during training, before each update. Cross-entropy uses raw logits, equal example weights, no label smoothing, and no ignored targets.
 
-Non-finite logits, loss, gradients, or updated parameters abort the epoch with the batch number; completed updates are not rolled back. The optimizer must own exactly the model's trainable parameters, and each must receive a gradient. The epoch function consumes batches without loading data, fitting preprocessing, reseeding, or writing artifacts. Checkpoint selection and the training CLI remain separate upcoming components.
+Non-finite logits, loss, gradients, or updated parameters abort the epoch with the batch number; completed updates are not rolled back. The optimizer must own exactly the model's trainable parameters, and each must receive a gradient. The epoch function consumes batches without loading data, fitting preprocessing, reseeding, or writing artifacts. Epoch orchestration and checkpoint I/O live in separate training modules.
 
 ## Validate an epoch
 
@@ -289,6 +289,34 @@ The function sets `model.eval()` and runs under `torch.inference_mode()`. It lea
 Declared classes must match the zero-based logit columns. The expected sample IDs define the complete evaluation scope: duplicates, missing rows, unexpected IDs, and invalid or non-finite outputs raise an error instead of returning partial metrics. Validation requires the existing `data` extra for shared metrics alongside `train`. Data loading and artifact publication stay outside the epoch function.
 
 The [memorization integration test](tests/integration/test_overfit.py) checks that the complete neural pipeline can fit a tiny synthetic dataset, with a fixed seed, dropout and weight decay disabled, and a bounded epoch count. It requires 100% accuracy and mean cross-entropy ≤ 0.05 on those same examples. A separate manual check on 24 FLS training sentences also passed after 6 epochs (24/24 correct, loss 0.0171); this checks implementation correctness, not generalization.
+
+## Fit and restore the best checkpoint
+
+[`fit`](src/filing_sentence_classifier/training/fit.py) coordinates the existing epoch functions and creates one AdamW optimizer for the run. Supply an initialized model matching `config` and reusable train/validation loaders, constructed after runtime initialization:
+
+```python
+from pathlib import Path
+from filing_sentence_classifier.training.fit import fit
+
+result = fit(
+    model,
+    train_loader,
+    val_loader,
+    config=config,
+    label_ids=val.label_ids,
+    validation_sample_ids=val.sample_ids,
+    checkpoint_path=Path("artifacts/runs/mean-pool-mlp-v1/checkpoints/best.pt"),
+)
+print(result.best_epoch, result.best_validation.metrics.macro_f1)
+```
+
+The highest **unrounded validation macro-F1** selects the checkpoint; exact ties keep the earliest epoch, regardless of loss. The initial configuration allows 30 epochs with `patience=5` and `min_delta=0.0`. Patience resets when macro-F1 exceeds its last reset value by more than `min_delta`; smaller gains can accumulate from that reference. Every strict improvement still saves the best weights, even when it does not reset patience. Training stops after the configured number of consecutive epochs without a sufficient gain, or at the epoch limit.
+
+On completion, the supplied model contains the best weights in evaluation mode, with gradients cleared. `FitResult` contains aggregate per-epoch losses and metrics, the best epoch, whether training stopped before the epoch limit, and fresh validation predictions from the restored model. It does not retain every epoch's prediction tensors. The caller owns runtime initialization, data loading, and publication of the run history.
+
+[`save_checkpoint` and `load_checkpoint`](src/filing_sentence_classifier/training/checkpoints.py) store a versioned `state_dict`, model type, full training configuration, epoch, and selection score. Each run requires a new checkpoint path; later improvements replace that run's file atomically. Failed writes preserve the previous checkpoint. Loading uses `weights_only=True` on CPU and checks metadata, tensor keys, shapes, dtypes, and finite values before copying weights into a matching model. A fresh-process integration test verifies identical logits after restoration, following [PyTorch's state-dictionary guidance](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html).
+
+This checkpoint restores model weights. The matching encoder remains a separate artifact; optimizer, loader, and RNG states for exact training resumption are not stored. The deployment bundle and full training CLI are separate later components.
 
 ## Evaluate saved predictions
 
@@ -317,7 +345,7 @@ src/filing_sentence_classifier/
   data/          Source data, preparation, verified loading, Dataset, and batches
   text/          Tokenization, immutable vocabularies, encoding, and text diagnostics
   models/        PyTorch architectures mapping encoded tensors to logits
-  training/      Configuration, runtime setup, optimizer construction, and epochs
+  training/      Configuration, runtime setup, epochs, early stopping, and checkpoints
   baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting
   cli.py         Command wiring and user-facing errors

@@ -20,6 +20,8 @@ def test_reference_config_is_complete_and_round_trips_through_json() -> None:
     config = TrainingConfig.from_toml(REFERENCE.read_bytes())
     assert config == TrainingConfig()
     assert config.runtime.seed == 17
+    assert (config.patience, config.min_delta) == (5, 0.0)
+    assert config.to_dict()["schema_version"] == 2
     assert TrainingConfig.from_dict(json.loads(json.dumps(config.to_dict()))) == config
     changed = replace(config, model=ModelConfig(32, 16, 0.2), learning_rate=0.01)
     assert TrainingConfig.from_dict(changed.to_dict()) == changed
@@ -45,7 +47,7 @@ def test_sections_reject_missing_unknown_and_invalid_fields(section, change) -> 
         TrainingConfig.from_dict(state)
 
 
-@pytest.mark.parametrize("version", [2, True, "1"])
+@pytest.mark.parametrize("version", [1, 3, True, "2"])
 def test_incompatible_schema_versions_are_rejected(version) -> None:
     state = TrainingConfig().to_dict()
     state["schema_version"] = version
@@ -77,6 +79,12 @@ def test_invalid_toml_has_a_configuration_error(content: bytes) -> None:
         ("training", "batch_size", 0),
         ("training", "batch_size", True),
         ("training", "max_epochs", -1),
+        ("training", "patience", 0),
+        ("training", "patience", True),
+        ("training", "min_delta", -0.01),
+        ("training", "min_delta", True),
+        ("training", "min_delta", float("nan")),
+        ("training", "min_delta", 1.0),
         ("training", "learning_rate", 0),
         ("training", "learning_rate", True),
         ("training", "learning_rate", "0.001"),

@@ -20,17 +20,17 @@ The [bounded selection study](../reports/tfidf-selection-v1/README.md) adds thre
 
 ## PyTorch training
 
-[experiments/mean-pool-mlp-v1.toml](experiments/mean-pool-mlp-v1.toml) is the initial neural reference. Schema version `1` requires every declared field and rejects extras, invalid types, nonfinite numbers, and unsupported devices. Settings are frozen dataclasses, independent of file I/O and PyTorch imports.
+[experiments/mean-pool-mlp-v1.toml](experiments/mean-pool-mlp-v1.toml) is the initial neural reference. Schema version `2` requires every declared field and rejects extras, invalid types, nonfinite numbers, and unsupported devices. Earlier schema-1 configurations must add `patience` and `min_delta` to `[training]` and set `schema_version = 2`. Settings are frozen dataclasses, independent of file I/O and PyTorch imports.
 
 | Section | Initial settings |
 | --- | --- |
 | `model` | Embedding dimension `128`, hidden dimension `64`, dropout `0.0` |
-| `training` | Batch size `32`, maximum epochs `30`, AdamW learning rate `0.001`, weight decay `0.0` |
+| `training` | Batch size `32`, maximum epochs `30`, patience `5`, minimum improvement `0.0`, AdamW learning rate `0.001`, weight decay `0.0` |
 | `runtime` | Training seed `17`, device `"cpu"`, workers `0`, computation threads `1` |
 
-The initial learning rate and epoch limit are starting choices, not selected results. Dropout and weight decay are disabled for this reference. Stopping/checkpoint controls will be added with epoch orchestration. Data paths and the saved encoder are supplied separately; this configuration never resplits data or rebuilds preprocessing. Vocabulary size and the number of output classes come from those artifacts.
+The initial learning rate and stopping settings are starting choices, not selected results. Dropout and weight decay are disabled for this reference. `patience` must be a positive integer; `min_delta` must be finite and in `[0, 1)`. Patience counts epochs without a macro-F1 gain strictly greater than `min_delta` over the last patience-reset score. Checkpoint selection independently uses every strict macro-F1 improvement, with ties keeping the earliest epoch. Data paths and the saved encoder are supplied separately; this configuration never resplits data or rebuilds preprocessing. Vocabulary size and the number of output classes come from those artifacts.
 
-[`create_optimizer`](../src/filing_sentence_classifier/training/optimizers.py) creates [AdamW](https://docs.pytorch.org/docs/2.14/generated/torch.optim.AdamW.html) with the configured learning rate and weight decay, `betas=(0.9, 0.999)`, `eps=1e-8`, and `amsgrad=False`. Both `foreach` and `fused` are disabled for an explicit implementation choice. One parameter group contains all trainable parameters, including biases and embeddings; frozen parameters are excluded. Construct it after placing the model on its device, and retain it across calls to `train_epoch`. The epoch limit is consumed by the future run orchestrator, not the single-epoch function.
+[`create_optimizer`](../src/filing_sentence_classifier/training/optimizers.py) creates [AdamW](https://docs.pytorch.org/docs/2.14/generated/torch.optim.AdamW.html) with the configured learning rate and weight decay, `betas=(0.9, 0.999)`, `eps=1e-8`, and `amsgrad=False`. Both `foreach` and `fused` are disabled for an explicit implementation choice. One parameter group contains all trainable parameters, including biases and embeddings; frozen parameters are excluded. Construct it after placing the model on its device, and retain it across calls to `train_epoch`. [`fit`](../src/filing_sentence_classifier/training/fit.py) creates and retains its own optimizer and consumes the epoch/stopping limits.
 
 Using the existing `encoder`, verified `train` partition, and `dataset` from the main README:
 
