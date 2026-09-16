@@ -25,6 +25,9 @@ train = [
     "matplotlib>=3.11,<4",
     "torch>=2.14,<3",
 ]
+tracking = [
+    "mlflow>=3.16,<4",
+]
 
 # Use the CPU wheel on Linux/Windows; macOS uses the native PyPI wheel.
 [tool.uv.sources]

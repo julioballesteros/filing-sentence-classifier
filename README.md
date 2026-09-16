@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, and CI. Neural model selection and deployment are next.
+**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Neural model selection and deployment are next.
 
 ## Classification task
 
@@ -351,6 +351,40 @@ Source snapshots include untracked Python files and work with installed wheels. 
 
 [`run_training`](src/filing_sentence_classifier/training/run.py) owns this lifecycle; `fit` remains responsible for epochs and selection, exposing an optional `on_epoch` callback. [Artifact I/O](src/filing_sentence_classifier/training/artifacts.py) and [headless plots](src/filing_sentence_classifier/training/plots.py) are separate modules.
 
+## Track training with MLflow
+
+Install the optional `tracking` extra and enable tracking for a new run:
+
+```bash
+uv sync --locked --extra data --extra train --extra tracking
+DATASET_DIR=data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1
+uv run --no-sync filing-sentence-classifier train \
+  --data-dir "$DATASET_DIR" \
+  --vocabulary-dir artifacts/preprocessing/vocabulary-v1 \
+  --config configs/experiments/mean-pool-mlp-v1.toml \
+  --output-dir artifacts/runs/mean-pool-mlp-v1-tracked \
+  --mlflow-dir artifacts/mlflow \
+  --experiment-name filing-sentence-classifier
+```
+
+`--mlflow-dir` opts in to a SQLite database (`mlflow.db`) and an `artifacts/` store inside that directory, both outside Git under the example path. `--experiment-name` defaults to `filing-sentence-classifier`. The local run manifest records the MLflow version, experiment/run IDs, and storage URIs. Storage must be separate from the run directory. Omitting `--mlflow-dir` requires no MLflow installation or import.
+
+The [`MLflowTracker`](src/filing_sentence_classifier/training/tracking.py) implements a small `RunTracker` protocol consumed by run orchestration. It uses an explicitly configured [MLflow client](https://mlflow.org/docs/latest/api_reference/python_api/mlflow.client.html), leaving the fluent tracking URI and active run untouched. It disables MLflow telemetry for the process and uses local storage; no tracking server is required while training.
+
+Parameters include the effective model/training/runtime settings, input hashes, vocabulary size, and sequence limit. Epoch metrics use `train/loss`, `val/loss`, `val/macro_f1`, `val/accuracy`, and per-class precision/recall/F1 with the epoch as their step. The `summary/` metrics describe the selected checkpoint, so the last epoch's score is not mistaken for the final result. Completed runs copy their full local artifacts, including the encoder, checkpoint, history, curves, environment, and source snapshot.
+
+Tracking is synchronous. Its epoch calls contribute to the recorded training duration; final MLflow artifact copying occurs after local timing ends. Tracking errors fail an explicitly tracked run while retaining local evidence. History is flushed before logging each epoch. Handled failures copy available artifacts and close MLflow as `FAILED`; keyboard interruptions use `KILLED`. Failure to record cleanup is captured separately as `tracking_error`, preserving the original error. A hard process termination can leave a run `RUNNING`.
+
+To inspect runs, start the local UI from the repository root and open `http://127.0.0.1:8080`:
+
+```bash
+MLFLOW_DISABLE_TELEMETRY=true uv run --no-sync mlflow server \
+  --backend-store-uri sqlite:///artifacts/mlflow/mlflow.db \
+  --host 127.0.0.1 --port 8080 --no-serve-artifacts
+```
+
+Integration tests compare tracked and untracked training in fresh processes, including dropout, and require identical histories, predictions, and selected weights. They also verify artifact copies, failed runs, and isolation from an unrelated active MLflow run.
+
 ## Evaluate saved predictions
 
 The `evaluate` command accepts `train` or `val` and requires a prediction file supplied by the caller. Each JSONL row must contain exactly `sample_id` and integer `predicted_label`. For example, with the placeholder replaced by an ID from the selected partition:
@@ -378,7 +412,7 @@ src/filing_sentence_classifier/
   data/          Source data, preparation, verified loading, Dataset, and batches
   text/          Tokenization, immutable vocabularies, encoding, and text diagnostics
   models/        PyTorch architectures mapping encoded tensors to logits
-  training/      Runtime setup, epochs, selection, checkpoints, run artifacts, and curves
+  training/      Runtime, epochs, selection, checkpoints, run artifacts, curves, and tracking
   baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting
   cli.py         Command wiring and user-facing errors
@@ -396,10 +430,10 @@ Reproducibility is recorded in the lockfile and artifact manifests: source revis
 
 ## Development checks
 
-Install both extras to run the complete test suite and type checks:
+Install the data, training, and tracking extras to run the complete test suite and type checks:
 
 ```bash
-uv sync --locked --dev --extra data --extra train
+uv sync --locked --dev --extra data --extra train --extra tracking
 uv run --no-sync ruff check .
 uv run --no-sync ruff format --check .
 uv run --no-sync mypy

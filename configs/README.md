@@ -32,6 +32,8 @@ The initial learning rate and stopping settings are starting choices, not select
 
 Pass this file to [`train --config PATH`](../README.md#run-neural-training). The command saves its original bytes and effective settings alongside the constructed encoder and selected checkpoint. Configuration changes require a distinct run directory.
 
+Optional [MLflow tracking](../README.md#track-training-with-mlflow) is configured through `--mlflow-dir` and `--experiment-name`, separately from this model configuration. Its storage paths and run identity are recorded in the local manifest.
+
 [`create_optimizer`](../src/filing_sentence_classifier/training/optimizers.py) creates [AdamW](https://docs.pytorch.org/docs/2.14/generated/torch.optim.AdamW.html) with the configured learning rate and weight decay, `betas=(0.9, 0.999)`, `eps=1e-8`, and `amsgrad=False`. Both `foreach` and `fused` are disabled for an explicit implementation choice. One parameter group contains all trainable parameters, including biases and embeddings; frozen parameters are excluded. Construct it after placing the model on its device, and retain it across calls to `train_epoch`. [`fit`](../src/filing_sentence_classifier/training/fit.py) creates and retains its own optimizer and consumes the epoch/stopping limits.
 
 Using the existing `encoder`, verified `train` partition, and `dataset` from the main README:

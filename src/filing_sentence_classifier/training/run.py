@@ -1,12 +1,14 @@
 """Compose frozen data, encoding, training, and persistent local run artifacts."""
 
+from __future__ import annotations
+
 import json
 from collections.abc import Callable
 from dataclasses import asdict
 from datetime import UTC, datetime
 from pathlib import Path
 from time import perf_counter
-from typing import cast
+from typing import TYPE_CHECKING, cast
 
 import torch
 
@@ -30,6 +32,9 @@ from filing_sentence_classifier.training.config import TrainingConfig
 from filing_sentence_classifier.training.fit import EpochMetrics, fit
 from filing_sentence_classifier.training.plots import save_learning_curves
 from filing_sentence_classifier.training.reproducibility import configure_runtime
+
+if TYPE_CHECKING:
+    from filing_sentence_classifier.training.tracking import RunTracker
 
 
 class TrainingRunError(RuntimeError):
@@ -83,6 +88,7 @@ def run_training(
     expected_manifest_sha256: str | None = None,
     project_dir: Path | None = None,
     on_epoch: Callable[[EpochMetrics], None] | None = None,
+    tracker: RunTracker | None = None,
 ) -> Path:
     """Run one configured CPU experiment and preserve success or failure evidence.
 
@@ -94,6 +100,8 @@ def run_training(
     Runtime initialization changes process-wide RNG and numerical settings. Source
     files are snapshotted from the imported package; project_dir (default cwd) adds
     checkout/lockfile provenance when available. No automatic retry or overwrite.
+    An optional tracker mirrors metadata, epochs, and closed-run artifacts. Tracking
+    errors fail the requested run, preserving local evidence and the original error.
     """
     destination = output_dir.expanduser().absolute()
     try:
@@ -121,6 +129,9 @@ def run_training(
     }
     try:
         write_json(destination / "manifest.json", manifest)
+        if tracker is not None:
+            manifest["tracking"] = tracker.start(destination)
+            write_json(destination / "manifest.json", manifest)
         config_bytes = config_path.expanduser().read_bytes()
         (destination / "config.toml").write_bytes(config_bytes)
         config = TrainingConfig.from_toml(config_bytes)
@@ -195,6 +206,8 @@ def run_training(
             "num_classes": len(train.label_ids),
         }
         write_json(destination / "manifest.json", manifest)
+        if tracker is not None:
+            tracker.log_metadata(manifest)
         fitting_started = perf_counter()
         with (destination / "history.jsonl").open(
             "x", encoding="utf-8"
@@ -205,6 +218,8 @@ def run_training(
                     json.dumps(asdict(row), sort_keys=True, allow_nan=False) + "\n"
                 )
                 history_file.flush()
+                if tracker is not None:
+                    tracker.log_epoch(row)
                 if on_epoch is not None:
                     on_epoch(row)
 
@@ -245,18 +260,18 @@ def run_training(
                 "Saved predictions disagree with restored-model validation."
             )
         write_json(destination / "metrics.val.json", metrics)
-        write_json(
-            destination / "summary.json",
-            {
-                "best_epoch": result.best_epoch,
-                "epochs_completed": len(result.history),
-                "stopped_early": result.stopped_early,
-                "training_seconds": fitting_seconds,
-                "validation_mean_loss": result.best_validation.mean_loss,
-                "validation_macro_f1": result.best_validation.metrics.macro_f1,
-                "validation_accuracy": result.best_validation.metrics.accuracy,
-            },
-        )
+        summary = {
+            "best_epoch": result.best_epoch,
+            "epochs_completed": len(result.history),
+            "stopped_early": result.stopped_early,
+            "training_seconds": fitting_seconds,
+            "validation_mean_loss": result.best_validation.mean_loss,
+            "validation_macro_f1": result.best_validation.metrics.macro_f1,
+            "validation_accuracy": result.best_validation.metrics.accuracy,
+        }
+        write_json(destination / "summary.json", summary)
+        if tracker is not None:
+            tracker.log_summary(summary)
         save_learning_curves(
             result.history, result.best_epoch, destination / "learning-curves.png"
         )
@@ -267,6 +282,8 @@ def run_training(
         )
         manifest["files"] = file_inventory(destination)
         write_json(destination / "manifest.json", manifest)
+        if tracker is not None:
+            tracker.finish(destination, "FINISHED")
         return destination
     except (Exception, KeyboardInterrupt) as exc:
         manifest.update(
@@ -278,6 +295,18 @@ def run_training(
         try:
             manifest["files"] = file_inventory(destination)
             write_json(destination / "manifest.json", manifest)
+            if tracker is not None:
+                try:
+                    tracker.finish(
+                        destination,
+                        "KILLED" if isinstance(exc, KeyboardInterrupt) else "FAILED",
+                    )
+                except Exception as tracking_error:
+                    manifest["tracking_error"] = {
+                        "type": type(tracking_error).__name__,
+                        "message": str(tracking_error),
+                    }
+                    write_json(destination / "manifest.json", manifest)
         except OSError as recording_error:
             raise TrainingRunError(
                 f"Training failed ({exc}); failure recording also failed: {recording_error}"

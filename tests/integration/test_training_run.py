@@ -53,7 +53,14 @@ num_threads = 1
     return development_artifact, vocabulary, config
 
 
-def invoke(inputs, output: Path, hash_seed: str = "1", *, fail: bool = False):
+def invoke(
+    inputs,
+    output: Path,
+    hash_seed: str = "1",
+    *,
+    fail: bool = False,
+    tracking_dir: Path | None = None,
+):
     data, vocabulary, config = inputs
     # Forbid preprocessing fitting and published-source/test reads at the boundary.
     script = """import sys
@@ -67,6 +74,14 @@ def development_only(path):
     assert path.suffix != ".parquet" and "raw" not in path.parts
     return read(path)
 Path.read_bytes = development_only
+"""
+    if tracking_dir is None:
+        script += """import builtins
+original_import = builtins.__import__
+def no_mlflow(name, *args, **kwargs):
+    assert name.split('.')[0] != 'mlflow', 'Untracked training must not import MLflow.'
+    return original_import(name, *args, **kwargs)
+builtins.__import__ = no_mlflow
 """
     if fail:
         script += """from filing_sentence_classifier.training.run import TrainingRunError, run_training
@@ -92,6 +107,10 @@ except TrainingRunError as error:
             "--output-dir",
             str(output),
         ]
+        if tracking_dir is not None:
+            args.extend(
+                ["--mlflow-dir", str(tracking_dir), "--experiment-name", "tests"]
+            )
     return subprocess.run(
         [sys.executable, "-c", script, *args],
         cwd=output.parent,
@@ -120,13 +139,18 @@ def verify_inventory(output: Path):
 
 
 @pytest.mark.training
+@pytest.mark.parametrize("tracking", [False, True])
 def test_cli_reproduces_history_predictions_and_weights_and_saves_reloadable_run(
-    inputs, tmp_path
+    inputs, tmp_path, tracking
 ):
+    if tracking:
+        pytest.importorskip("mlflow")
     data, vocabulary, config_path = inputs
     before = {path.name: path.read_bytes() for path in data.iterdir()}
     first, second = tmp_path / "first", tmp_path / "second"
-    result = invoke(inputs, first)
+    result = invoke(
+        inputs, first, tracking_dir=tmp_path / "mlflow" if tracking else None
+    )
     assert result.returncode == 0, result.stderr
     assert "Epoch 01" in result.stdout and "Completed training run" in result.stdout
     manifest = verify_inventory(first)
@@ -156,6 +180,31 @@ def test_cli_reproduces_history_predictions_and_weights_and_saves_reloadable_run
     assert summary["validation_macro_f1"] == max(scores)
     metrics = json.loads((first / "metrics.val.json").read_bytes())
     assert metrics["metrics"]["macro_f1"] == max(scores)
+    if tracking:
+        from mlflow import MlflowClient
+
+        connection = manifest["tracking"]
+        client = MlflowClient(tracking_uri=connection["tracking_uri"])
+        run = client.get_run(connection["run_id"])
+        assert run.info.status == "FINISHED"
+        assert run.data.params["config.model.dropout"] == "0.2"
+        assert (
+            run.data.params["data.manifest_sha256"]
+            == manifest["data"]["manifest_sha256"]
+        )
+        assert run.data.params["preprocessing.max_length"] == "128"
+        assert run.data.metrics["summary/validation_macro_f1"] == max(scores)
+        assert run.data.metrics["summary/best_epoch"] == summary["best_epoch"]
+        remote_history = client.get_metric_history(run.info.run_id, "val/macro_f1")
+        assert [(row.step, row.value) for row in remote_history] == list(
+            enumerate(scores, 1)
+        )
+        # The uploaded manifest and every inventoried artifact match the local run.
+        downloaded = Path(client.download_artifacts(run.info.run_id, ""))
+        assert (downloaded / "manifest.json").read_bytes() == (
+            first / "manifest.json"
+        ).read_bytes()
+        assert verify_inventory(downloaded) == manifest
 
     # A second fresh process changes Python's hash seed, keeping the training seed.
     repeated = invoke(inputs, second, "2")
@@ -204,6 +253,77 @@ def test_cli_reproduces_history_predictions_and_weights_and_saves_reloadable_run
     assert {path.name: path.read_bytes() for path in data.iterdir()} == before
     assert invoke(inputs, first).returncode == 1
     assert verify_inventory(first) == manifest
+
+
+@pytest.mark.training
+@pytest.mark.parametrize("failure", ["epoch_tracking", "cleanup", "interrupt"])
+def test_tracking_failures_and_interruptions_preserve_local_evidence(
+    inputs, tmp_path, failure
+):
+    mlflow = pytest.importorskip("mlflow")
+    data, vocabulary, config = inputs
+    output = tmp_path / "failed-tracked"
+    script = """import sys
+from pathlib import Path
+from filing_sentence_classifier.training.run import run_training
+from filing_sentence_classifier.training.tracking import MLflowTracker
+failure = sys.argv[1]
+tracker = MLflowTracker(Path(sys.argv[6]), 'failure-tests')
+if failure == 'epoch_tracking':
+    def broken_logging(row):
+        raise OSError('injected metric failure')
+    tracker.log_epoch = broken_logging
+if failure == 'cleanup':
+    from mlflow import MlflowClient
+    def broken_copy(*args, **kwargs):
+        raise OSError('injected artifact failure')
+    MlflowClient.log_artifacts = broken_copy
+def observer(row):
+    if failure == 'interrupt':
+        raise KeyboardInterrupt('injected interruption')
+    raise ValueError('original observer failure')
+run_training(
+    Path(sys.argv[2]), Path(sys.argv[3]), Path(sys.argv[4]), Path(sys.argv[5]),
+    tracker=tracker, on_epoch=observer,
+)
+"""
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            script,
+            failure,
+            str(data),
+            str(output),
+            str(config),
+            str(vocabulary),
+            str(tmp_path / "mlflow"),
+        ],
+        env={**os.environ, "MLFLOW_DISABLE_TELEMETRY": "true"},
+        capture_output=True,
+        text=True,
+        timeout=45,
+    )
+    assert result.returncode != 0
+    manifest = verify_inventory(output)
+    assert manifest["status"] == "failed"
+    assert len((output / "history.jsonl").read_text().splitlines()) == 1
+    assert (output / "checkpoints/best.pt").is_file()
+    assert not (output / "summary.json").exists()
+    if failure == "cleanup":
+        assert manifest["error"]["message"] == "original observer failure"
+        assert manifest["tracking_error"]["message"] == "injected artifact failure"
+    elif failure == "epoch_tracking":
+        assert manifest["error"]["message"] == "injected metric failure"
+    else:
+        assert manifest["error"]["type"] == "KeyboardInterrupt"
+    connection = manifest["tracking"]
+    client = mlflow.MlflowClient(tracking_uri=connection["tracking_uri"])
+    run = client.get_run(connection["run_id"])
+    assert run.info.status == ("KILLED" if failure == "interrupt" else "FAILED")
+    if failure != "cleanup":
+        downloaded = Path(client.download_artifacts(run.info.run_id, ""))
+        assert verify_inventory(downloaded) == manifest
 
 
 @pytest.mark.training

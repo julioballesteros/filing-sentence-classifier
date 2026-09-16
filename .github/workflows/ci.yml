@@ -35,7 +35,7 @@ jobs:
         run: uv python install
 
       - name: Install project and development dependencies
-        run: uv sync --locked --dev --extra data --extra train --no-editable
+        run: uv sync --locked --dev --extra data --extra train --extra tracking --no-editable
 
       - name: Lint
         run: uv run --no-sync ruff check .

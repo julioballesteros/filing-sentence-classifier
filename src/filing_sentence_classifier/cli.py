@@ -257,8 +257,30 @@ def train_model(
             "--manifest-sha256", help="Optional expected dataset manifest checksum."
         ),
     ] = None,
+    mlflow_dir: Annotated[
+        Path | None,
+        typer.Option(
+            "--mlflow-dir",
+            file_okay=False,
+            help="Enable MLflow with local SQLite and artifacts in this directory.",
+        ),
+    ] = None,
+    experiment_name: Annotated[
+        str | None,
+        typer.Option(
+            "--experiment-name",
+            help="MLflow experiment name (default: filing-sentence-classifier).",
+        ),
+    ] = None,
 ) -> None:
     """Train MeanPoolMLP, select with validation, and save a complete local run."""
+    if experiment_name is not None and (
+        mlflow_dir is None or not experiment_name.strip()
+    ):
+        raise typer.BadParameter(
+            "Use a nonblank experiment name together with --mlflow-dir.",
+            param_hint="--experiment-name",
+        )
     try:
         from filing_sentence_classifier.training.run import (
             TrainingRunError,
@@ -275,6 +297,14 @@ def train_model(
 
     from filing_sentence_classifier.training.fit import EpochMetrics
 
+    tracker = None
+    if mlflow_dir is not None:
+        from filing_sentence_classifier.training.tracking import MLflowTracker
+
+        tracker = MLflowTracker(
+            mlflow_dir, experiment_name or "filing-sentence-classifier"
+        )
+
     def progress(row: EpochMetrics) -> None:
         typer.echo(
             f"Epoch {row.epoch:02d} | train loss {row.training.mean_loss:.4f} | val loss {row.validation_mean_loss:.4f} | val macro-F1 {row.validation_metrics.macro_f1:.4f}"
@@ -289,6 +319,7 @@ def train_model(
             max_length=max_length,
             expected_manifest_sha256=manifest_sha256,
             on_epoch=progress,
+            tracker=tracker,
         )
     except TrainingRunError as exc:
         typer.echo(f"Error: {exc}", err=True)
