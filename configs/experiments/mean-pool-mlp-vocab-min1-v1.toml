@@ -1,0 +1,22 @@
+# Vocabulary probe: model settings match the reference.
+# Requires vocabulary-min1-v1 (min_frequency=1), as pinned in the study plan.
+schema_version = 2
+
+[model]
+embedding_dim = 128
+hidden_dim = 64
+dropout = 0.0
+
+[training]
+batch_size = 32
+max_epochs = 30
+patience = 5
+min_delta = 0.0
+learning_rate = 0.001
+weight_decay = 0.0
+
+[runtime]
+seed = 17
+device = "cpu"
+num_workers = 0
+num_threads = 1

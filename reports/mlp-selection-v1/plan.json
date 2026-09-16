@@ -1,0 +1,321 @@
+{
+  "candidates": [
+    {
+      "candidate_id": "mean-pool-mlp-v1",
+      "changes_from_reference": {},
+      "compare_with": [],
+      "config_path": "configs/experiments/mean-pool-mlp-v1.toml",
+      "config_sha256": "d3071f64f6a41980a5459ce1ead64147de83c26ad0e669eb3582b7ce5db5cfc9",
+      "hypothesis": "Existing unregularized reference; eligible to remain selected if new candidates do not improve validation macro-F1.",
+      "num_parameters": 388227,
+      "output_dir": "artifacts/runs/mean-pool-mlp-v1-tracked",
+      "reuse_existing_run": true,
+      "run_id": "mean-pool-mlp-v1-tracked",
+      "vocabulary_id": "vocabulary-v1"
+    },
+    {
+      "candidate_id": "mean-pool-mlp-dropout-v1",
+      "changes_from_reference": {
+        "model.dropout": 0.3
+      },
+      "compare_with": [
+        "mean-pool-mlp-v1"
+      ],
+      "config_path": "configs/experiments/mean-pool-mlp-dropout-v1.toml",
+      "config_sha256": "214e81c959bbc23ade693f0a6cf5840a14292f04c6e19cf17acae889b250b19b",
+      "hypothesis": "Hidden-layer dropout may reduce overfitting and improve validation macro-F1.",
+      "num_parameters": 388227,
+      "output_dir": "artifacts/runs/mean-pool-mlp-dropout-v1",
+      "reuse_existing_run": false,
+      "run_id": "mean-pool-mlp-dropout-v1",
+      "vocabulary_id": "vocabulary-v1"
+    },
+    {
+      "candidate_id": "mean-pool-mlp-weight-decay-v1",
+      "changes_from_reference": {
+        "training.weight_decay": 0.1
+      },
+      "compare_with": [
+        "mean-pool-mlp-v1"
+      ],
+      "config_path": "configs/experiments/mean-pool-mlp-weight-decay-v1.toml",
+      "config_sha256": "6bc4d6db4f86b47ca55833f8bfa8733884f4fa355707344581fec00e02422378",
+      "hypothesis": "AdamW decay on all trainable parameters, including embeddings, may improve validation macro-F1.",
+      "num_parameters": 388227,
+      "output_dir": "artifacts/runs/mean-pool-mlp-weight-decay-v1",
+      "reuse_existing_run": false,
+      "run_id": "mean-pool-mlp-weight-decay-v1",
+      "vocabulary_id": "vocabulary-v1"
+    },
+    {
+      "candidate_id": "mean-pool-mlp-regularized-v1",
+      "changes_from_reference": {
+        "model.dropout": 0.3,
+        "training.weight_decay": 0.1
+      },
+      "compare_with": [
+        "mean-pool-mlp-v1",
+        "mean-pool-mlp-dropout-v1",
+        "mean-pool-mlp-weight-decay-v1"
+      ],
+      "config_path": "configs/experiments/mean-pool-mlp-regularized-v1.toml",
+      "config_sha256": "0b59b171b3d219d84c0f546f9b1e8fb8a863d6ee34bef1beb6bfbe3e82e1c128",
+      "hypothesis": "Combining the declared dropout and decay settings may complement their individual effects or reveal excessive regularization.",
+      "num_parameters": 388227,
+      "output_dir": "artifacts/runs/mean-pool-mlp-regularized-v1",
+      "reuse_existing_run": false,
+      "run_id": "mean-pool-mlp-regularized-v1",
+      "vocabulary_id": "vocabulary-v1"
+    },
+    {
+      "candidate_id": "mean-pool-mlp-small-v1",
+      "changes_from_reference": {
+        "model.embedding_dim": 64
+      },
+      "compare_with": [
+        "mean-pool-mlp-v1"
+      ],
+      "config_path": "configs/experiments/mean-pool-mlp-small-v1.toml",
+      "config_sha256": "8dafb75342a367ae1816ba299b0bc275e5ea6c5e11d0780ffb2837105fc4e88f",
+      "hypothesis": "Reducing embedding dimension may limit overfitting while retaining useful class distinctions with fewer parameters.",
+      "num_parameters": 194243,
+      "output_dir": "artifacts/runs/mean-pool-mlp-small-v1",
+      "reuse_existing_run": false,
+      "run_id": "mean-pool-mlp-small-v1",
+      "vocabulary_id": "vocabulary-v1"
+    },
+    {
+      "candidate_id": "mean-pool-mlp-vocab-min1-v1",
+      "changes_from_reference": {
+        "vocabulary.min_frequency": 1
+      },
+      "compare_with": [
+        "mean-pool-mlp-v1"
+      ],
+      "config_path": "configs/experiments/mean-pool-mlp-vocab-min1-v1.toml",
+      "config_sha256": "79b06460fb9e0030417f4f82942b737a863ee5e5a589ff6f66cf8be52332ad24",
+      "hypothesis": "Retaining training singletons may recover useful words; compare any gain with the additional sparsely trained embeddings and capacity.",
+      "num_parameters": 720515,
+      "output_dir": "artifacts/runs/mean-pool-mlp-vocab-min1-v1",
+      "reuse_existing_run": false,
+      "run_id": "mean-pool-mlp-vocab-min1-v1",
+      "vocabulary_id": "vocabulary-min1-v1"
+    }
+  ],
+  "data": {
+    "label_names": {
+      "0": "specific fls",
+      "1": "not-fls",
+      "2": "non-specific fls"
+    },
+    "manifest_sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+    "train_rows": 2074,
+    "train_sha256": "cc0ba0925cf6bec54d822d67ca28db3309dc145bc72444497418b293444a9119",
+    "val_rows": 519,
+    "val_sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d"
+  },
+  "data_dir": "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1",
+  "execution_order": [
+    "mean-pool-mlp-dropout-v1",
+    "mean-pool-mlp-weight-decay-v1",
+    "mean-pool-mlp-regularized-v1",
+    "mean-pool-mlp-small-v1",
+    "mean-pool-mlp-vocab-min1-v1"
+  ],
+  "expected_environment": {
+    "logical_cpus": 14,
+    "machine": "arm64",
+    "mlflow": "3.16.0",
+    "packages": {
+      "filing-sentence-classifier": "0.1.0",
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.3",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "torch": "2.14.0"
+    },
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.9"
+  },
+  "experiment_budget": {
+    "already_evaluated": 5,
+    "excluded_from_budget": [
+      "Majority classifier",
+      "Tiny implementation diagnostics",
+      "Exact technical reproductions",
+      "Later fixed-configuration seed repetitions"
+    ],
+    "initial_distinct_tfidf_and_mlp_configurations": 10,
+    "new_configurations_executed_at_registration": 0,
+    "new_configurations_reserved": 5,
+    "previous_mlp_configurations": 1,
+    "previous_tfidf_configurations": 4,
+    "total_after_all_planned_configurations": 10,
+    "unallocated_slots": 0
+  },
+  "fixed_settings": {
+    "batch_size": 32,
+    "checkpoint_selection": "Highest unrounded validation macro-F1; exact ties keep the earliest epoch",
+    "hidden_dim": 64,
+    "learning_rate": 0.001,
+    "loss": "unweighted_cross_entropy",
+    "max_epochs": 30,
+    "max_length": 128,
+    "min_delta": 0.0,
+    "optimizer": "AdamW with the existing fixed numerical settings",
+    "patience": 5,
+    "runtime": {
+      "device": "cpu",
+      "num_threads": 1,
+      "num_workers": 0,
+      "seed": 17
+    }
+  },
+  "freeze_policy": "Keep this registration immutable after new training starts. Record execution and selection separately; substantive amendments require a new plan version with prior exposure documented.",
+  "later_seed_repetitions": [
+    17,
+    29,
+    43
+  ],
+  "motivation": {
+    "reference_report": "reports/mean-pool-mlp-v1/README.md",
+    "validation_review": "reports/validation-errors.md",
+    "validation_review_sha256": "4f1d27d215acbbb769a249dfed9e7a25f24b8ef6cc63c8c87c9b1c65e29dc701"
+  },
+  "neural_delivery_seed": 17,
+  "pyproject_sha256": "3d0a0b592bb5e1493e99e9e76eefee88b086408c545f60d6b5aa1a9908ccb3d6",
+  "reference_reuse": {
+    "best_epoch": 8,
+    "checkpoint_sha256": "9344b080829c32ff657b612b559011ac66f00a2295aece5a5b0b74c5113a66ac",
+    "eligibility_checks": [
+      "Same imported package source hashes",
+      "Same training config bytes and data provenance",
+      "Same vocabulary and encoder checksum",
+      "Same uv.lock and pyproject.toml hashes",
+      "Same recorded host/environment and MLflow version",
+      "All reference artifact sizes and hashes verified"
+    ],
+    "historical_provenance": "The original run was recorded with uncommitted source. Its saved sources now match the committed training code identified below; its manifest is preserved unchanged.",
+    "manifest_sha256": "15a7dacb861acfc50d39a66003b2920ea6f311ddbb060807637806b9e736db8e",
+    "run_id": "mean-pool-mlp-v1-tracked",
+    "summary_sha256": "f877cb74b5ec936e353cb8d09cefaac5123164f9c931d0b029da0fbf7e31e7ba",
+    "validation_accuracy": 0.7360308285163777,
+    "validation_macro_f1": 0.6918605265426075
+  },
+  "refit_train_and_validation": false,
+  "registered_at_utc": "2026-09-16T14:44:55.950740+00:00",
+  "reserved_test_evaluation": false,
+  "schema_version": 1,
+  "scope": "Five new neural configurations declared after observing the initial reference and validation error review; no candidate training is executed in this registration step.",
+  "selection": {
+    "adaptive_search": false,
+    "direction": "maximize",
+    "eligibility": "Completed run with matching planned config, encoder, inputs, code and environment; restore/evaluation checks passed and metrics recomputed from saved validation predictions.",
+    "exact_score_tie_break_order": [
+      "mean-pool-mlp-small-v1",
+      "mean-pool-mlp-v1",
+      "mean-pool-mlp-weight-decay-v1",
+      "mean-pool-mlp-dropout-v1",
+      "mean-pool-mlp-regularized-v1",
+      "mean-pool-mlp-vocab-min1-v1"
+    ],
+    "metric_path": "metrics.val.json:metrics.macro_f1",
+    "minimum_gain_over_reference": 0.0,
+    "on_failure": "Record the failed attempt and stop for diagnosis. Do not substitute hyperparameters or discard failed candidates silently; resume the same recipe after an infrastructure fix, or version the plan and identify affected runs if code or methodology changes.",
+    "primary_metric": "macro_f1",
+    "round_before_selection": false,
+    "secondary_diagnostics": [
+      "Accuracy",
+      "Per-class precision/recall/F1/support",
+      "Confusion matrix",
+      "Validation loss and learning curves",
+      "Best epoch and completed epochs",
+      "Parameter count",
+      "Recorded training seconds including synchronous epoch tracking",
+      "The same 30 reviewed IDs as qualitative development examples"
+    ],
+    "secondary_diagnostics_change_selection": false,
+    "selection_step": "A later selection step will apply this rule after the fixed candidate set has been executed and verified.",
+    "split": "val",
+    "tie_break_rationale": "Prefer fewer parameters; at equal size prefer the reference recipe, then one regularizer, then two. Weight decay precedes dropout as a fixed preference between otherwise comparable single-regularizer recipes."
+  },
+  "status_at_registration": "planned",
+  "study_id": "mlp-selection-v1",
+  "tracking": {
+    "directory": "artifacts/mlflow",
+    "experiment_name": "filing-sentence-classifier",
+    "version": "3.16.0"
+  },
+  "training_code_commit": "f75939a80e0b1379fe876fbf1084eb6cc450aed4",
+  "training_code_scope": [
+    "src",
+    "pyproject.toml",
+    "uv.lock",
+    ".python-version"
+  ],
+  "training_code_sha256": {
+    "__init__.py": "e1d13c02abf15d9d5744bbb593db19e396ac8d7c94d5b72a24d6b184e035995c",
+    "__main__.py": "7355d87bce8624ba466fcef31fe7f5a2904e5461bfa44500e4d82fabe48985c8",
+    "baselines/__init__.py": "a4cb10fdc93defb0711dbd6268f887cb0a2c1b8e1bcb0c1ad1dd8d67c3425c89",
+    "baselines/majority.py": "29994fd284f6098d3a808f7e4dcd9473f838da98fb34df5b4814525a388e943d",
+    "baselines/run.py": "8689631c64dba9166b16f3002254a7099fe1f6add5ead8e32a47f8ffa160f0a3",
+    "baselines/tfidf.py": "be8241ba4e254dc27a1d234ceab279a85a3c7690b9b88bb7de6f080d468386d2",
+    "baselines/tfidf_run.py": "4637ec1bdcedf04642eff1d24652c37cf69f36a08fbf9ef91305bb52302b8336",
+    "cli.py": "8876cf653efb789edb3197c54c177b21c42f0120957a07b009015408d4647d9d",
+    "data/__init__.py": "615559e361359c93a151f774ffad1c15ccd5e4b44aaa96c6dad1766e6ba0c28a",
+    "data/audit.py": "9e09fa4d0b9c208c86f5c43465ba0acfbb23d454c7651bb7339ebac40a8a7e4c",
+    "data/cleaning.py": "fe3acfe815aee727389bc961441adbce7dd6b6b12224a179458fc8af30425243",
+    "data/collate.py": "c98d06fd4be8a4484f28b20f48d192607e5c5541e98a4580aab25f0198f9cee2",
+    "data/dataloader.py": "4f577bf03a46ea2924402270910f2b799ea8857408f25a98eb832b03ab151d4c",
+    "data/dataset.py": "7e6b3837b9e6728694d00b4c5ca75b84e4688f67fff6dc5ad0cab6b692bae056",
+    "data/fls.py": "1eef777d4ee154382ea598bb72f6c1eedecb66b6880ae0b0a69ce8aafc36640e",
+    "data/loading.py": "84897cecbfd2f6b9453196884bc61523a82da65c9bef70d4ca81a42d21cc4401",
+    "data/partition.py": "bd2b8be9d00725f10fdde87366a1ff0c1f8a5e87032346327e6115c18e470b23",
+    "data/prepare.py": "6898476e92c0e9d2db84e443af797f52bed66c7edc36031be261a094a813b00f",
+    "data/source.py": "760d27548ca7c2cfefc4465853ab9731e355a2707168ed22e941110e6566e571",
+    "data/spec.py": "093e6a67065d7656699aa1689bd03d6f5bcb5f211e16779ab699a7ef17aab9f5",
+    "data/split.py": "d924147dfef6253edb88a29e0c9989d55614cdb95c1ebd485cbb4ed6071c44b2",
+    "data/vocabulary.py": "4b5c6026ff9aa05674bb8f8bc65d29b41b67ce13240022ee216b165884e38bdf",
+    "evaluation/__init__.py": "84a6e4d9c16813494f2e48c0bcda5f05d9cc1ef7c4e80b1eba758453beda9c26",
+    "evaluation/evaluate.py": "730adc1741eaa70cc0d17c1f35c1995a43f05188a923db57704f89462e210d21",
+    "evaluation/metrics.py": "f0640b1763625a10a31dd10efc03f84fb13fd69a2a95aa7d8cd61be41d6d2a7d",
+    "models/__init__.py": "c25fa2cc1dbdfba148a06dee626cd771987033223d8a89351b265ab286f00f48",
+    "models/mean_pool_mlp.py": "d161f394ffb5a245e9a9ba66a57865fc75382a450f8d2379412e60ca07177350",
+    "text/__init__.py": "78c9f4ff9b6e14a37ad94532830c75a110cd40bed5eec44216b786acba6d9b78",
+    "text/encoding.py": "65b4bbd7a48d307f1e55faedf1b958b35480c3a4f86dd257de6c8b728c2dd101",
+    "text/tokenization.py": "37cd7696d0c2bc92712883952ed7cf06bce08c79e32c7e7132434cab04924895",
+    "text/vocabulary.py": "ad7146afc3fcfa2b04d819f6ef81caf0420ccdf0befd27d6b7300eab3620f59f",
+    "training/__init__.py": "1e672970ee688cdbfeb4157e0351256b4dcbc288b48c6343b2f9e9b0d656914c",
+    "training/artifacts.py": "bad3848be382856c7c9385f950d0b16f753f6fce1c6b3229d736d2c5d76eff4a",
+    "training/checkpoints.py": "735d079465ada0a0668f7dcf816c7d0bf323bffff07ae7ebedea1c75cda1741c",
+    "training/config.py": "a03fa606140a9df898bf9a09e8a3c5d91e43d1e57268f133702f2148123f1b68",
+    "training/engine.py": "468187f3cb5e823755066c2934bc3dc94653d02e0484ac96cf968968f7498cd8",
+    "training/fit.py": "6fc7690d7f1542abafdd0c79be0f49acff7f3787edfe43d5463ce227c06bf911",
+    "training/optimizers.py": "8a5e241ec70b0a9dc33d087b7785bb11372c563ee40ee33e5f8149ff92518d85",
+    "training/plots.py": "a7687045343b477a1d0087fa38c59b494a9de107af147863edbcc40f5b04da85",
+    "training/reproducibility.py": "e0be49217d1447e452b846c8481c3a72b775173a828832eac3c182319ccc022f",
+    "training/run.py": "9a02835d634603b3e49e7d97f9238a716d98c6a57b6370b9654c27cb26aa0249",
+    "training/tracking.py": "bf5ed5e632ec6a432029e2c92bab6e5594d48b5723d2feb09219b239b29d9ae1"
+  },
+  "uv_lock_sha256": "8ad5a5040f0a6f14961c6b5330a2072f6c7600791c13c4d2cf1b89623f343ebc",
+  "vocabularies": {
+    "vocabulary-min1-v1": {
+      "directory": "artifacts/preprocessing/vocabulary-min1-v1",
+      "expected_encoder_sha256": "8c58d0eebc6590d3b2d8440332d76599a8e72affc4c8c28d51af3bc5e7f19f34",
+      "manifest_sha256": "b8df14852debe5c5e71ca6209b5216008ffdd462e96b7e1c6a0a28b37983d70d",
+      "max_size": null,
+      "min_frequency": 1,
+      "size_including_reserved": 5563,
+      "vocabulary_sha256": "43a9d18cfd2cc642a1c9813da9d9455490259f108529df8b0055775cf0fa7e27"
+    },
+    "vocabulary-v1": {
+      "directory": "artifacts/preprocessing/vocabulary-v1",
+      "expected_encoder_sha256": "67d19b3dd62ae1514e8dca03dffa0a16ef6ef112230874ab685f0e8ea84b676e",
+      "manifest_sha256": "891b82294554711a19c6ef84ef5a3ceda0995f3ef23b16ccc8e8ac83b873da6b",
+      "max_size": null,
+      "min_frequency": 2,
+      "size_including_reserved": 2967,
+      "vocabulary_sha256": "c8ce9ac3ba6c7abfa0c0f704b5e6ee0a1266756045d72c54bda8751c5a9819dd"
+    }
+  }
+}
