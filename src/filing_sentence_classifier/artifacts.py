@@ -218,6 +218,17 @@ def _invalid_constant(value: str) -> object:
     raise BundleError(f"Non-finite JSON number: {value}.")
 
 
+def _parse_json_object(content: bytes) -> dict[str, object]:
+    value = json.loads(
+        content.decode("utf-8"),
+        object_pairs_hook=_unique_object,
+        parse_constant=_invalid_constant,
+    )
+    if not isinstance(value, dict):
+        raise BundleError("Expected a JSON object.")
+    return cast(dict[str, object], value)
+
+
 def verify_bundle(
     directory: Path, *, expected_manifest_sha256: str | None = None
 ) -> BundleManifest:
@@ -246,11 +257,7 @@ def verify_bundle(
             and hashlib.sha256(content).hexdigest() != expected_manifest_sha256
         ):
             raise BundleError("Bundle manifest checksum mismatch.")
-        state = json.loads(
-            content.decode("utf-8"),
-            object_pairs_hook=_unique_object,
-            parse_constant=_invalid_constant,
-        )
+        state = _parse_json_object(content)
         manifest = BundleManifest.from_dict(state)
         if {path.name for path in directory.iterdir()} != {
             "manifest.json",

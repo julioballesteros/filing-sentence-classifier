@@ -327,6 +327,68 @@ def train_model(
     typer.echo(f"Completed training run: {artifact}")
 
 
+@app.command("export")
+def export_model(
+    run_dir: Annotated[
+        Path, typer.Option("--run-dir", file_okay=False, help="Saved training run.")
+    ],
+    output_dir: Annotated[
+        Path, typer.Option("--output-dir", file_okay=False, help="Bundle directory.")
+    ],
+    model_id: Annotated[
+        str,
+        typer.Option(
+            "--model-id", help="Version identifier for these bundle contents."
+        ),
+    ],
+    data_manifest: Annotated[
+        Path | None,
+        typer.Option(
+            "--data-manifest",
+            dir_okay=False,
+            help="Development manifest JSON; required when the run has no saved copy.",
+        ),
+    ] = None,
+    manifest_sha256: Annotated[
+        str | None,
+        typer.Option(
+            "--manifest-sha256", help="Optional expected source run manifest hash."
+        ),
+    ] = None,
+    max_characters: Annotated[
+        int,
+        typer.Option("--max-characters", min=1, help="Raw characters per sentence."),
+    ] = 10_000,
+    max_batch_size: Annotated[
+        int,
+        typer.Option(
+            "--max-batch-size", min=1, help="Sentences per prediction request."
+        ),
+    ] = 256,
+) -> None:
+    """Export unchanged model bytes and verified metadata without loading ML runtimes."""
+    from filing_sentence_classifier.artifacts import BundleError
+    from filing_sentence_classifier.exporting import export_bundle
+    from filing_sentence_classifier.inference.contracts import (
+        InputLimits,
+        PredictionContractError,
+    )
+
+    try:
+        artifact = export_bundle(
+            run_dir,
+            output_dir,
+            model_id=model_id,
+            data_manifest=data_manifest,
+            limits=InputLimits(max_characters, max_batch_size),
+            expected_manifest_sha256=manifest_sha256,
+        )
+    except (BundleError, PredictionContractError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(f"Verified inference bundle: {artifact}")
+
+
 @app.command("evaluate")
 def evaluate(
     data_dir: Annotated[
