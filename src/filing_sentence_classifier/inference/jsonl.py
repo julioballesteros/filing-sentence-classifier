@@ -21,7 +21,9 @@ class PredictionIOError(ValueError):
 
 
 @dataclass(frozen=True)
-class _Row:
+class InputRow:
+    """One raw sentence with its source line and optional caller-supplied ID."""
+
     line: int
     text: str
     sample_id: str | None
@@ -36,7 +38,8 @@ def _unique_object(pairs: list[tuple[str, object]]) -> dict[str, object]:
     return result
 
 
-def _read_rows(source: BinaryIO) -> Iterator[_Row]:
+def read_prediction_rows(source: BinaryIO) -> Iterator[InputRow]:
+    """Read strict UTF-8 JSONL records, preserving line numbers and optional IDs."""
     line_number = 0
     while raw := source.readline(MAX_JSONL_LINE_BYTES + 1):
         line_number += 1
@@ -75,7 +78,7 @@ def _read_rows(source: BinaryIO) -> Iterator[_Row]:
                 raise PredictionIOError(
                     f"Line {line_number}: sample_id contains unsupported Unicode."
                 ) from exc
-        yield _Row(line_number, row["text"], sample_id)
+        yield InputRow(line_number, row["text"], sample_id)
 
 
 def predict_jsonl(
@@ -95,7 +98,7 @@ def predict_jsonl(
     if type(batch_size) is not int or batch_size < 1:
         raise PredictionIOError("batch_size must be a positive integer.")
     request_size = min(batch_size, predictor.manifest.limits.max_batch_size)
-    pending: list[_Row] = []
+    pending: list[InputRow] = []
     count = 0
 
     def write_batch() -> None:
@@ -113,7 +116,7 @@ def predict_jsonl(
                 output["sample_id"] = row.sample_id
             destination.write(json.dumps(output, allow_nan=False) + "\n")
 
-    for row in _read_rows(source):
+    for row in read_prediction_rows(source):
         pending.append(row)
         if len(pending) == request_size:
             write_batch()

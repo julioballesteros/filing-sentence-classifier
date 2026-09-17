@@ -548,6 +548,17 @@ Output defaults to stdout (`--output -` is equivalent), with diagnostics on stde
 
 Integration tests verify CLI/API parity for both model families, stdin and file input, repeated model reuse, manifest pinning, offline execution from an unrelated directory, and failure cleanup.
 
+## Inference performance
+
+The [inference benchmark](reports/inference-v1/README.md) measures both frozen bundles on the same 519 validation sentences, using an Apple M3 Max and one CPU thread. Each model uses three fresh-process trials, separate warmup passes, and batch sizes 1, 32, and 128.
+
+| Model | Bundle MiB | Median latency, batch 1 | Throughput, batch 32 | Throughput, batch 128 |
+| --- | ---: | ---: | ---: | ---: |
+| MeanPoolMLP | 1.562 | 0.082 ms | 25,578 sentences/s | 24,511 sentences/s |
+| TF-IDF + logistic regression | 0.290 | 0.916 ms | 17,637 sentences/s | 28,199 sentences/s |
+
+These warm timings cover the complete Python prediction API, excluding JSON/file I/O. They describe this workload and machine, rather than a service latency guarantee. The report separates startup, full and partial batches, parameters, dependency versions, and raw timings. The `benchmark` command reproduces the protocol with new output files; model artifacts remain unchanged and test remains reserved.
+
 ## Code organization
 
 ```text

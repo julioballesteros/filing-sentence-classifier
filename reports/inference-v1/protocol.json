@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "study_id": "inference-v1",
+  "purpose": "Describe the delivery bundles' CPU inference cost without changing or selecting models.",
+  "selection_freeze": {
+    "path": "reports/mlp-selection-v1/freeze.json",
+    "sha256": "2c78cc5d11f53311136dad9c6bcf506ad6cf871651c69e152a6432d36dbb0bb4"
+  },
+  "workload": {
+    "source_directory": "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1",
+    "source_manifest_sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+    "source_partition_sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d",
+    "split": "val",
+    "path": "artifacts/benchmarks/inference-v1/validation.jsonl",
+    "sha256": "76bae018784096237238904f759576cca052450b2694820d58b3dd8f3ee3cf28",
+    "size_bytes": 149197,
+    "sentences": 519,
+    "serialization": "Saved validation order; json.dumps with sort_keys=True and default ASCII escaping; sample_id and text only; LF after every record; UTF-8.",
+    "test_access": false
+  },
+  "config": {
+    "batch_sizes": [1, 32, 128],
+    "warmup_passes": 2,
+    "measured_passes": 5,
+    "trials": 3
+  },
+  "execution": {
+    "device": "cpu",
+    "threads": 1,
+    "concurrency": 1,
+    "fresh_process_per_trial": true,
+    "batch_order": "Rotate [1, 32, 128] by the trial index.",
+    "model_order": ["mean-pool-mlp-regularized-v1", "tfidf-bigram-c10-v1"],
+    "other_project_tests_during_measurement": false,
+    "os_cache": "Not cleared; bundle files are verified before workers run.",
+    "rerun_policy": "Keep the first completed run for each bundle; report every completed trial and measured call. Use a new report directory for later measurements."
+  },
+  "bundles": [
+    {
+      "path": "artifacts/bundles/mean-pool-mlp-regularized-v1",
+      "manifest_sha256": "77ced5004162a6a85f173ca1ada2649fed61891e92e20d08e896fac6c6596f2b",
+      "report": "reports/inference-v1/mean-pool-mlp.json"
+    },
+    {
+      "path": "artifacts/bundles/tfidf-bigram-c10-v1",
+      "manifest_sha256": "6c6be38bd1a9e28fcf6e3fabbd0f514a283bad2555242a300cafccb4a357a962",
+      "report": "reports/inference-v1/tfidf.json"
+    }
+  ]
+}

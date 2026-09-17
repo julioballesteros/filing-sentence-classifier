@@ -474,6 +474,108 @@ def predict(
         raise typer.Exit(code=1) from exc
 
 
+@app.command("benchmark")
+def benchmark(
+    bundle: Annotated[
+        Path,
+        typer.Option("--bundle", file_okay=False, help="Trusted inference bundle."),
+    ],
+    input_path: Annotated[
+        Path,
+        typer.Option(
+            "--input",
+            dir_okay=False,
+            help="Fixed JSONL workload with text and optional sample_id.",
+        ),
+    ],
+    output: Annotated[
+        Path,
+        typer.Option(
+            "--output",
+            dir_okay=False,
+            help="New benchmark JSON report; parent directory must exist.",
+        ),
+    ],
+    batch_sizes: Annotated[
+        list[int] | None,
+        typer.Option(
+            "--batch-size",
+            min=1,
+            help="Repeat for each batch size; defaults to 1, 32, 128.",
+        ),
+    ] = None,
+    warmup_passes: Annotated[
+        int,
+        typer.Option(
+            "--warmup-passes",
+            min=1,
+            help="Untimed full-workload passes per batch size and trial.",
+        ),
+    ] = 2,
+    measured_passes: Annotated[
+        int,
+        typer.Option(
+            "--passes",
+            min=1,
+            help="Timed full-workload passes per batch size and trial.",
+        ),
+    ] = 5,
+    trials: Annotated[
+        int,
+        typer.Option(
+            "--trials",
+            min=1,
+            help="Sequential trials, each in a fresh process with one CPU thread.",
+        ),
+    ] = 3,
+    manifest_sha256: Annotated[
+        str | None,
+        typer.Option(
+            "--manifest-sha256", help="Optional expected bundle manifest checksum."
+        ),
+    ] = None,
+) -> None:
+    """Measure bundle size, learned parameters, load latency and Python API speed."""
+    from filing_sentence_classifier.artifacts import BundleError
+    from filing_sentence_classifier.inference.benchmark import (
+        BenchmarkConfig,
+        BenchmarkError,
+        benchmark_bundle,
+    )
+    from filing_sentence_classifier.inference.contracts import PredictionContractError
+    from filing_sentence_classifier.inference.jsonl import (
+        PredictionIOError,
+        new_prediction_file,
+    )
+
+    try:
+        config = BenchmarkConfig(
+            tuple(batch_sizes) if batch_sizes is not None else (1, 32, 128),
+            warmup_passes,
+            measured_passes,
+            trials,
+        )
+        with new_prediction_file(output) as stream:
+            report = benchmark_bundle(
+                bundle,
+                input_path,
+                config=config,
+                expected_manifest_sha256=manifest_sha256,
+            )
+            json.dump(report, stream, indent=2, sort_keys=True, allow_nan=False)
+            stream.write("\n")
+    except (
+        BundleError,
+        BenchmarkError,
+        PredictionContractError,
+        PredictionIOError,
+        OSError,
+    ) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(f"Saved inference benchmark: {output}")
+
+
 @app.command("evaluate")
 def evaluate(
     data_dir: Annotated[

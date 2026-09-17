@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import os
 import platform
 import subprocess
 import sys
@@ -378,3 +379,115 @@ app()
     assert result.stdout == ""
     assert f"[{extra}] extra" in result.stderr
     assert "Traceback" not in result.stderr
+
+
+def test_benchmark_isolates_trials_and_records_recomputable_timings(bundle, tmp_path):
+    source = tmp_path / "workload.jsonl"
+    source.write_text("".join(json.dumps({"text": text}) + "\n" for text in TEXTS[:3]))
+    output = tmp_path / "benchmark.json"
+    before = {path.name: path.read_bytes() for path in bundle.iterdir()}
+    result = CliRunner().invoke(
+        app,
+        [
+            "benchmark",
+            "--bundle",
+            str(bundle),
+            "--input",
+            str(source),
+            "--output",
+            str(output),
+            "--batch-size",
+            "1",
+            "--batch-size",
+            "2",
+            "--warmup-passes",
+            "1",
+            "--passes",
+            "2",
+            "--trials",
+            "2",
+            "--manifest-sha256",
+            hashlib.sha256(before["manifest.json"]).hexdigest(),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert result.stderr == ""
+    report = json.loads(output.read_text())
+    assert report["bundle"]["total_bytes"] == sum(map(len, before.values()))
+    assert (
+        report["workload"]["sha256"] == hashlib.sha256(source.read_bytes()).hexdigest()
+    )
+    assert report["workload"]["sentences"] == 3
+    assert all(text not in output.read_text() for text in TEXTS)
+    assert report["code_sha256"]["inference/benchmark.py"]
+    assert len({trial["pid"] for trial in report["trials"]}) == 2
+    assert all(trial["pid"] != os.getpid() for trial in report["trials"])
+    assert [trial["batch_order"] for trial in report["trials"]] == [[1, 2], [2, 1]]
+    for trial in report["trials"]:
+        assert trial["first_load_ns"] > 0
+        assert trial["first_single_prediction_ns"] > 0
+        runtime = trial["runtime_and_model"]
+        assert runtime["device"] == "cpu"
+        if report["bundle"]["family"] == "mean_pool_mlp":
+            assert runtime["torch_threads"] == runtime["torch_interop_threads"] == 1
+            assert runtime["parameter_bytes"] == runtime["parameter_count"] * 4
+        else:
+            assert all(pool["num_threads"] == 1 for pool in runtime["native_pools"])
+            assert runtime["learned_numeric_bytes"] == 8 * (
+                runtime["classifier_parameter_count"] + runtime["idf_values"]
+            )
+    for summary in report["summary"]["batches"]:
+        size = summary["batch_size"]
+        rows = [
+            next(row for row in trial["measurements"] if row["batch_size"] == size)
+            for trial in report["trials"]
+        ]
+        assert all(
+            row["request_sizes"] == ([1, 1, 1] if size == 1 else [2, 1]) for row in rows
+        )
+        elapsed = sum(
+            sum(durations) for row in rows for durations in row["measured_passes_ns"]
+        )
+        assert summary["sentences_per_second"] == pytest.approx(
+            3 * 2 * 2 * 1e9 / elapsed
+        )
+        assert summary["full_request_latency"]["samples"] == (12 if size == 1 else 4)
+        assert (summary["tail_request_latency"] is None) == (size == 1)
+    assert {path.name: path.read_bytes() for path in bundle.iterdir()} == before
+
+
+@pytest.mark.parametrize("case", ["empty", "invalid", "batch_limit", "worker_failure"])
+def test_benchmark_errors_do_not_publish_reports(bundle, tmp_path, monkeypatch, case):
+    from filing_sentence_classifier.inference import benchmark
+
+    source = tmp_path / "input.jsonl"
+    source.write_text('{"text":"growth"}\n' if case != "empty" else "")
+    if case == "invalid":
+        source.write_text('{"text":" "}\n')
+    if case == "worker_failure":
+        monkeypatch.setattr(
+            benchmark.subprocess,
+            "run",
+            lambda *args, **kwargs: subprocess.CompletedProcess(
+                args, 1, "", "Synthetic worker failure"
+            ),
+        )
+    output = tmp_path / "benchmark.json"
+    result = CliRunner().invoke(
+        app,
+        [
+            "benchmark",
+            "--bundle",
+            str(bundle),
+            "--input",
+            str(source),
+            "--output",
+            str(output),
+            "--batch-size",
+            "3" if case == "batch_limit" else "1",
+        ],
+    )
+    assert result.exit_code == 1
+    assert "Error:" in result.stderr
+    assert not output.exists()
+    assert not list(tmp_path.glob(".*.tmp"))
