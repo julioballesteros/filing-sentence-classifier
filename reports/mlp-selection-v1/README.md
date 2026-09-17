@@ -1,12 +1,12 @@
 # MLP selection study
 
-**Status: neural configuration selected; seed repetitions are pending.** The registered rule selects **combined dropout and weight decay**, with validation macro-F1 **0.7024** at seed 17, compared with **0.6919** for the initial MLP and **0.6924** for selected TF-IDF. These are development results from one partition and one seed.
+**Status: neural configuration selected and evaluated at all three declared seeds; final delivery freeze is pending.** Combined dropout and weight decay averages validation macro-F1 **0.6961 ± 0.0090** across seeds 17, 29, and 43. The seed-17 result used for configuration selection is **0.7024**; selected TF-IDF scores **0.6924**. All results use the same frozen development partition.
 
 The immutable [registration](plan.json) predates the new runs. [Execution evidence](execution.json) records the commands, order, timestamps, exit codes, and manifest hashes. [Comparison data](comparison.json) contains unrounded scores, full per-class metrics and confusion matrices, numerical learning curves, preprocessing statistics, artifact identities, MLflow run IDs, and verification results.
 
 The [selection record](selection.json) applies the rule to all six eligible candidates and identifies the chosen configuration, vocabulary, encoder, checkpoint, and MLflow run by their saved identities. Earlier evidence files remain unchanged, including their selection status at the time they were recorded.
 
-## Validation results
+## Configuration comparison (seed 17)
 
 Each row uses predictions from its restored best macro-F1 checkpoint. Changes are relative to the original recipe, not cumulative changes to the preceding row. All neural runs use the same 2,074 training and 519 validation sentences.
 
@@ -75,10 +75,35 @@ Verification passed for all six neural runs: every manifest file hash and size, 
 
 Complete checkpoints, encoders, predictions, source snapshots, and histories remain under `artifacts/runs/<run_id>/` and in local MLflow, outside Git. The comparison JSON publishes aggregate evidence and their hashes; execution commands use paths relative to the repository root. Reproduction requires the frozen inputs and environment and a new output directory.
 
-## Selected configuration and remaining work
+## Selected configuration
 
 The registered rule maximizes **unrounded validation macro-F1** among the six eligible candidates. Exact ties prefer, in order: smaller embeddings, reference, weight decay, dropout, combined regularization, expanded vocabulary. Secondary diagnostics do not override that rule. Applying it selects [mean-pool-mlp-regularized-v1](../../configs/experiments/mean-pool-mlp-regularized-v1.toml) with **0.7024286921089247** macro-F1. There is no top-score tie; the margin over the runner-up, dropout alone, is **0.010170** (rounded for display).
 
 The chosen recipe uses 128-dimensional embeddings, hidden dimension 64, dropout **0.3**, AdamW weight decay **0.1**, and the original train-only vocabulary (`min_frequency=2`, 2,967 IDs), with prefix length 128. Its existing seed-17 run supplies the **epoch-8 checkpoint** and matching encoder. Selection rechecked run inventories and registered identities and recomputed all six candidates' saved-prediction metrics; it required no new training. The selection JSON pins the evidence hashes and selected artifact paths and checksums, preserving the original configuration file.
 
-All **ten** initial configuration slots have now been evaluated: four TF-IDF and six MLP recipes. The next step measures variation with seeds **17, 29, and 43**, keeping this recipe and the partitions fixed and reusing the identified seed-17 run. The predeclared neural delivery seed is 17; the final delivery freeze follows the seed study. Test remains reserved, and there is no refit on train plus validation.
+## Variation across training seeds
+
+The selected recipe was evaluated with the predeclared seeds **17, 29, and 43**. Seed 17 reuses its verified existing run; the two new runs change only `runtime.seed`. Data partitions, vocabulary, encoder, architecture, optimizer settings, early stopping, source code, and recorded environment remain identical. Each run contributes the validation metrics of its own restored best macro-F1 checkpoint.
+
+| Seed | Macro-F1 | Accuracy | Specific-FLS recall | Best / completed epochs |
+| --- | ---: | ---: | ---: | ---: |
+| 17 (reused) | 0.7024 | 0.7437 | 0.5930 | 8 / 13 |
+| 29 | 0.6858 | 0.7457 | 0.5116 | 8 / 13 |
+| 43 | 0.7000 | 0.7399 | 0.6279 | 10 / 15 |
+| Mean ± sample SD | **0.6961 ± 0.0090** | **0.7431 ± 0.0029** | **0.5775 ± 0.0597** | — |
+
+The summary uses an arithmetic mean and **sample standard deviation (`ddof=1`, n=3)** over run-level metrics, without pooling predictions or creating an ensemble. Macro-F1 ranges from **0.6858 to 0.7024**. The recipe was selected using seed 17, which is included here; this is descriptive training-seed variation on one validation split, not an independent estimate of the whole selection procedure or uncertainty across data partitions.
+
+Seed 29 has the highest accuracy but lowest macro-F1. It correctly classifies 243/273 not-FLS sentences, compared with 224 for seed 17, while detecting fewer specific FLS (44/86 versus 51/86) and non-specific FLS (100/160 versus 111/160). Specific-FLS F1 varies more than the other class F1 scores: its sample SD is **0.0299**, versus **0.0085** for not-FLS and **0.0057** for non-specific FLS.
+
+The mean macro-F1 is **0.0037** above the fixed TF-IDF reference, but seed 29 falls below it and all three neural accuracies are lower. These three runs do not establish a reliable generalization advantage over TF-IDF. The selected configuration and predeclared delivery seed **17** are retained; the seed study does not select a replacement run.
+
+![Validation macro-F1 and loss across the three declared training seeds](seed-learning-curves.png)
+
+Dots identify each run's best macro-F1 checkpoint. Seed 43 selects epoch 10 even though its validation loss is lower at an earlier epoch; the checkpoint criterion remains macro-F1. All runs stop after five epochs without a strict improvement.
+
+The [seed execution record](seed-execution.json) preserves both commands, the config hashes fixed before execution, timing, and successful attempts. [Seed results](seeds.json) contain unrounded per-run and aggregate metrics, every class's precision/recall/F1, confusion matrices, numerical curves, artifact hashes, and MLflow identities. The original plan, comparison, selection, and seed-17 run remain unchanged.
+
+Verification passed for all three runs: matching frozen identities and configuration except for the seed, complete artifact inventories, the best-epoch rule, and shared evaluation of saved predictions. A process separate from training restored every checkpoint and encoder and reproduced predictions, metrics, and validation loss exactly. MLflow reports all three runs as `FINISHED`, with matching parameters, metric histories, summaries, and byte-identical artifact mirrors. There were no failures or retries.
+
+All **ten** initial configuration slots remain consumed: four TF-IDF and six MLP recipes; fixed-recipe seed repetitions add no tuning configurations. The next step records the final delivery freeze, retaining the identified seed-17 model. Test remains reserved, and there is no refit on train plus validation.

@@ -1,0 +1,21 @@
+# Seed 43 repetition of the selected regularized recipe. Use vocabulary-v1.
+schema_version = 2
+
+[model]
+embedding_dim = 128
+hidden_dim = 64
+dropout = 0.3
+
+[training]
+batch_size = 32
+max_epochs = 30
+patience = 5
+min_delta = 0.0
+learning_rate = 0.001
+weight_decay = 0.1
+
+[runtime]
+seed = 43
+device = "cpu"
+num_workers = 0
+num_threads = 1

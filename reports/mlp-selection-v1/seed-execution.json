@@ -1,0 +1,159 @@
+{
+  "aggregation": {
+    "n": 3,
+    "run_metric": "Validation metrics of each run's restored best macro-F1 checkpoint",
+    "standard_deviation_ddof": 1,
+    "summary": [
+      "arithmetic_mean",
+      "sample_standard_deviation",
+      "min",
+      "max"
+    ]
+  },
+  "attempts": [
+    {
+      "command_argv": [
+        ".venv/bin/filing-sentence-classifier",
+        "train",
+        "--data-dir",
+        "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1",
+        "--vocabulary-dir",
+        "artifacts/preprocessing/vocabulary-v1",
+        "--config",
+        "configs/experiments/mean-pool-mlp-regularized-seed29-v1.toml",
+        "--output-dir",
+        "artifacts/runs/mean-pool-mlp-regularized-seed29-v1",
+        "--max-length",
+        "128",
+        "--manifest-sha256",
+        "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+        "--mlflow-dir",
+        "artifacts/mlflow",
+        "--experiment-name",
+        "filing-sentence-classifier"
+      ],
+      "config_path": "configs/experiments/mean-pool-mlp-regularized-seed29-v1.toml",
+      "config_sha256": "9920b97322e9fe2a2ccf6f96b48468bb1fa20007f1c09c7e55b72ce6c072a89f",
+      "duration_seconds": 7.12466666707769,
+      "finished_at_utc": "2026-09-17T07:58:38.084165+00:00",
+      "local_log": "artifacts/analysis/mlp-selection-v1/mean-pool-mlp-regularized-seed29-v1.log",
+      "log_sha256": "6559c8bc24b4fc80e8bbbeaf78a14926e639ffe691c47ba207883aa66c2e508d",
+      "manifest_sha256": "83bd4da0533fc684f781a82bb6630ae9f4579968898c38d968c1d3a0654d3384",
+      "output_dir": "artifacts/runs/mean-pool-mlp-regularized-seed29-v1",
+      "return_code": 0,
+      "run_id": "mean-pool-mlp-regularized-seed29-v1",
+      "seed": 29,
+      "started_at_utc": "2026-09-17T07:58:30.959295+00:00",
+      "status": "completed"
+    },
+    {
+      "command_argv": [
+        ".venv/bin/filing-sentence-classifier",
+        "train",
+        "--data-dir",
+        "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1",
+        "--vocabulary-dir",
+        "artifacts/preprocessing/vocabulary-v1",
+        "--config",
+        "configs/experiments/mean-pool-mlp-regularized-seed43-v1.toml",
+        "--output-dir",
+        "artifacts/runs/mean-pool-mlp-regularized-seed43-v1",
+        "--max-length",
+        "128",
+        "--manifest-sha256",
+        "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+        "--mlflow-dir",
+        "artifacts/mlflow",
+        "--experiment-name",
+        "filing-sentence-classifier"
+      ],
+      "config_path": "configs/experiments/mean-pool-mlp-regularized-seed43-v1.toml",
+      "config_sha256": "cb73afd005dc32dda1691655b310b0104dba9308a7403479150c4a6ce219aa94",
+      "duration_seconds": 5.5775725829880685,
+      "finished_at_utc": "2026-09-17T07:58:43.662682+00:00",
+      "local_log": "artifacts/analysis/mlp-selection-v1/mean-pool-mlp-regularized-seed43-v1.log",
+      "log_sha256": "4b4ac5233d8982ee52c049694cd684efa7614a24002a0a5d4f6f7dfa045a7d1e",
+      "manifest_sha256": "a484ff6d8e1769269b8d4d2d1d9cc1821560868a4adac6edea6ae4be98bbff2b",
+      "output_dir": "artifacts/runs/mean-pool-mlp-regularized-seed43-v1",
+      "return_code": 0,
+      "run_id": "mean-pool-mlp-regularized-seed43-v1",
+      "seed": 43,
+      "started_at_utc": "2026-09-17T07:58:38.084839+00:00",
+      "status": "completed"
+    }
+  ],
+  "environment": {
+    "logical_cpus": 14,
+    "machine": "arm64",
+    "mlflow": "3.16.0",
+    "packages": {
+      "filing-sentence-classifier": "0.1.0",
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.3",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "torch": "2.14.0"
+    },
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.9"
+  },
+  "environment_overrides": {
+    "MLFLOW_DISABLE_AGENT_HINT": "1",
+    "MLFLOW_DISABLE_TELEMETRY": "true",
+    "MPLCONFIGDIR": "/private/tmp/filing-mpl-cache"
+  },
+  "execution_commit": "e01c84f5db380ec5f3e66f928f81284deecc67d5",
+  "execution_order": [
+    29,
+    43
+  ],
+  "failed_attempts": 0,
+  "finished_at_utc": "2026-09-17T07:58:43.663351+00:00",
+  "neural_delivery_seed": 17,
+  "new_hyperparameter_configurations": 0,
+  "new_training_runs": 2,
+  "on_failure": "Record the failed attempt and stop for diagnosis. Do not substitute hyperparameters or discard failed candidates silently; resume the same recipe after an infrastructure fix, or version the plan and identify affected runs if code or methodology changes.",
+  "plan_sha256": "bc30d4a6af1e448f9eadff80a2d3c5de10506bb4e07b69b08b7d10b1ae92e0c1",
+  "preflight": {
+    "frozen_inputs_source_environment_verified": true,
+    "new_destinations_absent": true,
+    "only_runtime_seed_changes": true,
+    "reused_run_inventory_verified": true,
+    "training_source_clean": true
+  },
+  "refit_train_and_validation": false,
+  "reserved_test_accessed": false,
+  "reused_run": {
+    "manifest_sha256": "5e4851f6ce4692b6feec81c632dba2ca67d0bdce97f97741c132c7e837c0f506",
+    "run_id": "mean-pool-mlp-regularized-v1",
+    "seed": 17
+  },
+  "reused_training_runs": 1,
+  "scheduled_runs": [
+    {
+      "config_path": "configs/experiments/mean-pool-mlp-regularized-seed29-v1.toml",
+      "config_sha256": "9920b97322e9fe2a2ccf6f96b48468bb1fa20007f1c09c7e55b72ce6c072a89f",
+      "output_dir": "artifacts/runs/mean-pool-mlp-regularized-seed29-v1",
+      "run_id": "mean-pool-mlp-regularized-seed29-v1",
+      "seed": 29
+    },
+    {
+      "config_path": "configs/experiments/mean-pool-mlp-regularized-seed43-v1.toml",
+      "config_sha256": "cb73afd005dc32dda1691655b310b0104dba9308a7403479150c4a6ce219aa94",
+      "output_dir": "artifacts/runs/mean-pool-mlp-regularized-seed43-v1",
+      "run_id": "mean-pool-mlp-regularized-seed43-v1",
+      "seed": 43
+    }
+  ],
+  "schema_version": 1,
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "selection_sha256": "86ac1a9850442bb6ca910b4809514b0e636c0d215510efe355a01a3dd93a1681",
+  "stage": "seed_repetitions",
+  "started_at_utc": "2026-09-17T07:58:30.958754+00:00",
+  "status": "completed",
+  "study_id": "mlp-selection-v1"
+}

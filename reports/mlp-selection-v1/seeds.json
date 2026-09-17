@@ -1,0 +1,909 @@
+{
+  "aggregate_metrics": {
+    "accuracy": {
+      "max": 0.7456647398843931,
+      "mean": 0.7430956968529223,
+      "min": 0.7398843930635838,
+      "sample_std": 0.0029432085388284403
+    },
+    "macro_f1": {
+      "max": 0.7024286921089247,
+      "mean": 0.6960981375429394,
+      "min": 0.6858409012201799,
+      "sample_std": 0.008963973664420114
+    }
+  },
+  "aggregate_per_class": [
+    {
+      "f1": {
+        "max": 0.5930232558139535,
+        "mean": 0.5743548302845599,
+        "min": 0.5398773006134969,
+        "sample_std": 0.02989262398759683
+      },
+      "label": 0,
+      "precision": {
+        "max": 0.5930232558139535,
+        "mean": 0.57371761939012,
+        "min": 0.5567010309278351,
+        "sample_std": 0.01826898493614638
+      },
+      "recall": {
+        "max": 0.627906976744186,
+        "mean": 0.5775193798449613,
+        "min": 0.5116279069767442,
+        "sample_std": 0.05966978417961493
+      },
+      "support_per_run": 86
+    },
+    {
+      "f1": {
+        "max": 0.8350515463917526,
+        "mean": 0.8252004908853214,
+        "min": 0.8200371057513914,
+        "sample_std": 0.008534579490323482
+      },
+      "label": 1,
+      "precision": {
+        "max": 0.8308270676691729,
+        "mean": 0.8125825517240949,
+        "min": 0.7864077669902912,
+        "sample_std": 0.023247267376969298
+      },
+      "recall": {
+        "max": 0.8901098901098901,
+        "mean": 0.8400488400488401,
+        "min": 0.8095238095238095,
+        "sample_std": 0.043700928371607495
+      },
+      "support_per_run": 273
+    },
+    {
+      "f1": {
+        "max": 0.69375,
+        "mean": 0.6887390914589364,
+        "min": 0.6825938566552902,
+        "sample_std": 0.005663912572984934
+      },
+      "label": 2,
+      "precision": {
+        "max": 0.7518796992481203,
+        "mean": 0.714782549322023,
+        "min": 0.69375,
+        "sample_std": 0.03222295809039802
+      },
+      "recall": {
+        "max": 0.69375,
+        "mean": 0.6666666666666666,
+        "min": 0.625,
+        "sample_std": 0.03662165798176446
+      },
+      "support_per_run": 160
+    }
+  ],
+  "aggregation": {
+    "n": 3,
+    "run_metric": "Validation metrics of each run's restored best macro-F1 checkpoint",
+    "standard_deviation_ddof": 1,
+    "summary": [
+      "arithmetic_mean",
+      "sample_standard_deviation",
+      "min",
+      "max"
+    ]
+  },
+  "data": {
+    "label_names": {
+      "0": "specific fls",
+      "1": "not-fls",
+      "2": "non-specific fls"
+    },
+    "manifest_sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+    "train_rows": 2074,
+    "train_sha256": "cc0ba0925cf6bec54d822d67ca28db3309dc145bc72444497418b293444a9119",
+    "val_rows": 519,
+    "val_sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d"
+  },
+  "delivery_run_id": "mean-pool-mlp-regularized-v1",
+  "execution_sha256": "db217449d2261f49efc732eb9e31fa67024f0aebaa9a22e0c2e2cdb3a4f0f9b0",
+  "final_delivery_freeze_status": "pending",
+  "interpretation": "Descriptive variation across three training seeds on one frozen validation split. The recipe was selected using seed 17, which is reused here. This does not estimate split uncertainty or establish a generalization advantage; no seed or configuration is selected from these repetitions.",
+  "macro_f1_mean_delta_from_tfidf": 0.0037324863060393954,
+  "neural_delivery_seed": 17,
+  "new_hyperparameter_configurations": 0,
+  "new_training_runs": 2,
+  "plan_sha256": "bc30d4a6af1e448f9eadff80a2d3c5de10506bb4e07b69b08b7d10b1ae92e0c1",
+  "refit_train_and_validation": false,
+  "reserved_test_accessed": false,
+  "reused_training_runs": 1,
+  "runs": [
+    {
+      "checks": {
+        "best_epoch_and_stopping_valid": true,
+        "frozen_inputs_code_environment_match": true,
+        "inventory_valid": true,
+        "metrics_recomputed": true,
+        "mlflow_artifact_mirror_identical": true,
+        "mlflow_finished_and_metrics_match": true,
+        "only_seed_changed": true,
+        "restored_predictions_metrics_loss_exact": true
+      },
+      "config": {
+        "model": {
+          "dropout": 0.3,
+          "embedding_dim": 128,
+          "hidden_dim": 64
+        },
+        "runtime": {
+          "device": "cpu",
+          "num_threads": 1,
+          "num_workers": 0,
+          "seed": 17
+        },
+        "schema_version": 2,
+        "training": {
+          "batch_size": 32,
+          "learning_rate": 0.001,
+          "max_epochs": 30,
+          "min_delta": 0.0,
+          "patience": 5,
+          "weight_decay": 0.1
+        }
+      },
+      "config_path": "configs/experiments/mean-pool-mlp-regularized-v1.toml",
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.9869120403218982,
+          "val_accuracy": 0.535645472061657,
+          "val_loss": 0.9381499692424414,
+          "val_macro_f1": 0.2514599617522108
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.8641285219210898,
+          "val_accuracy": 0.6589595375722543,
+          "val_loss": 0.7996294029301072,
+          "val_macro_f1": 0.4609624660515246
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.7308824996364266,
+          "val_accuracy": 0.6840077071290944,
+          "val_loss": 0.7089239860201157,
+          "val_macro_f1": 0.5110812278168039
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.6252095261903026,
+          "val_accuracy": 0.7052023121387283,
+          "val_loss": 0.6601558288053281,
+          "val_macro_f1": 0.5688474160530997
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.5483667255022716,
+          "val_accuracy": 0.7186897880539499,
+          "val_loss": 0.6324192982360807,
+          "val_macro_f1": 0.6377098970019325
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.4865477200069446,
+          "val_accuracy": 0.7186897880539499,
+          "val_loss": 0.6228635860086635,
+          "val_macro_f1": 0.6145580421716804
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.4207153627244808,
+          "val_accuracy": 0.7302504816955684,
+          "val_loss": 0.6093751670997267,
+          "val_macro_f1": 0.6756734500612461
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.36722010273482786,
+          "val_accuracy": 0.74373795761079,
+          "val_loss": 0.6193052540624762,
+          "val_macro_f1": 0.7024286921089247
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.31797933627347474,
+          "val_accuracy": 0.7398843930635838,
+          "val_loss": 0.6286678435944868,
+          "val_macro_f1": 0.6792374292374292
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.2695603054250333,
+          "val_accuracy": 0.7398843930635838,
+          "val_loss": 0.6416062304035891,
+          "val_macro_f1": 0.6835050612219852
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.22609397764663458,
+          "val_accuracy": 0.7379576107899807,
+          "val_loss": 0.6656426068445621,
+          "val_macro_f1": 0.6833266709864426
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.1999857384449261,
+          "val_accuracy": 0.7379576107899807,
+          "val_loss": 0.6903161586680394,
+          "val_macro_f1": 0.6833266709864426
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.16925284244917627,
+          "val_accuracy": 0.720616570327553,
+          "val_loss": 0.7225842401026417,
+          "val_macro_f1": 0.6559454796411318
+        }
+      ],
+      "local_run_dir": "artifacts/runs/mean-pool-mlp-regularized-v1",
+      "metrics": {
+        "accuracy": 0.74373795761079,
+        "confusion_matrix": [
+          [
+            51,
+            16,
+            19
+          ],
+          [
+            19,
+            224,
+            30
+          ],
+          [
+            16,
+            33,
+            111
+          ]
+        ],
+        "label_ids": [
+          0,
+          1,
+          2
+        ],
+        "macro_f1": 0.7024286921089247,
+        "per_class": [
+          {
+            "f1": 0.5930232558139535,
+            "label": 0,
+            "precision": 0.5930232558139535,
+            "recall": 0.5930232558139535,
+            "support": 86
+          },
+          {
+            "f1": 0.8205128205128205,
+            "label": 1,
+            "precision": 0.8205128205128205,
+            "recall": 0.8205128205128205,
+            "support": 273
+          },
+          {
+            "f1": 0.69375,
+            "label": 2,
+            "precision": 0.69375,
+            "recall": 0.69375,
+            "support": 160
+          }
+        ],
+        "sample_count": 519
+      },
+      "provenance": {
+        "files": {
+          "checkpoints/best.pt": {
+            "sha256": "564282e17ac5eddfa1ce904826730a7f8a48315148782614b39bfba94bd8364f",
+            "size_bytes": 1556057
+          },
+          "config.toml": {
+            "sha256": "0b59b171b3d219d84c0f546f9b1e8fb8a863d6ee34bef1beb6bfbe3e82e1c128",
+            "size_bytes": 343
+          },
+          "data-manifest.json": {
+            "sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+            "size_bytes": 4441
+          },
+          "encoder.json": {
+            "sha256": "67d19b3dd62ae1514e8dca03dffa0a16ef6ef112230874ab685f0e8ea84b676e",
+            "size_bytes": 80078
+          },
+          "history.jsonl": {
+            "sha256": "6eafd9eff243c6f1dc786b91b725986cd6c6aea3c2e2f82449e66aa57c191ddf",
+            "size_bytes": 8904
+          },
+          "metrics.val.json": {
+            "sha256": "d5b02e499dd2220bc4f6a9d698b32b6346617076ad9ee2a06b148e2a785070bc",
+            "size_bytes": 1731
+          },
+          "predictions.val.jsonl": {
+            "sha256": "2f5acee1ea7aa05099494efd630bf5cfdf08e0c552fc7bb8d522f48524a22ea0",
+            "size_bytes": 53976
+          },
+          "summary.json": {
+            "sha256": "86bee97e136ae2bf2eb65b76812bf6d5a3704f138a86bba908e469ae515c97a5",
+            "size_bytes": 249
+          },
+          "vocabulary-manifest.json": {
+            "sha256": "891b82294554711a19c6ef84ef5a3ceda0995f3ef23b16ccc8e8ac83b873da6b",
+            "size_bytes": 2138
+          }
+        },
+        "git": {
+          "changes": "",
+          "commit": "029c484b360df0a2f2383c43d1c77ea10fc25228",
+          "matches_imported_code": true,
+          "reproducible_from_commit": true,
+          "scope": [
+            "src",
+            "pyproject.toml",
+            "uv.lock",
+            ".python-version"
+          ]
+        },
+        "manifest_sha256": "5e4851f6ce4692b6feec81c632dba2ca67d0bdce97f97741c132c7e837c0f506",
+        "mlflow": {
+          "experiment_id": "1",
+          "experiment_name": "filing-sentence-classifier",
+          "run_id": "2f7f7aa911254312a463506c933aa26b",
+          "version": "3.16.0"
+        }
+      },
+      "reused": true,
+      "run_id": "mean-pool-mlp-regularized-v1",
+      "seed": 17,
+      "summary": {
+        "best_epoch": 8,
+        "epochs_completed": 13,
+        "stopped_early": true,
+        "training_seconds": 2.1380892081651837,
+        "validation_accuracy": 0.74373795761079,
+        "validation_macro_f1": 0.7024286921089247,
+        "validation_mean_loss": 0.6193052540624762
+      }
+    },
+    {
+      "checks": {
+        "best_epoch_and_stopping_valid": true,
+        "frozen_inputs_code_environment_match": true,
+        "inventory_valid": true,
+        "metrics_recomputed": true,
+        "mlflow_artifact_mirror_identical": true,
+        "mlflow_finished_and_metrics_match": true,
+        "only_seed_changed": true,
+        "restored_predictions_metrics_loss_exact": true
+      },
+      "config": {
+        "model": {
+          "dropout": 0.3,
+          "embedding_dim": 128,
+          "hidden_dim": 64
+        },
+        "runtime": {
+          "device": "cpu",
+          "num_threads": 1,
+          "num_workers": 0,
+          "seed": 29
+        },
+        "schema_version": 2,
+        "training": {
+          "batch_size": 32,
+          "learning_rate": 0.001,
+          "max_epochs": 30,
+          "min_delta": 0.0,
+          "patience": 5,
+          "weight_decay": 0.1
+        }
+      },
+      "config_path": "configs/experiments/mean-pool-mlp-regularized-seed29-v1.toml",
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 0.9809610117711809,
+          "val_accuracy": 0.5741811175337187,
+          "val_loss": 0.9129760361820287,
+          "val_macro_f1": 0.3392751039809863
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.8492972915174876,
+          "val_accuracy": 0.6666666666666666,
+          "val_loss": 0.7802330516206966,
+          "val_macro_f1": 0.4741812010827071
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.7224537243378657,
+          "val_accuracy": 0.7052023121387283,
+          "val_loss": 0.6867586339829285,
+          "val_macro_f1": 0.5589695146709093
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.6197469464953174,
+          "val_accuracy": 0.7148362235067437,
+          "val_loss": 0.6355788451628419,
+          "val_macro_f1": 0.6060491343981926
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.5325576423908959,
+          "val_accuracy": 0.7475915221579962,
+          "val_loss": 0.6036362639971092,
+          "val_macro_f1": 0.6671372625265312
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.4666339441228626,
+          "val_accuracy": 0.7475915221579962,
+          "val_loss": 0.5924196809472836,
+          "val_macro_f1": 0.681520649892743
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.39580741846572925,
+          "val_accuracy": 0.74373795761079,
+          "val_loss": 0.6009847173226821,
+          "val_macro_f1": 0.6855597438775103
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.34690503737275835,
+          "val_accuracy": 0.7456647398843931,
+          "val_loss": 0.6238772894950272,
+          "val_macro_f1": 0.6858409012201799
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.296508619200758,
+          "val_accuracy": 0.7398843930635838,
+          "val_loss": 0.6192517909355936,
+          "val_macro_f1": 0.675323514344634
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.26410303580985117,
+          "val_accuracy": 0.7360308285163777,
+          "val_loss": 0.6380274530665263,
+          "val_macro_f1": 0.6726146493888429
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.22793366253490963,
+          "val_accuracy": 0.7418111753371869,
+          "val_loss": 0.668820080212775,
+          "val_macro_f1": 0.6815154662605485
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.19545322218362024,
+          "val_accuracy": 0.7379576107899807,
+          "val_loss": 0.6882811783021585,
+          "val_macro_f1": 0.6805923247530709
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.17073023952938896,
+          "val_accuracy": 0.7379576107899807,
+          "val_loss": 0.7319516730790883,
+          "val_macro_f1": 0.679912102330137
+        }
+      ],
+      "local_run_dir": "artifacts/runs/mean-pool-mlp-regularized-seed29-v1",
+      "metrics": {
+        "accuracy": 0.7456647398843931,
+        "confusion_matrix": [
+          [
+            44,
+            26,
+            16
+          ],
+          [
+            13,
+            243,
+            17
+          ],
+          [
+            20,
+            40,
+            100
+          ]
+        ],
+        "label_ids": [
+          0,
+          1,
+          2
+        ],
+        "macro_f1": 0.6858409012201799,
+        "per_class": [
+          {
+            "f1": 0.5398773006134969,
+            "label": 0,
+            "precision": 0.5714285714285714,
+            "recall": 0.5116279069767442,
+            "support": 86
+          },
+          {
+            "f1": 0.8350515463917526,
+            "label": 1,
+            "precision": 0.7864077669902912,
+            "recall": 0.8901098901098901,
+            "support": 273
+          },
+          {
+            "f1": 0.6825938566552902,
+            "label": 2,
+            "precision": 0.7518796992481203,
+            "recall": 0.625,
+            "support": 160
+          }
+        ],
+        "sample_count": 519
+      },
+      "provenance": {
+        "files": {
+          "checkpoints/best.pt": {
+            "sha256": "4c6e7ab18523aa81fbe0d88a53aa06f179f3632b151af188c1f0215969d4d6a4",
+            "size_bytes": 1556057
+          },
+          "config.toml": {
+            "sha256": "9920b97322e9fe2a2ccf6f96b48468bb1fa20007f1c09c7e55b72ce6c072a89f",
+            "size_bytes": 336
+          },
+          "data-manifest.json": {
+            "sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+            "size_bytes": 4441
+          },
+          "encoder.json": {
+            "sha256": "67d19b3dd62ae1514e8dca03dffa0a16ef6ef112230874ab685f0e8ea84b676e",
+            "size_bytes": 80078
+          },
+          "history.jsonl": {
+            "sha256": "dd198956dbb41e53d541c606edeb96c8b918830edcabc626a1d224699daf9b8d",
+            "size_bytes": 9016
+          },
+          "metrics.val.json": {
+            "sha256": "f0467695c937df672ea2d039f31e7e944531eb5d80ef60fb74f457c71c02dd4f",
+            "size_bytes": 1753
+          },
+          "predictions.val.jsonl": {
+            "sha256": "91d22e8c5cdf9ee0cc90078a5fa56e53af3f0aaaeb4bed8863aa50043033ad2b",
+            "size_bytes": 53976
+          },
+          "summary.json": {
+            "sha256": "0220d98b308389167906267f9bb0085e1613ab0910e9e59cb8e8088b50c9fab5",
+            "size_bytes": 250
+          },
+          "vocabulary-manifest.json": {
+            "sha256": "891b82294554711a19c6ef84ef5a3ceda0995f3ef23b16ccc8e8ac83b873da6b",
+            "size_bytes": 2138
+          }
+        },
+        "git": {
+          "changes": "",
+          "commit": "e01c84f5db380ec5f3e66f928f81284deecc67d5",
+          "matches_imported_code": true,
+          "reproducible_from_commit": true,
+          "scope": [
+            "src",
+            "pyproject.toml",
+            "uv.lock",
+            ".python-version"
+          ]
+        },
+        "manifest_sha256": "83bd4da0533fc684f781a82bb6630ae9f4579968898c38d968c1d3a0654d3384",
+        "mlflow": {
+          "experiment_id": "1",
+          "experiment_name": "filing-sentence-classifier",
+          "run_id": "9b9ba29c46a9424ea1c77bb7b96bde0f",
+          "version": "3.16.0"
+        }
+      },
+      "reused": false,
+      "run_id": "mean-pool-mlp-regularized-seed29-v1",
+      "seed": 29,
+      "summary": {
+        "best_epoch": 8,
+        "epochs_completed": 13,
+        "stopped_early": true,
+        "training_seconds": 2.264734083088115,
+        "validation_accuracy": 0.7456647398843931,
+        "validation_macro_f1": 0.6858409012201799,
+        "validation_mean_loss": 0.6238772894950272
+      }
+    },
+    {
+      "checks": {
+        "best_epoch_and_stopping_valid": true,
+        "frozen_inputs_code_environment_match": true,
+        "inventory_valid": true,
+        "metrics_recomputed": true,
+        "mlflow_artifact_mirror_identical": true,
+        "mlflow_finished_and_metrics_match": true,
+        "only_seed_changed": true,
+        "restored_predictions_metrics_loss_exact": true
+      },
+      "config": {
+        "model": {
+          "dropout": 0.3,
+          "embedding_dim": 128,
+          "hidden_dim": 64
+        },
+        "runtime": {
+          "device": "cpu",
+          "num_threads": 1,
+          "num_workers": 0,
+          "seed": 43
+        },
+        "schema_version": 2,
+        "training": {
+          "batch_size": 32,
+          "learning_rate": 0.001,
+          "max_epochs": 30,
+          "min_delta": 0.0,
+          "patience": 5,
+          "weight_decay": 0.1
+        }
+      },
+      "config_path": "configs/experiments/mean-pool-mlp-regularized-seed43-v1.toml",
+      "learning_curve": [
+        {
+          "epoch": 1,
+          "train_loss": 1.0176456555106257,
+          "val_accuracy": 0.535645472061657,
+          "val_loss": 0.9485754788725822,
+          "val_macro_f1": 0.25834989583884366
+        },
+        {
+          "epoch": 2,
+          "train_loss": 0.8818384549197029,
+          "val_accuracy": 0.6396917148362236,
+          "val_loss": 0.831376816036614,
+          "val_macro_f1": 0.4372163694927164
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.7459504490533239,
+          "val_accuracy": 0.674373795761079,
+          "val_loss": 0.7326572538570632,
+          "val_macro_f1": 0.5056863986118164
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.6322375725067455,
+          "val_accuracy": 0.6917148362235067,
+          "val_loss": 0.6826539844676479,
+          "val_macro_f1": 0.5599315897293461
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.5490398406407643,
+          "val_accuracy": 0.720616570327553,
+          "val_loss": 0.6488204369884925,
+          "val_macro_f1": 0.6498481160732816
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.47133163873576844,
+          "val_accuracy": 0.7244701348747592,
+          "val_loss": 0.6380741249676615,
+          "val_macro_f1": 0.6661990182615437
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.40816690991906557,
+          "val_accuracy": 0.7263969171483622,
+          "val_loss": 0.6319181951254549,
+          "val_macro_f1": 0.6667668374985448
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.35323445417037236,
+          "val_accuracy": 0.7263969171483622,
+          "val_loss": 0.6421677740667596,
+          "val_macro_f1": 0.661801245292574
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.3077756633179167,
+          "val_accuracy": 0.7341040462427746,
+          "val_loss": 0.650246012589835,
+          "val_macro_f1": 0.670071826940679
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.26562073898637306,
+          "val_accuracy": 0.7398843930635838,
+          "val_loss": 0.67085163661338,
+          "val_macro_f1": 0.7000248192997134
+        },
+        {
+          "epoch": 11,
+          "train_loss": 0.2207364618433361,
+          "val_accuracy": 0.7321772639691715,
+          "val_loss": 0.6962510384547458,
+          "val_macro_f1": 0.6783026240551018
+        },
+        {
+          "epoch": 12,
+          "train_loss": 0.19323547709672179,
+          "val_accuracy": 0.7321772639691715,
+          "val_loss": 0.714642113085427,
+          "val_macro_f1": 0.6806076732088293
+        },
+        {
+          "epoch": 13,
+          "train_loss": 0.1697201742902901,
+          "val_accuracy": 0.7186897880539499,
+          "val_loss": 0.7467985640428888,
+          "val_macro_f1": 0.6611846053844465
+        },
+        {
+          "epoch": 14,
+          "train_loss": 0.1423945468756134,
+          "val_accuracy": 0.720616570327553,
+          "val_loss": 0.7713909580413546,
+          "val_macro_f1": 0.6717367899638491
+        },
+        {
+          "epoch": 15,
+          "train_loss": 0.12043645162505377,
+          "val_accuracy": 0.7186897880539499,
+          "val_loss": 0.809997801118044,
+          "val_macro_f1": 0.667453041252888
+        }
+      ],
+      "local_run_dir": "artifacts/runs/mean-pool-mlp-regularized-seed43-v1",
+      "metrics": {
+        "accuracy": 0.7398843930635838,
+        "confusion_matrix": [
+          [
+            54,
+            15,
+            17
+          ],
+          [
+            22,
+            221,
+            30
+          ],
+          [
+            21,
+            30,
+            109
+          ]
+        ],
+        "label_ids": [
+          0,
+          1,
+          2
+        ],
+        "macro_f1": 0.7000248192997134,
+        "per_class": [
+          {
+            "f1": 0.5901639344262295,
+            "label": 0,
+            "precision": 0.5567010309278351,
+            "recall": 0.627906976744186,
+            "support": 86
+          },
+          {
+            "f1": 0.8200371057513914,
+            "label": 1,
+            "precision": 0.8308270676691729,
+            "recall": 0.8095238095238095,
+            "support": 273
+          },
+          {
+            "f1": 0.689873417721519,
+            "label": 2,
+            "precision": 0.6987179487179487,
+            "recall": 0.68125,
+            "support": 160
+          }
+        ],
+        "sample_count": 519
+      },
+      "provenance": {
+        "files": {
+          "checkpoints/best.pt": {
+            "sha256": "b284e82c2e108daac483488685b48dfdb6587cceac9a5102b0286d32be8b84bc",
+            "size_bytes": 1556057
+          },
+          "config.toml": {
+            "sha256": "cb73afd005dc32dda1691655b310b0104dba9308a7403479150c4a6ce219aa94",
+            "size_bytes": 336
+          },
+          "data-manifest.json": {
+            "sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+            "size_bytes": 4441
+          },
+          "encoder.json": {
+            "sha256": "67d19b3dd62ae1514e8dca03dffa0a16ef6ef112230874ab685f0e8ea84b676e",
+            "size_bytes": 80078
+          },
+          "history.jsonl": {
+            "sha256": "d51ce41548d3c87faccb54ec660545bbace6c6e76cc41798fdb3b3c2d81678a9",
+            "size_bytes": 10431
+          },
+          "metrics.val.json": {
+            "sha256": "5ac7cc1b34b00fe01f39f20928a6935b35eab0a01ca0079807eb367eaf1bd62b",
+            "size_bytes": 1753
+          },
+          "predictions.val.jsonl": {
+            "sha256": "58462b200997f5c9b62ba44ef2b3fd51b806bc1d28f970fc1d12bcb51082f0fa",
+            "size_bytes": 53976
+          },
+          "summary.json": {
+            "sha256": "beeae0c425f9fda127f4423da6648cefe85629376a3c06cf711bd1af82b48e9d",
+            "size_bytes": 249
+          },
+          "vocabulary-manifest.json": {
+            "sha256": "891b82294554711a19c6ef84ef5a3ceda0995f3ef23b16ccc8e8ac83b873da6b",
+            "size_bytes": 2138
+          }
+        },
+        "git": {
+          "changes": "",
+          "commit": "e01c84f5db380ec5f3e66f928f81284deecc67d5",
+          "matches_imported_code": true,
+          "reproducible_from_commit": true,
+          "scope": [
+            "src",
+            "pyproject.toml",
+            "uv.lock",
+            ".python-version"
+          ]
+        },
+        "manifest_sha256": "a484ff6d8e1769269b8d4d2d1d9cc1821560868a4adac6edea6ae4be98bbff2b",
+        "mlflow": {
+          "experiment_id": "1",
+          "experiment_name": "filing-sentence-classifier",
+          "run_id": "f39ba5ec59344f72845496a15dea8766",
+          "version": "3.16.0"
+        }
+      },
+      "reused": false,
+      "run_id": "mean-pool-mlp-regularized-seed43-v1",
+      "seed": 43,
+      "summary": {
+        "best_epoch": 10,
+        "epochs_completed": 15,
+        "stopped_early": true,
+        "training_seconds": 2.396456625079736,
+        "validation_accuracy": 0.7398843930635838,
+        "validation_macro_f1": 0.7000248192997134,
+        "validation_mean_loss": 0.67085163661338
+      }
+    }
+  ],
+  "schema_version": 1,
+  "seeds": [
+    17,
+    29,
+    43
+  ],
+  "seeds_above_tfidf_macro_f1": [
+    17,
+    43
+  ],
+  "selected_candidate_id": "mean-pool-mlp-regularized-v1",
+  "selection_sha256": "86ac1a9850442bb6ca910b4809514b0e636c0d215510efe355a01a3dd93a1681",
+  "stage": "seed_repetitions",
+  "status": "verified",
+  "study_id": "mlp-selection-v1",
+  "tfidf_reference": {
+    "accuracy": 0.7495183044315993,
+    "macro_f1": 0.6923656512369,
+    "metrics_sha256": "b576d9c17a2b1615c6d10744185c0c0728461d2eb306c122fe91868c2dbd4eed",
+    "role": "Single fixed classical reference; not a matched seed study",
+    "run_id": "tfidf-bigram-c10-v1"
+  },
+  "verification_method": "Separate process from training; restored each saved checkpoint and encoder, exactly reproduced validation predictions, metrics and loss, and verified shared evaluation plus complete local and MLflow artifact inventories.",
+  "verified_at_utc": "2026-09-17T08:02:28.943691+00:00"
+}
