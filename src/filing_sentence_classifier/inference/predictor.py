@@ -38,19 +38,31 @@ class Predictor:
         manifest = verify_bundle(
             directory, expected_manifest_sha256=expected_manifest_sha256
         )
-        if manifest.family != "mean_pool_mlp":
-            raise BundleError(
-                f"Prediction for family {manifest.family!r} is not implemented yet."
-            )
+        if manifest.family == "mean_pool_mlp":
+            try:
+                from filing_sentence_classifier.inference.pytorch import PyTorchBackend
+            except ModuleNotFoundError as exc:
+                if exc.name != "torch":
+                    raise
+                raise BundleError(
+                    "PyTorch is missing. Install the package with its [train] extra."
+                ) from exc
+            return cls(manifest, PyTorchBackend.from_bundle(directory, manifest))
         try:
-            from filing_sentence_classifier.inference.pytorch import PyTorchBackend
+            from filing_sentence_classifier.inference.tfidf import TfidfBackend
         except ModuleNotFoundError as exc:
-            if exc.name != "torch":
+            if (exc.name or "").split(".", 1)[0] not in {
+                "sklearn",
+                "joblib",
+                "numpy",
+                "scipy",
+                "threadpoolctl",
+            }:
                 raise
             raise BundleError(
-                "PyTorch is missing. Install the package with its [train] extra."
+                "TF-IDF dependencies are missing. Install the package with its [data] extra."
             ) from exc
-        return cls(manifest, PyTorchBackend.from_bundle(directory, manifest))
+        return cls(manifest, TfidfBackend.from_bundle(directory, manifest))
 
     def predict(
         self, texts: Sequence[str], *, batch_size: int = 32

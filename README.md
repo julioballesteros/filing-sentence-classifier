@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen and exported as portable bundles. PyTorch inference is available through the Python API; the TF-IDF adapter, prediction CLI, test evaluation, and deployment remain pending.
+**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen and exported as portable bundles. PyTorch and TF-IDF inference share a Python API; the prediction CLI, test evaluation, and deployment remain pending.
 
 ## Classification task
 
@@ -491,7 +491,31 @@ The [`PyTorch backend`](src/filing_sentence_classifier/inference/pytorch.py) res
 
 Loading requires the recorded package version, the same PyTorch release (allowing local build suffixes such as `+cpu`), and the same Python major/minor version. `from_bundle(..., expected_manifest_sha256=...)` can pin the bundle manifest. Payloads are rechecked as they are read, and `weights_only=True` deserializes those verified bytes. The loaded predictor needs no further file access or network connection. Loading and prediction preserve the caller's RNG, thread count, default dtype, and gradient settings; prediction explicitly disables ambient CPU autocast.
 
-For the selected bundle, the predictor reproduced **all 519 saved validation labels**, with **zero probability difference** from the original checkpoint under the same CPU environment and batch size. Three sentences were flagged as truncated. Synthetic tests also cover different batch sizes, moved bundles, unknown tokens, invalid inputs, and incompatible or altered artifacts. The TF-IDF adapter and prediction CLI remain pending.
+For the selected bundle, the predictor reproduced **all 519 saved validation labels**, with **zero probability difference** from the original checkpoint under the same CPU environment and batch size. Three sentences were flagged as truncated. Synthetic tests also cover different batch sizes, moved bundles, unknown tokens, invalid inputs, and incompatible or altered artifacts.
+
+## Predict with the TF-IDF bundle
+
+The same `Predictor` API selects the [`TF-IDF backend`](src/filing_sentence_classifier/inference/tfidf.py) from the bundle manifest. Its runtime dependencies are supplied by the `data` extra; PyTorch is not required.
+
+```python
+from pathlib import Path
+
+from filing_sentence_classifier.inference.predictor import Predictor
+
+predictor = Predictor.from_bundle(Path("artifacts/bundles/tfidf-bigram-c10-v1"))
+results = predictor.predict(
+    ["We expect revenue to increase next year.", "Revenue increased last year."],
+    batch_size=32,
+)
+for result in results:
+    print(result.to_dict())
+```
+
+Loading verifies the configuration, fitted feature dimensions, numerical state, and class IDs. It requires the recorded package, scikit-learn, NumPy, SciPy, joblib, and threadpoolctl releases, plus the same Python major/minor. Only load trusted bundles: joblib deserialization can execute code, and checksums verify integrity rather than origin.
+
+The pipeline is loaded once from verified bytes and reused without fitting or further file access. Requests use the shared cleaning and input limits, then the fitted vectorizer's own tokenization. Batched `predict_proba` results are aligned with the bundle's class IDs. TF-IDF applies no token truncation, so `truncated` is always `false`; sentences without known features receive probabilities determined by the fitted intercepts. Native computation uses one thread and restores the caller's thread limits afterward.
+
+The selected bundle reproduced **all 519 validation labels**, with **zero probability difference** from the original pipeline in the recorded environment. Integration tests cover binary and multiclass models, reordered class columns, moved bundles, offline operation without neural dependencies, and rejection of incompatible or altered artifacts.
 
 ## Code organization
 

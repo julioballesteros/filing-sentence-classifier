@@ -1,9 +1,6 @@
 """CPU float32 inference with the saved MeanPoolMLP and text encoder."""
 
-import re
-import sys
 from dataclasses import dataclass, field
-from importlib.metadata import PackageNotFoundError, version
 from io import BytesIO
 from pathlib import Path
 from typing import Self
@@ -18,39 +15,13 @@ from filing_sentence_classifier.artifacts import (
     _parse_json_object,
     read_bundle_file,
 )
+from filing_sentence_classifier.inference.compatibility import check_environment
 from filing_sentence_classifier.inference.contracts import Prediction
 from filing_sentence_classifier.models.mean_pool_mlp import MeanPoolMLP
 from filing_sentence_classifier.text.encoding import TextEncoder
 from filing_sentence_classifier.text.vocabulary import PAD_ID
 from filing_sentence_classifier.training.checkpoints import load_checkpoint
 from filing_sentence_classifier.training.config import TrainingConfig
-
-
-def _check_environment(manifest: BundleManifest) -> None:
-    """Require matching package/PyTorch releases and Python major/minor.
-
-    Python patch differences and PyTorch local build suffixes (such as +cpu)
-    are allowed. Optional packages used for training reports are not required.
-    """
-    recorded_python = manifest.environment["python"]
-    match = re.fullmatch(r"(\d+)\.(\d+)\.\d+", recorded_python)
-    if match is None or tuple(map(int, match.groups())) != sys.version_info[:2]:
-        raise BundleError(
-            f"Bundle requires Python major/minor matching {recorded_python}."
-        )
-    for name in ("filing-sentence-classifier", "torch"):
-        recorded = manifest.environment[name]
-        try:
-            installed = version(name)
-        except PackageNotFoundError as exc:
-            raise BundleError(f"Required distribution is missing: {name}.") from exc
-        expected, actual = recorded, installed
-        if name == "torch":
-            expected, actual = recorded.split("+", 1)[0], installed.split("+", 1)[0]
-        if expected != actual:
-            raise BundleError(
-                f"Bundle requires {name} {recorded}; installed version is {installed}."
-            )
 
 
 @dataclass(frozen=True)
@@ -66,7 +37,7 @@ class PyTorchBackend:
         """Restore verified bytes, checking config, vocabulary and class dimensions."""
         if manifest.family != "mean_pool_mlp":
             raise BundleError("Expected a mean_pool_mlp bundle.")
-        _check_environment(manifest)
+        check_environment(manifest)
         try:
             for name in ("config.toml", "encoder.json"):
                 if manifest.files[name].size_bytes > MAX_MANIFEST_BYTES:

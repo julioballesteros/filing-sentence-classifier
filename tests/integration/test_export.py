@@ -262,6 +262,10 @@ def test_export_preserves_bytes_environment_and_predictions_after_source_removal
             moved / "model.joblib", expected_sha256=bundle.files["model.joblib"].sha256
         )
         actual = model.predict_proba(TEXTS).tolist()
+        from filing_sentence_classifier.inference.predictor import Predictor
+
+        predictions = Predictor.from_bundle(moved).predict(TEXTS, batch_size=1)
+        assert [list(result.probabilities) for result in predictions] == actual
     assert actual == expected_probabilities
 
 

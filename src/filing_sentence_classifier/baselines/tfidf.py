@@ -6,6 +6,7 @@ from collections.abc import Sequence
 from copy import deepcopy
 from io import BytesIO
 from pathlib import Path
+from typing import BinaryIO
 
 import joblib  # type: ignore[import-untyped]
 from sklearn.exceptions import (  # type: ignore[import-untyped]
@@ -22,6 +23,32 @@ from threadpoolctl import threadpool_limits  # type: ignore[import-untyped]
 
 from filing_sentence_classifier.baselines.config import TfidfConfig as TfidfConfig
 from filing_sentence_classifier.baselines.majority import BaselineError
+
+
+def create_tfidf_pipeline(config: TfidfConfig) -> Pipeline:
+    """Construct the shared pipeline recipe without fitting any component."""
+    return Pipeline(
+        [
+            (
+                "tfidf",
+                TfidfVectorizer(
+                    ngram_range=config.ngram_range,
+                    min_df=config.min_df,
+                    sublinear_tf=True,
+                ),
+            ),
+            (
+                "logreg",
+                LogisticRegression(
+                    solver="lbfgs",
+                    l1_ratio=0.0,
+                    C=config.c,
+                    max_iter=config.max_iter,
+                    tol=config.tol,
+                ),
+            ),
+        ]
+    )
 
 
 def fit_tfidf(
@@ -44,28 +71,7 @@ def fit_tfidf(
         raise BaselineError(
             "Expected aligned training rows containing every declared class."
         )
-    pipeline = Pipeline(
-        [
-            (
-                "tfidf",
-                TfidfVectorizer(
-                    ngram_range=config.ngram_range,
-                    min_df=config.min_df,
-                    sublinear_tf=True,
-                ),
-            ),
-            (
-                "logreg",
-                LogisticRegression(
-                    solver="lbfgs",
-                    l1_ratio=0.0,
-                    C=config.c,
-                    max_iter=config.max_iter,
-                    tol=config.tol,
-                ),
-            ),
-        ]
-    )
+    pipeline = create_tfidf_pipeline(config)
     with warnings.catch_warnings(), threadpool_limits(limits=1):
         warnings.simplefilter("error", ConvergenceWarning)
         try:
@@ -83,13 +89,14 @@ def predict_labels(pipeline: Pipeline, texts: Sequence[str]) -> tuple[int, ...]:
         return tuple(int(label) for label in pipeline.predict(texts))
 
 
-def load_tfidf_model(path: Path, *, expected_sha256: str) -> Pipeline:
+def load_tfidf_model(path: Path | BinaryIO, *, expected_sha256: str) -> Pipeline:
     """Load a trusted joblib Pipeline after checking its expected bytes.
 
     Joblib can execute code: checksums detect corruption, not an untrusted origin.
     Use the training environment; cross-version scikit-learn loads are rejected.
+    Binary streams let inference restore previously verified bundle bytes.
     """
-    content = path.read_bytes()
+    content = path.read_bytes() if isinstance(path, Path) else path.read()
     if hashlib.sha256(content).hexdigest() != expected_sha256:
         raise BaselineError("TF-IDF model checksum mismatch.")
     with warnings.catch_warnings():
