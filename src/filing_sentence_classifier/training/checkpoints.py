@@ -7,7 +7,7 @@ import tempfile
 from copy import deepcopy
 from dataclasses import dataclass
 from pathlib import Path
-from typing import cast
+from typing import BinaryIO, cast
 
 import torch
 from torch import Tensor, nn
@@ -112,7 +112,7 @@ def save_checkpoint(
 
 
 def load_checkpoint(
-    path: Path,
+    path: Path | BinaryIO,
     model: nn.Module,
     *,
     expected_config: TrainingConfig | None = None,
@@ -122,6 +122,7 @@ def load_checkpoint(
     Load tensors on CPU with weights_only=True; only primitive metadata and a
     state_dict are accepted. Check type, keys, shapes, and dtypes before copying
     any parameter. The caller supplies the matching architecture and encoder.
+    A binary stream allows inference to restore previously verified bytes.
     This restores a selected model, not a resumable optimizer/loader/RNG state.
     """
     try:

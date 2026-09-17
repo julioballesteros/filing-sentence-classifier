@@ -229,6 +229,36 @@ def _parse_json_object(content: bytes) -> dict[str, object]:
     return cast(dict[str, object], value)
 
 
+def read_bundle_file(directory: Path, name: str, *, manifest: BundleManifest) -> bytes:
+    """Read the exact verified bytes an adapter will parse or deserialize.
+
+    Use after verify_bundle. Recheck the selected payload against the immutable
+    manifest, so a file changed after verification cannot be loaded unchecked.
+    """
+    if name not in manifest.files:
+        raise BundleError("Requested file is not a declared bundle payload.")
+    expected = manifest.files[name]
+    directory = directory.expanduser()
+    path = directory / name
+    try:
+        if directory.is_symlink() or not directory.is_dir():
+            raise BundleError("Expected a bundle directory, not a symbolic link.")
+        if path.is_symlink() or not path.is_file():
+            raise BundleError(f"Expected a regular payload file: {name}.")
+        if path.stat().st_size != expected.size_bytes:
+            raise BundleError(f"Payload size mismatch: {name}.")
+        with path.open("rb") as stream:
+            content = stream.read(expected.size_bytes + 1)
+        if (
+            len(content) != expected.size_bytes
+            or hashlib.sha256(content).hexdigest() != expected.sha256
+        ):
+            raise BundleError(f"Payload checksum or size mismatch: {name}.")
+        return content
+    except OSError as exc:
+        raise BundleError(f"Could not read bundle payload {name}: {exc}") from exc
+
+
 def verify_bundle(
     directory: Path, *, expected_manifest_sha256: str | None = None
 ) -> BundleManifest:
