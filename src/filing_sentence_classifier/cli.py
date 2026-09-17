@@ -1,9 +1,12 @@
 """Command-line interface for the filing sentence classifier."""
 
 import json
+import sys
+from contextlib import ExitStack
 from importlib.metadata import version
+from io import BytesIO
 from pathlib import Path
-from typing import Annotated
+from typing import Annotated, BinaryIO
 
 import typer
 
@@ -387,6 +390,88 @@ def export_model(
         typer.echo(f"Error: {exc}", err=True)
         raise typer.Exit(code=1) from exc
     typer.echo(f"Verified inference bundle: {artifact}")
+
+
+@app.command("predict")
+def predict(
+    bundle: Annotated[
+        Path,
+        typer.Option("--bundle", file_okay=False, help="Trusted inference bundle."),
+    ],
+    text: Annotated[
+        str | None,
+        typer.Option("--text", help="One raw sentence; exclusive with --input."),
+    ] = None,
+    input_path: Annotated[
+        Path | None,
+        typer.Option(
+            "--input",
+            dir_okay=False,
+            help="UTF-8 JSONL with text and optional sample_id; use - for stdin.",
+        ),
+    ] = None,
+    output: Annotated[
+        Path | None,
+        typer.Option(
+            "--output",
+            dir_okay=False,
+            help="New JSONL file in an existing directory; default or - writes stdout.",
+        ),
+    ] = None,
+    batch_size: Annotated[
+        int,
+        typer.Option(
+            "--batch-size", min=1, help="Maximum sentences per computation batch."
+        ),
+    ] = 32,
+    manifest_sha256: Annotated[
+        str | None,
+        typer.Option(
+            "--manifest-sha256", help="Optional expected bundle manifest checksum."
+        ),
+    ] = None,
+) -> None:
+    """Predict with either model family; emit JSONL and send errors to stderr.
+
+    Files are published only on success and never overwritten. Stdout can contain
+    completed batches if a later input row fails; check the exit status.
+    """
+    if (text is None) == (input_path is None):
+        raise typer.BadParameter("Supply exactly one of --text or --input.")
+
+    from filing_sentence_classifier.artifacts import BundleError
+    from filing_sentence_classifier.inference.contracts import PredictionContractError
+    from filing_sentence_classifier.inference.jsonl import (
+        PredictionIOError,
+        new_prediction_file,
+        predict_jsonl,
+    )
+    from filing_sentence_classifier.inference.predictor import Predictor
+
+    try:
+        with ExitStack() as stack:
+            source: BinaryIO
+            if text is not None:
+                source = stack.enter_context(
+                    BytesIO((json.dumps({"text": text}) + "\n").encode("utf-8"))
+                )
+            elif input_path == Path("-"):
+                source = sys.stdin.buffer
+            else:
+                assert input_path is not None
+                source = stack.enter_context(input_path.open("rb"))
+            destination = (
+                sys.stdout
+                if output is None or output == Path("-")
+                else stack.enter_context(new_prediction_file(output))
+            )
+            predictor = Predictor.from_bundle(
+                bundle, expected_manifest_sha256=manifest_sha256
+            )
+            predict_jsonl(predictor, source, destination, batch_size=batch_size)
+    except (BundleError, PredictionContractError, PredictionIOError, OSError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
 
 
 @app.command("evaluate")

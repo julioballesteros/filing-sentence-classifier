@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen and exported as portable bundles. PyTorch and TF-IDF inference share a Python API; the prediction CLI, test evaluation, and deployment remain pending.
+**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen and exported as portable bundles. PyTorch and TF-IDF inference share a Python API and prediction CLI; test evaluation and deployment remain pending.
 
 ## Classification task
 
@@ -516,6 +516,37 @@ Loading verifies the configuration, fitted feature dimensions, numerical state, 
 The pipeline is loaded once from verified bytes and reused without fitting or further file access. Requests use the shared cleaning and input limits, then the fitted vectorizer's own tokenization. Batched `predict_proba` results are aligned with the bundle's class IDs. TF-IDF applies no token truncation, so `truncated` is always `false`; sentences without known features receive probabilities determined by the fitted intercepts. Native computation uses one thread and restores the caller's thread limits afterward.
 
 The selected bundle reproduced **all 519 validation labels**, with **zero probability difference** from the original pipeline in the recorded environment. Integration tests cover binary and multiclass models, reordered class columns, moved bundles, offline operation without neural dependencies, and rejection of incompatible or altered artifacts.
+
+## Predict from the command line
+
+Classify one sentence using an exported bundle:
+
+```bash
+uv run --locked --extra train filing-sentence-classifier predict \
+  --bundle artifacts/bundles/mean-pool-mlp-regularized-v1 \
+  --text "We expect revenue to increase next year."
+```
+
+For multiple sentences, supply a UTF-8 JSONL file with exactly `text` and, optionally, `sample_id` on each line:
+
+```jsonl
+{"sample_id": "sentence-1", "text": "We expect revenue to increase next year."}
+{"sample_id": "sentence-2", "text": "Revenue increased last year."}
+```
+
+```bash
+uv run --locked --extra data filing-sentence-classifier predict \
+  --bundle artifacts/bundles/tfidf-bigram-c10-v1 \
+  --input sentences.jsonl --output predictions.jsonl --batch-size 32
+```
+
+The command accepts exactly one of `--text` or `--input`; `--input -` reads stdin. Each output line uses the shared prediction schema: model ID, label ID/name, class probabilities, and truncation flag. An input `sample_id` is copied unchanged; order and duplicates are preserved. IDs must be nonblank strings of at most 256 characters. Input lines have a 1 MiB byte limit and must contain unique JSON keys; blank lines and invalid UTF-8 are rejected. Empty files produce empty output successfully.
+
+The [`JSONL adapter`](src/filing_sentence_classifier/inference/jsonl.py) loads no model itself: the CLI creates one `Predictor` and reuses it throughout the file. Processing holds one batch at a time, capped by both `--batch-size` and the bundle's maximum request size. Sentence limits and cleaning come from the same predictor used by the Python API. `--manifest-sha256` optionally pins the bundle manifest.
+
+Output defaults to stdout (`--output -` is equivalent), with diagnostics on stderr. Exit codes are `0` for success, `1` for input, bundle, runtime, or I/O errors, and `2` for invalid command options. A destination file's parent must already exist; files are published only after all rows succeed, and existing paths are never overwritten. Stdout streams completed batches, so a late error can leave partial output there; check the exit status when piping or redirecting.
+
+Integration tests verify CLI/API parity for both model families, stdin and file input, repeated model reuse, manifest pinning, offline execution from an unrelated directory, and failure cleanup.
 
 ## Code organization
 
