@@ -1,0 +1,459 @@
+{
+  "delivery_run_id": "mean-pool-mlp-regularized-v1",
+  "environment": {
+    "evaluation_packages": {
+      "joblib": "1.6.0",
+      "pyarrow": "25.0.1",
+      "threadpoolctl": "3.6.0"
+    },
+    "logical_cpus": 14,
+    "machine": "arm64",
+    "packages": {
+      "filing-sentence-classifier": "0.1.0",
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.3",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "torch": "2.14.0"
+    },
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.9"
+  },
+  "files": {
+    "data/changes.jsonl": {
+      "sha256": "f5d018e3e62ac89e09a87681620bede90004fceceffe4e1f243e76203f0da35e",
+      "size_bytes": 11108
+    },
+    "data/manifest.json": {
+      "sha256": "b3c4f7239650cdbaaf57139f2a125ab8780eac89b394bf84cf1e699c13f0d2b2",
+      "size_bytes": 2284
+    },
+    "data/test.jsonl": {
+      "sha256": "335a97f1f77761256067e88b838f82314641795e01d357d226a418124c04d441",
+      "size_bytes": 421372
+    },
+    "evidence/development-manifest.json": {
+      "sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+      "size_bytes": 4441
+    },
+    "evidence/freeze.json": {
+      "sha256": "2c78cc5d11f53311136dad9c6bcf506ad6cf871651c69e152a6432d36dbb0bb4",
+      "size_bytes": 9227
+    },
+    "evidence/majority-manifest.json": {
+      "sha256": "3981a6fcef60539aaf0fd9da6406c9f3fc5990cd0c6ae564e456564c1885befb",
+      "size_bytes": 1820
+    },
+    "evidence/majority-model.json": {
+      "sha256": "6fcc8295142834e1ada9fa772d5d6774baf1931f0ed1dbf49166e869985b0800",
+      "size_bytes": 203
+    },
+    "evidence/mean-pool-mlp-regularized-seed29-v1.bundle.json": {
+      "sha256": "4910c716bd6abdc665ef165d02619154c102e22a0cec56429589296a105b155c",
+      "size_bytes": 1159
+    },
+    "evidence/mean-pool-mlp-regularized-seed43-v1.bundle.json": {
+      "sha256": "7fb3be838c95d193369eae352fb3c209633a6833193594241cd09fcc867dbd1c",
+      "size_bytes": 1159
+    },
+    "evidence/mean-pool-mlp-regularized-v1.bundle.json": {
+      "sha256": "77ced5004162a6a85f173ca1ada2649fed61891e92e20d08e896fac6c6596f2b",
+      "size_bytes": 1145
+    },
+    "evidence/seeds.json": {
+      "sha256": "9919116baaacb4ae8df3bf8ff532a0b66ec0353f086d93f3e5468a319bbf5ab0",
+      "size_bytes": 28020
+    },
+    "evidence/tfidf-bigram-c10-v1.bundle.json": {
+      "sha256": "6c6be38bd1a9e28fcf6e3fabbd0f514a283bad2555242a300cafccb4a357a962",
+      "size_bytes": 992
+    },
+    "majority-v1/metrics.test.json": {
+      "sha256": "f91cb19dcc6a571cd3b5aed9ce90f8d336116c9f3cf6115c5549ed7a858daa3e",
+      "size_bytes": 1500
+    },
+    "majority-v1/predictions.test.jsonl": {
+      "sha256": "63af784f5753ca83a6293abdc831459a09e4d2f3c2fd4f5e27e761d3d3439e8d",
+      "size_bytes": 104000
+    },
+    "mean-pool-mlp-regularized-seed29-v1/metrics.test.json": {
+      "sha256": "e89801c1c52bd098c979beaa1319e302ac203236ad531a27c453645663b2c041",
+      "size_bytes": 1649
+    },
+    "mean-pool-mlp-regularized-seed29-v1/predictions.test.jsonl": {
+      "sha256": "d1f355aba82e0ec832eec808dc40a08bd2de4d018d6ae790307c9d3097650d95",
+      "size_bytes": 104000
+    },
+    "mean-pool-mlp-regularized-seed29-v1/scores.test.jsonl": {
+      "sha256": "437f9a43ea7aa481bf56da1da084aaa678b6dc8d9b86954514159e98ae46122f",
+      "size_bytes": 308588
+    },
+    "mean-pool-mlp-regularized-seed43-v1/metrics.test.json": {
+      "sha256": "36707a95faac12a6fc3e73820f71819536f04d3c49b0017a866664c88cc6480f",
+      "size_bytes": 1650
+    },
+    "mean-pool-mlp-regularized-seed43-v1/predictions.test.jsonl": {
+      "sha256": "2aef75bc38bcad1c2cff58d807dfe26f854cac23f7258f1a79ac7d0b49748a7d",
+      "size_bytes": 104000
+    },
+    "mean-pool-mlp-regularized-seed43-v1/scores.test.jsonl": {
+      "sha256": "cc6dd9dcc6c50b5064f7eb7de26807f968338cd9272aac4134519c78f357100d",
+      "size_bytes": 309237
+    },
+    "mean-pool-mlp-regularized-v1/metrics.test.json": {
+      "sha256": "2fee56cbbecb3a37afaf863543a55de5f2546aa1ce9982dc1bf253e909736db5",
+      "size_bytes": 1643
+    },
+    "mean-pool-mlp-regularized-v1/predictions.test.jsonl": {
+      "sha256": "b80162aa7ca60cc20ab9bef94c76bc4bdf91d14e08f140fd966588e0f5885ff0",
+      "size_bytes": 104000
+    },
+    "mean-pool-mlp-regularized-v1/scores.test.jsonl": {
+      "sha256": "bd098c1a08b58f393b98a90a4e91e05b3b32cac7d29f4b60fda75d9212890a4f",
+      "size_bytes": 301859
+    },
+    "selection.json": {
+      "sha256": "2b30e12bf79c7a7c6437072ffd15d0f6bc527edea9531693fee9152e532834ae",
+      "size_bytes": 4459
+    },
+    "source/.python-version": {
+      "sha256": "02e735b3dfe1c32833eb550b7ff8ffa17f5f2bc3fa1e7bae61a8f5a3883ce398",
+      "size_bytes": 5
+    },
+    "source/pyproject.toml": {
+      "sha256": "3d0a0b592bb5e1493e99e9e76eefee88b086408c545f60d6b5aa1a9908ccb3d6",
+      "size_bytes": 1776
+    },
+    "source/src/filing_sentence_classifier/__init__.py": {
+      "sha256": "e1d13c02abf15d9d5744bbb593db19e396ac8d7c94d5b72a24d6b184e035995c",
+      "size_bytes": 79
+    },
+    "source/src/filing_sentence_classifier/__main__.py": {
+      "sha256": "7355d87bce8624ba466fcef31fe7f5a2904e5461bfa44500e4d82fabe48985c8",
+      "size_bytes": 147
+    },
+    "source/src/filing_sentence_classifier/artifacts.py": {
+      "sha256": "8c869d0fde47d7c3912d26acce719b0a8b91ac4b3410894f049e623e21c44219",
+      "size_bytes": 12239
+    },
+    "source/src/filing_sentence_classifier/baselines/__init__.py": {
+      "sha256": "a4cb10fdc93defb0711dbd6268f887cb0a2c1b8e1bcb0c1ad1dd8d67c3425c89",
+      "size_bytes": 69
+    },
+    "source/src/filing_sentence_classifier/baselines/config.py": {
+      "sha256": "9b8c8a7966a9cbb2f0af2e8f3b2eba75f58aeb786debd8890a4831a3879a3019",
+      "size_bytes": 3368
+    },
+    "source/src/filing_sentence_classifier/baselines/majority.py": {
+      "sha256": "29994fd284f6098d3a808f7e4dcd9473f838da98fb34df5b4814525a388e943d",
+      "size_bytes": 3906
+    },
+    "source/src/filing_sentence_classifier/baselines/run.py": {
+      "sha256": "8689631c64dba9166b16f3002254a7099fe1f6add5ead8e32a47f8ffa160f0a3",
+      "size_bytes": 6006
+    },
+    "source/src/filing_sentence_classifier/baselines/tfidf.py": {
+      "sha256": "e95734ac19ea3718a2e1e2595993c840bb15a303e5958df8b98fcae72785863b",
+      "size_bytes": 4998
+    },
+    "source/src/filing_sentence_classifier/baselines/tfidf_run.py": {
+      "sha256": "4637ec1bdcedf04642eff1d24652c37cf69f36a08fbf9ef91305bb52302b8336",
+      "size_bytes": 6454
+    },
+    "source/src/filing_sentence_classifier/cli.py": {
+      "sha256": "a83ef625042dcbe87e79755ee5dcad51d696bf34de23c141893fbc7e84c0e5d0",
+      "size_bytes": 25396
+    },
+    "source/src/filing_sentence_classifier/data/__init__.py": {
+      "sha256": "615559e361359c93a151f774ffad1c15ccd5e4b44aaa96c6dad1766e6ba0c28a",
+      "size_bytes": 47
+    },
+    "source/src/filing_sentence_classifier/data/audit.py": {
+      "sha256": "9e09fa4d0b9c208c86f5c43465ba0acfbb23d454c7651bb7339ebac40a8a7e4c",
+      "size_bytes": 5119
+    },
+    "source/src/filing_sentence_classifier/data/cleaning.py": {
+      "sha256": "fe3acfe815aee727389bc961441adbce7dd6b6b12224a179458fc8af30425243",
+      "size_bytes": 5819
+    },
+    "source/src/filing_sentence_classifier/data/collate.py": {
+      "sha256": "c98d06fd4be8a4484f28b20f48d192607e5c5541e98a4580aab25f0198f9cee2",
+      "size_bytes": 5119
+    },
+    "source/src/filing_sentence_classifier/data/dataloader.py": {
+      "sha256": "4f577bf03a46ea2924402270910f2b799ea8857408f25a98eb832b03ab151d4c",
+      "size_bytes": 2337
+    },
+    "source/src/filing_sentence_classifier/data/dataset.py": {
+      "sha256": "7e6b3837b9e6728694d00b4c5ca75b84e4688f67fff6dc5ad0cab6b692bae056",
+      "size_bytes": 4620
+    },
+    "source/src/filing_sentence_classifier/data/fls.py": {
+      "sha256": "1eef777d4ee154382ea598bb72f6c1eedecb66b6880ae0b0a69ce8aafc36640e",
+      "size_bytes": 1303
+    },
+    "source/src/filing_sentence_classifier/data/heldout.py": {
+      "sha256": "aba3b8b1a06017bb8fc0e5035a8dda7c474731ae915315d03ce4450d5f44d123",
+      "size_bytes": 6633
+    },
+    "source/src/filing_sentence_classifier/data/loading.py": {
+      "sha256": "84897cecbfd2f6b9453196884bc61523a82da65c9bef70d4ca81a42d21cc4401",
+      "size_bytes": 10811
+    },
+    "source/src/filing_sentence_classifier/data/partition.py": {
+      "sha256": "bd2b8be9d00725f10fdde87366a1ff0c1f8a5e87032346327e6115c18e470b23",
+      "size_bytes": 13225
+    },
+    "source/src/filing_sentence_classifier/data/prepare.py": {
+      "sha256": "6898476e92c0e9d2db84e443af797f52bed66c7edc36031be261a094a813b00f",
+      "size_bytes": 7663
+    },
+    "source/src/filing_sentence_classifier/data/source.py": {
+      "sha256": "760d27548ca7c2cfefc4465853ab9731e355a2707168ed22e941110e6566e571",
+      "size_bytes": 4304
+    },
+    "source/src/filing_sentence_classifier/data/spec.py": {
+      "sha256": "093e6a67065d7656699aa1689bd03d6f5bcb5f211e16779ab699a7ef17aab9f5",
+      "size_bytes": 441
+    },
+    "source/src/filing_sentence_classifier/data/split.py": {
+      "sha256": "d924147dfef6253edb88a29e0c9989d55614cdb95c1ebd485cbb4ed6071c44b2",
+      "size_bytes": 6129
+    },
+    "source/src/filing_sentence_classifier/data/vocabulary.py": {
+      "sha256": "4b5c6026ff9aa05674bb8f8bc65d29b41b67ce13240022ee216b165884e38bdf",
+      "size_bytes": 4692
+    },
+    "source/src/filing_sentence_classifier/evaluation/__init__.py": {
+      "sha256": "84a6e4d9c16813494f2e48c0bcda5f05d9cc1ef7c4e80b1eba758453beda9c26",
+      "size_bytes": 72
+    },
+    "source/src/filing_sentence_classifier/evaluation/campaign.py": {
+      "sha256": "d4c4c13bb915f6fb9c2555dff32b2dce439bfc8f3ca5613f30480be5a791cfb1",
+      "size_bytes": 17898
+    },
+    "source/src/filing_sentence_classifier/evaluation/evaluate.py": {
+      "sha256": "8711a730d0490ec1589926ef98b7bee7363c82dfb6402a20ac1ee0e28d92ccfb",
+      "size_bytes": 4738
+    },
+    "source/src/filing_sentence_classifier/evaluation/metrics.py": {
+      "sha256": "f0640b1763625a10a31dd10efc03f84fb13fd69a2a95aa7d8cd61be41d6d2a7d",
+      "size_bytes": 3181
+    },
+    "source/src/filing_sentence_classifier/exporting.py": {
+      "sha256": "937979e19bac960e0904c98aac79f17be970b2b0c4f8adf5a0069f00c92ea67b",
+      "size_bytes": 13550
+    },
+    "source/src/filing_sentence_classifier/inference/__init__.py": {
+      "sha256": "b9995af857d15f9487e37770f745d0aa1d120eee15fe2d6462e83664d177d103",
+      "size_bytes": 44
+    },
+    "source/src/filing_sentence_classifier/inference/benchmark.py": {
+      "sha256": "1dac172e8f798babbad89e9ec3625d2093ad6f9aca8d5fcf799ee762537c5afd",
+      "size_bytes": 15905
+    },
+    "source/src/filing_sentence_classifier/inference/compatibility.py": {
+      "sha256": "0fb142043effd6b37d751ca1561e57e3fefc1265f2fb0a5c17c689687e79f353",
+      "size_bytes": 1497
+    },
+    "source/src/filing_sentence_classifier/inference/contracts.py": {
+      "sha256": "6e930f8c869427b512536a79c281c7e91a1db33265808deb652f5d52709fe347",
+      "size_bytes": 7004
+    },
+    "source/src/filing_sentence_classifier/inference/jsonl.py": {
+      "sha256": "57dee9db89dd4ce6daa12510a1506c473623e203598a802da3a28e0d53d1fcb6",
+      "size_bytes": 5535
+    },
+    "source/src/filing_sentence_classifier/inference/predictor.py": {
+      "sha256": "caefbcaff17246c9efeebb9d24e891e6d306bf6cb4ee8586f89fdec58670e737",
+      "size_bytes": 3006
+    },
+    "source/src/filing_sentence_classifier/inference/pytorch.py": {
+      "sha256": "beda6dc51d3fa46d2a565fabd68cb9021873e4043936907a022940966a26aa79",
+      "size_bytes": 4462
+    },
+    "source/src/filing_sentence_classifier/inference/tfidf.py": {
+      "sha256": "dae4ab46b08730c71a58b1c82de80e2290a4c65fb04d81289ca4a19ebdbee89e",
+      "size_bytes": 6962
+    },
+    "source/src/filing_sentence_classifier/models/__init__.py": {
+      "sha256": "c25fa2cc1dbdfba148a06dee626cd771987033223d8a89351b265ab286f00f48",
+      "size_bytes": 78
+    },
+    "source/src/filing_sentence_classifier/models/mean_pool_mlp.py": {
+      "sha256": "d161f394ffb5a245e9a9ba66a57865fc75382a450f8d2379412e60ca07177350",
+      "size_bytes": 4063
+    },
+    "source/src/filing_sentence_classifier/text/__init__.py": {
+      "sha256": "78c9f4ff9b6e14a37ad94532830c75a110cd40bed5eec44216b786acba6d9b78",
+      "size_bytes": 54
+    },
+    "source/src/filing_sentence_classifier/text/encoding.py": {
+      "sha256": "65b4bbd7a48d307f1e55faedf1b958b35480c3a4f86dd257de6c8b728c2dd101",
+      "size_bytes": 7031
+    },
+    "source/src/filing_sentence_classifier/text/tokenization.py": {
+      "sha256": "37cd7696d0c2bc92712883952ed7cf06bce08c79e32c7e7132434cab04924895",
+      "size_bytes": 2376
+    },
+    "source/src/filing_sentence_classifier/text/vocabulary.py": {
+      "sha256": "ad7146afc3fcfa2b04d819f6ef81caf0420ccdf0befd27d6b7300eab3620f59f",
+      "size_bytes": 7883
+    },
+    "source/src/filing_sentence_classifier/training/__init__.py": {
+      "sha256": "1e672970ee688cdbfeb4157e0351256b4dcbc288b48c6343b2f9e9b0d656914c",
+      "size_bytes": 77
+    },
+    "source/src/filing_sentence_classifier/training/artifacts.py": {
+      "sha256": "bad3848be382856c7c9385f950d0b16f753f6fce1c6b3229d736d2c5d76eff4a",
+      "size_bytes": 5505
+    },
+    "source/src/filing_sentence_classifier/training/checkpoints.py": {
+      "sha256": "6e58ce1e1d443263eb50e533660d852221fb55ec7a2938de5f14514109f993fd",
+      "size_bytes": 6069
+    },
+    "source/src/filing_sentence_classifier/training/config.py": {
+      "sha256": "a03fa606140a9df898bf9a09e8a3c5d91e43d1e57268f133702f2148123f1b68",
+      "size_bytes": 5693
+    },
+    "source/src/filing_sentence_classifier/training/engine.py": {
+      "sha256": "468187f3cb5e823755066c2934bc3dc94653d02e0484ac96cf968968f7498cd8",
+      "size_bytes": 11610
+    },
+    "source/src/filing_sentence_classifier/training/fit.py": {
+      "sha256": "6fc7690d7f1542abafdd0c79be0f49acff7f3787edfe43d5463ce227c06bf911",
+      "size_bytes": 5039
+    },
+    "source/src/filing_sentence_classifier/training/optimizers.py": {
+      "sha256": "8a5e241ec70b0a9dc33d087b7785bb11372c563ee40ee33e5f8149ff92518d85",
+      "size_bytes": 1041
+    },
+    "source/src/filing_sentence_classifier/training/plots.py": {
+      "sha256": "a7687045343b477a1d0087fa38c59b494a9de107af147863edbcc40f5b04da85",
+      "size_bytes": 1916
+    },
+    "source/src/filing_sentence_classifier/training/reproducibility.py": {
+      "sha256": "e0be49217d1447e452b846c8481c3a72b775173a828832eac3c182319ccc022f",
+      "size_bytes": 2331
+    },
+    "source/src/filing_sentence_classifier/training/run.py": {
+      "sha256": "9a02835d634603b3e49e7d97f9238a716d98c6a57b6370b9654c27cb26aa0249",
+      "size_bytes": 13325
+    },
+    "source/src/filing_sentence_classifier/training/tracking.py": {
+      "sha256": "bf5ed5e632ec6a432029e2c92bab6e5594d48b5723d2feb09219b239b29d9ae1",
+      "size_bytes": 7823
+    },
+    "source/uv.lock": {
+      "sha256": "8ad5a5040f0a6f14961c6b5330a2072f6c7600791c13c4d2cf1b89623f343ebc",
+      "size_bytes": 644409
+    },
+    "source/working-tree.patch": {
+      "sha256": "24c3de895bdc4abdfd0cc81a625b61c50c944b902f3abc1e88abed112797ca14",
+      "size_bytes": 3569
+    },
+    "tfidf-bigram-c10-v1/metrics.test.json": {
+      "sha256": "09180fdb36b340431ea553ac32666a71c3817effa87c536a81bd541e236f25cc",
+      "size_bytes": 1634
+    },
+    "tfidf-bigram-c10-v1/predictions.test.jsonl": {
+      "sha256": "921bb5fcb4109dc338b860c88430d0c8a0b32ea03dd9d72c92b7fb6890d05156",
+      "size_bytes": 104000
+    },
+    "tfidf-bigram-c10-v1/scores.test.jsonl": {
+      "sha256": "af106e01f297ef358740e3953ae62abd95888f4af57948d09dfd0cf9d7e69039",
+      "size_bytes": 292488
+    }
+  },
+  "finished_at_utc": "2026-09-17T14:44:59.800163+00:00",
+  "new_training_runs": 0,
+  "refit_train_and_validation": false,
+  "runtime": {
+    "batch_size": 32,
+    "delivery_seed": 17,
+    "device": "cpu",
+    "fit": false,
+    "num_threads": 1,
+    "primary_metric": "macro_f1",
+    "test_driven_selection": false,
+    "zero_division": 0
+  },
+  "schema_version": 1,
+  "selection_sha256": "2b30e12bf79c7a7c6437072ffd15d0f6bc527edea9531693fee9152e532834ae",
+  "source": {
+    "code_sha256": {
+      "__init__.py": "e1d13c02abf15d9d5744bbb593db19e396ac8d7c94d5b72a24d6b184e035995c",
+      "__main__.py": "7355d87bce8624ba466fcef31fe7f5a2904e5461bfa44500e4d82fabe48985c8",
+      "artifacts.py": "8c869d0fde47d7c3912d26acce719b0a8b91ac4b3410894f049e623e21c44219",
+      "baselines/__init__.py": "a4cb10fdc93defb0711dbd6268f887cb0a2c1b8e1bcb0c1ad1dd8d67c3425c89",
+      "baselines/config.py": "9b8c8a7966a9cbb2f0af2e8f3b2eba75f58aeb786debd8890a4831a3879a3019",
+      "baselines/majority.py": "29994fd284f6098d3a808f7e4dcd9473f838da98fb34df5b4814525a388e943d",
+      "baselines/run.py": "8689631c64dba9166b16f3002254a7099fe1f6add5ead8e32a47f8ffa160f0a3",
+      "baselines/tfidf.py": "e95734ac19ea3718a2e1e2595993c840bb15a303e5958df8b98fcae72785863b",
+      "baselines/tfidf_run.py": "4637ec1bdcedf04642eff1d24652c37cf69f36a08fbf9ef91305bb52302b8336",
+      "cli.py": "a83ef625042dcbe87e79755ee5dcad51d696bf34de23c141893fbc7e84c0e5d0",
+      "data/__init__.py": "615559e361359c93a151f774ffad1c15ccd5e4b44aaa96c6dad1766e6ba0c28a",
+      "data/audit.py": "9e09fa4d0b9c208c86f5c43465ba0acfbb23d454c7651bb7339ebac40a8a7e4c",
+      "data/cleaning.py": "fe3acfe815aee727389bc961441adbce7dd6b6b12224a179458fc8af30425243",
+      "data/collate.py": "c98d06fd4be8a4484f28b20f48d192607e5c5541e98a4580aab25f0198f9cee2",
+      "data/dataloader.py": "4f577bf03a46ea2924402270910f2b799ea8857408f25a98eb832b03ab151d4c",
+      "data/dataset.py": "7e6b3837b9e6728694d00b4c5ca75b84e4688f67fff6dc5ad0cab6b692bae056",
+      "data/fls.py": "1eef777d4ee154382ea598bb72f6c1eedecb66b6880ae0b0a69ce8aafc36640e",
+      "data/heldout.py": "aba3b8b1a06017bb8fc0e5035a8dda7c474731ae915315d03ce4450d5f44d123",
+      "data/loading.py": "84897cecbfd2f6b9453196884bc61523a82da65c9bef70d4ca81a42d21cc4401",
+      "data/partition.py": "bd2b8be9d00725f10fdde87366a1ff0c1f8a5e87032346327e6115c18e470b23",
+      "data/prepare.py": "6898476e92c0e9d2db84e443af797f52bed66c7edc36031be261a094a813b00f",
+      "data/source.py": "760d27548ca7c2cfefc4465853ab9731e355a2707168ed22e941110e6566e571",
+      "data/spec.py": "093e6a67065d7656699aa1689bd03d6f5bcb5f211e16779ab699a7ef17aab9f5",
+      "data/split.py": "d924147dfef6253edb88a29e0c9989d55614cdb95c1ebd485cbb4ed6071c44b2",
+      "data/vocabulary.py": "4b5c6026ff9aa05674bb8f8bc65d29b41b67ce13240022ee216b165884e38bdf",
+      "evaluation/__init__.py": "84a6e4d9c16813494f2e48c0bcda5f05d9cc1ef7c4e80b1eba758453beda9c26",
+      "evaluation/campaign.py": "d4c4c13bb915f6fb9c2555dff32b2dce439bfc8f3ca5613f30480be5a791cfb1",
+      "evaluation/evaluate.py": "8711a730d0490ec1589926ef98b7bee7363c82dfb6402a20ac1ee0e28d92ccfb",
+      "evaluation/metrics.py": "f0640b1763625a10a31dd10efc03f84fb13fd69a2a95aa7d8cd61be41d6d2a7d",
+      "exporting.py": "937979e19bac960e0904c98aac79f17be970b2b0c4f8adf5a0069f00c92ea67b",
+      "inference/__init__.py": "b9995af857d15f9487e37770f745d0aa1d120eee15fe2d6462e83664d177d103",
+      "inference/benchmark.py": "1dac172e8f798babbad89e9ec3625d2093ad6f9aca8d5fcf799ee762537c5afd",
+      "inference/compatibility.py": "0fb142043effd6b37d751ca1561e57e3fefc1265f2fb0a5c17c689687e79f353",
+      "inference/contracts.py": "6e930f8c869427b512536a79c281c7e91a1db33265808deb652f5d52709fe347",
+      "inference/jsonl.py": "57dee9db89dd4ce6daa12510a1506c473623e203598a802da3a28e0d53d1fcb6",
+      "inference/predictor.py": "caefbcaff17246c9efeebb9d24e891e6d306bf6cb4ee8586f89fdec58670e737",
+      "inference/pytorch.py": "beda6dc51d3fa46d2a565fabd68cb9021873e4043936907a022940966a26aa79",
+      "inference/tfidf.py": "dae4ab46b08730c71a58b1c82de80e2290a4c65fb04d81289ca4a19ebdbee89e",
+      "models/__init__.py": "c25fa2cc1dbdfba148a06dee626cd771987033223d8a89351b265ab286f00f48",
+      "models/mean_pool_mlp.py": "d161f394ffb5a245e9a9ba66a57865fc75382a450f8d2379412e60ca07177350",
+      "text/__init__.py": "78c9f4ff9b6e14a37ad94532830c75a110cd40bed5eec44216b786acba6d9b78",
+      "text/encoding.py": "65b4bbd7a48d307f1e55faedf1b958b35480c3a4f86dd257de6c8b728c2dd101",
+      "text/tokenization.py": "37cd7696d0c2bc92712883952ed7cf06bce08c79e32c7e7132434cab04924895",
+      "text/vocabulary.py": "ad7146afc3fcfa2b04d819f6ef81caf0420ccdf0befd27d6b7300eab3620f59f",
+      "training/__init__.py": "1e672970ee688cdbfeb4157e0351256b4dcbc288b48c6343b2f9e9b0d656914c",
+      "training/artifacts.py": "bad3848be382856c7c9385f950d0b16f753f6fce1c6b3229d736d2c5d76eff4a",
+      "training/checkpoints.py": "6e58ce1e1d443263eb50e533660d852221fb55ec7a2938de5f14514109f993fd",
+      "training/config.py": "a03fa606140a9df898bf9a09e8a3c5d91e43d1e57268f133702f2148123f1b68",
+      "training/engine.py": "468187f3cb5e823755066c2934bc3dc94653d02e0484ac96cf968968f7498cd8",
+      "training/fit.py": "6fc7690d7f1542abafdd0c79be0f49acff7f3787edfe43d5463ce227c06bf911",
+      "training/optimizers.py": "8a5e241ec70b0a9dc33d087b7785bb11372c563ee40ee33e5f8149ff92518d85",
+      "training/plots.py": "a7687045343b477a1d0087fa38c59b494a9de107af147863edbcc40f5b04da85",
+      "training/reproducibility.py": "e0be49217d1447e452b846c8481c3a72b775173a828832eac3c182319ccc022f",
+      "training/run.py": "9a02835d634603b3e49e7d97f9238a716d98c6a57b6370b9654c27cb26aa0249",
+      "training/tracking.py": "bf5ed5e632ec6a432029e2c92bab6e5594d48b5723d2feb09219b239b29d9ae1"
+    },
+    "git": {
+      "changes": "M src/filing_sentence_classifier/cli.py\n M src/filing_sentence_classifier/evaluation/evaluate.py\n?? src/filing_sentence_classifier/data/heldout.py\n?? src/filing_sentence_classifier/evaluation/campaign.py",
+      "commit": "7b48236a0cf8508273bb8f508948ee3e6b08bf84",
+      "matches_imported_code": true,
+      "reproducible_from_commit": false,
+      "scope": [
+        "src",
+        "pyproject.toml",
+        "uv.lock",
+        ".python-version"
+      ]
+    }
+  },
+  "stage": "final_test_evaluation",
+  "started_at_utc": "2026-09-17T14:44:59.399661+00:00",
+  "status": "completed",
+  "test_access_started": true,
+  "test_driven_selection": false
+}

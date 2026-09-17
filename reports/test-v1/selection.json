@@ -1,0 +1,112 @@
+{
+  "declared_at_utc": "2026-09-17T14:41:31.115111+00:00",
+  "development_manifest": {
+    "path": "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1/manifest.json",
+    "sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+    "size_bytes": 4441
+  },
+  "expected_rows": 1000,
+  "failure_policy": "Preserve failed exposure records and any partial outputs. Diagnose technical failures transparently; do not retune or substitute models from test results. Technical reproduction uses this same selection in a new output directory.",
+  "freeze": {
+    "path": "reports/mlp-selection-v1/freeze.json",
+    "sha256": "2c78cc5d11f53311136dad9c6bcf506ad6cf871651c69e152a6432d36dbb0bb4",
+    "size_bytes": 9227
+  },
+  "majority_manifest": {
+    "path": "artifacts/runs/majority-v1/manifest.json",
+    "sha256": "3981a6fcef60539aaf0fd9da6406c9f3fc5990cd0c6ae564e456564c1885befb",
+    "size_bytes": 1820
+  },
+  "models": [
+    {
+      "bundle_manifest": {
+        "path": "artifacts/bundles/tfidf-bigram-c10-v1/manifest.json",
+        "sha256": "6c6be38bd1a9e28fcf6e3fabbd0f514a283bad2555242a300cafccb4a357a962",
+        "size_bytes": 992
+      },
+      "run_id": "tfidf-bigram-c10-v1"
+    },
+    {
+      "bundle_manifest": {
+        "path": "artifacts/bundles/mean-pool-mlp-regularized-v1/manifest.json",
+        "sha256": "77ced5004162a6a85f173ca1ada2649fed61891e92e20d08e896fac6c6596f2b",
+        "size_bytes": 1145
+      },
+      "run_id": "mean-pool-mlp-regularized-v1"
+    },
+    {
+      "bundle_manifest": {
+        "path": "artifacts/bundles/mean-pool-mlp-regularized-seed29-v1/manifest.json",
+        "sha256": "4910c716bd6abdc665ef165d02619154c102e22a0cec56429589296a105b155c",
+        "size_bytes": 1159
+      },
+      "run_id": "mean-pool-mlp-regularized-seed29-v1"
+    },
+    {
+      "bundle_manifest": {
+        "path": "artifacts/bundles/mean-pool-mlp-regularized-seed43-v1/manifest.json",
+        "sha256": "7fb3be838c95d193369eae352fb3c209633a6833193594241cd09fcc867dbd1c",
+        "size_bytes": 1159
+      },
+      "run_id": "mean-pool-mlp-regularized-seed43-v1"
+    }
+  ],
+  "policy": {
+    "batch_size": 32,
+    "delivery_seed": 17,
+    "device": "cpu",
+    "fit": false,
+    "num_threads": 1,
+    "primary_metric": "macro_f1",
+    "test_driven_selection": false,
+    "zero_division": 0
+  },
+  "preparation": {
+    "base_cleaning": {
+      "c1_replacements": {
+        "U+0092": "U+2019",
+        "U+0093": "U+201C",
+        "U+0094": "U+201D",
+        "U+0095": "U+2022",
+        "U+0096": "U+2013",
+        "U+0097": "U+2014"
+      },
+      "conflicting_labels": "quarantine_entire_cleaned_text_group",
+      "group_id": "sha256_of_cleaned_text_utf8",
+      "invalid_records": "exclude_with_reasons",
+      "labels": "unchanged",
+      "length_filter": null,
+      "near_duplicates": "no_automatic_merging",
+      "operations_in_order": [
+        "repair_c1_punctuation",
+        "unicode_nfc",
+        "collapse_whitespace"
+      ],
+      "same_label_duplicates": "retain_rows_with_shared_group_id",
+      "unresolved_unicode": "exclude_other_c1_and_replacement_character",
+      "version": "1"
+    },
+    "before_clean_v1": {
+      "U+0099": "U+2122"
+    },
+    "duplicates_and_conflicting_labels": "retain_all_published_rows",
+    "invalid_input": "fail_entire_campaign_without_dropping_rows",
+    "labels": "unchanged",
+    "order": "published_source_row",
+    "version": "published-test-v1"
+  },
+  "preparation_exception_basis": "The earlier text-only overlap check identified U+0099 in one reserved row. Map this Windows-1252 code point to U+2122 before clean-v1, identically for every model. This is an evaluation-only adapter declared before test labels or model results are read; keep the original source bytes and log changed row identities. Frozen bundle preprocessing and development data remain unchanged. Any other incompatible input stops the campaign; never filter test rows.",
+  "prior_test_exposure": "Automated text-only overlap checks during development splitting; no labels loaded or model test metrics computed.",
+  "schema_version": 1,
+  "source": {
+    "file": {
+      "path": "data/test-00000-of-00001.parquet",
+      "sha256": "9b1c472161fb8a0bbcb2f65f84afe552e33cd7bba5abad0beeb658b42dbb32ec",
+      "size_bytes": 109784
+    },
+    "repo_id": "FinanceMTEB/FLS",
+    "revision": "39b6719f1d7197df4498fea9fce20d4ad782a083",
+    "split": "test"
+  },
+  "stage": "final_test_selection"
+}

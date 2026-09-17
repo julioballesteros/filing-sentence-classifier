@@ -1,0 +1,465 @@
+{
+  "data_manifest": {
+    "path": "artifacts/evaluations/test-v1/data/manifest.json",
+    "sha256": "b3c4f7239650cdbaaf57139f2a125ab8780eac89b394bf84cf1e699c13f0d2b2",
+    "size_bytes": 2284
+  },
+  "delivery_run_id": "mean-pool-mlp-regularized-v1",
+  "execution": {
+    "path": "artifacts/evaluations/test-v1/manifest.json",
+    "sha256": "fbeeb35047406ade25dd287f715451449e3e15a2d25aab4b280429d9e1e43312",
+    "size_bytes": 22031
+  },
+  "models": [
+    {
+      "artifacts": {
+        "metrics": {
+          "path": "artifacts/evaluations/test-v1/majority-v1/metrics.test.json",
+          "sha256": "f91cb19dcc6a571cd3b5aed9ce90f8d336116c9f3cf6115c5549ed7a858daa3e",
+          "size_bytes": 1500
+        },
+        "predictions": {
+          "path": "artifacts/evaluations/test-v1/majority-v1/predictions.test.jsonl",
+          "sha256": "63af784f5753ca83a6293abdc831459a09e4d2f3c2fd4f5e27e761d3d3439e8d",
+          "size_bytes": 104000
+        }
+      },
+      "confusion_matrix_axes": {
+        "columns": "predicted",
+        "rows": "true"
+      },
+      "data_manifest_sha256": "b3c4f7239650cdbaaf57139f2a125ab8780eac89b394bf84cf1e699c13f0d2b2",
+      "family": "majority",
+      "label_names": {
+        "0": "specific fls",
+        "1": "not-fls",
+        "2": "non-specific fls"
+      },
+      "metrics": {
+        "accuracy": 0.539,
+        "confusion_matrix": [
+          [
+            0,
+            169,
+            0
+          ],
+          [
+            0,
+            539,
+            0
+          ],
+          [
+            0,
+            292,
+            0
+          ]
+        ],
+        "label_ids": [
+          0,
+          1,
+          2
+        ],
+        "macro_f1": 0.23348494693523933,
+        "per_class": [
+          {
+            "f1": 0.0,
+            "label": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "support": 169
+          },
+          {
+            "f1": 0.700454840805718,
+            "label": 1,
+            "precision": 0.539,
+            "recall": 1.0,
+            "support": 539
+          },
+          {
+            "f1": 0.0,
+            "label": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "support": 292
+          }
+        ],
+        "sample_count": 1000
+      },
+      "model_id": "majority-v1",
+      "predictions_sha256": "63af784f5753ca83a6293abdc831459a09e4d2f3c2fd4f5e27e761d3d3439e8d",
+      "primary_metric": "macro_f1",
+      "records_sha256": "335a97f1f77761256067e88b838f82314641795e01d357d226a418124c04d441",
+      "schema_version": 1,
+      "seed": null,
+      "selection_sha256": "2b30e12bf79c7a7c6437072ffd15d0f6bc527edea9531693fee9152e532834ae",
+      "split": "test",
+      "truncated_rows": 0,
+      "zero_division": 0
+    },
+    {
+      "artifacts": {
+        "metrics": {
+          "path": "artifacts/evaluations/test-v1/mean-pool-mlp-regularized-seed29-v1/metrics.test.json",
+          "sha256": "e89801c1c52bd098c979beaa1319e302ac203236ad531a27c453645663b2c041",
+          "size_bytes": 1649
+        },
+        "predictions": {
+          "path": "artifacts/evaluations/test-v1/mean-pool-mlp-regularized-seed29-v1/predictions.test.jsonl",
+          "sha256": "d1f355aba82e0ec832eec808dc40a08bd2de4d018d6ae790307c9d3097650d95",
+          "size_bytes": 104000
+        },
+        "scores": {
+          "path": "artifacts/evaluations/test-v1/mean-pool-mlp-regularized-seed29-v1/scores.test.jsonl",
+          "sha256": "437f9a43ea7aa481bf56da1da084aaa678b6dc8d9b86954514159e98ae46122f",
+          "size_bytes": 308588
+        }
+      },
+      "confusion_matrix_axes": {
+        "columns": "predicted",
+        "rows": "true"
+      },
+      "data_manifest_sha256": "b3c4f7239650cdbaaf57139f2a125ab8780eac89b394bf84cf1e699c13f0d2b2",
+      "family": "mean_pool_mlp",
+      "label_names": {
+        "0": "specific fls",
+        "1": "not-fls",
+        "2": "non-specific fls"
+      },
+      "metrics": {
+        "accuracy": 0.771,
+        "confusion_matrix": [
+          [
+            90,
+            56,
+            23
+          ],
+          [
+            22,
+            490,
+            27
+          ],
+          [
+            28,
+            73,
+            191
+          ]
+        ],
+        "label_ids": [
+          0,
+          1,
+          2
+        ],
+        "macro_f1": 0.7151696364212574,
+        "per_class": [
+          {
+            "f1": 0.5825242718446602,
+            "label": 0,
+            "precision": 0.6428571428571429,
+            "recall": 0.5325443786982249,
+            "support": 169
+          },
+          {
+            "f1": 0.846286701208981,
+            "label": 1,
+            "precision": 0.7915993537964459,
+            "recall": 0.9090909090909091,
+            "support": 539
+          },
+          {
+            "f1": 0.7166979362101313,
+            "label": 2,
+            "precision": 0.7925311203319502,
+            "recall": 0.6541095890410958,
+            "support": 292
+          }
+        ],
+        "sample_count": 1000
+      },
+      "model_id": "mean-pool-mlp-regularized-seed29-v1",
+      "predictions_sha256": "d1f355aba82e0ec832eec808dc40a08bd2de4d018d6ae790307c9d3097650d95",
+      "primary_metric": "macro_f1",
+      "records_sha256": "335a97f1f77761256067e88b838f82314641795e01d357d226a418124c04d441",
+      "schema_version": 1,
+      "seed": 29,
+      "selection_sha256": "2b30e12bf79c7a7c6437072ffd15d0f6bc527edea9531693fee9152e532834ae",
+      "split": "test",
+      "truncated_rows": 3,
+      "zero_division": 0
+    },
+    {
+      "artifacts": {
+        "metrics": {
+          "path": "artifacts/evaluations/test-v1/mean-pool-mlp-regularized-seed43-v1/metrics.test.json",
+          "sha256": "36707a95faac12a6fc3e73820f71819536f04d3c49b0017a866664c88cc6480f",
+          "size_bytes": 1650
+        },
+        "predictions": {
+          "path": "artifacts/evaluations/test-v1/mean-pool-mlp-regularized-seed43-v1/predictions.test.jsonl",
+          "sha256": "2aef75bc38bcad1c2cff58d807dfe26f854cac23f7258f1a79ac7d0b49748a7d",
+          "size_bytes": 104000
+        },
+        "scores": {
+          "path": "artifacts/evaluations/test-v1/mean-pool-mlp-regularized-seed43-v1/scores.test.jsonl",
+          "sha256": "cc6dd9dcc6c50b5064f7eb7de26807f968338cd9272aac4134519c78f357100d",
+          "size_bytes": 309237
+        }
+      },
+      "confusion_matrix_axes": {
+        "columns": "predicted",
+        "rows": "true"
+      },
+      "data_manifest_sha256": "b3c4f7239650cdbaaf57139f2a125ab8780eac89b394bf84cf1e699c13f0d2b2",
+      "family": "mean_pool_mlp",
+      "label_names": {
+        "0": "specific fls",
+        "1": "not-fls",
+        "2": "non-specific fls"
+      },
+      "metrics": {
+        "accuracy": 0.773,
+        "confusion_matrix": [
+          [
+            99,
+            34,
+            36
+          ],
+          [
+            29,
+            470,
+            40
+          ],
+          [
+            36,
+            52,
+            204
+          ]
+        ],
+        "label_ids": [
+          0,
+          1,
+          2
+        ],
+        "macro_f1": 0.7221095988219276,
+        "per_class": [
+          {
+            "f1": 0.5945945945945946,
+            "label": 0,
+            "precision": 0.6036585365853658,
+            "recall": 0.5857988165680473,
+            "support": 169
+          },
+          {
+            "f1": 0.8584474885844748,
+            "label": 1,
+            "precision": 0.8453237410071942,
+            "recall": 0.8719851576994434,
+            "support": 539
+          },
+          {
+            "f1": 0.7132867132867133,
+            "label": 2,
+            "precision": 0.7285714285714285,
+            "recall": 0.6986301369863014,
+            "support": 292
+          }
+        ],
+        "sample_count": 1000
+      },
+      "model_id": "mean-pool-mlp-regularized-seed43-v1",
+      "predictions_sha256": "2aef75bc38bcad1c2cff58d807dfe26f854cac23f7258f1a79ac7d0b49748a7d",
+      "primary_metric": "macro_f1",
+      "records_sha256": "335a97f1f77761256067e88b838f82314641795e01d357d226a418124c04d441",
+      "schema_version": 1,
+      "seed": 43,
+      "selection_sha256": "2b30e12bf79c7a7c6437072ffd15d0f6bc527edea9531693fee9152e532834ae",
+      "split": "test",
+      "truncated_rows": 3,
+      "zero_division": 0
+    },
+    {
+      "artifacts": {
+        "metrics": {
+          "path": "artifacts/evaluations/test-v1/mean-pool-mlp-regularized-v1/metrics.test.json",
+          "sha256": "2fee56cbbecb3a37afaf863543a55de5f2546aa1ce9982dc1bf253e909736db5",
+          "size_bytes": 1643
+        },
+        "predictions": {
+          "path": "artifacts/evaluations/test-v1/mean-pool-mlp-regularized-v1/predictions.test.jsonl",
+          "sha256": "b80162aa7ca60cc20ab9bef94c76bc4bdf91d14e08f140fd966588e0f5885ff0",
+          "size_bytes": 104000
+        },
+        "scores": {
+          "path": "artifacts/evaluations/test-v1/mean-pool-mlp-regularized-v1/scores.test.jsonl",
+          "sha256": "bd098c1a08b58f393b98a90a4e91e05b3b32cac7d29f4b60fda75d9212890a4f",
+          "size_bytes": 301859
+        }
+      },
+      "confusion_matrix_axes": {
+        "columns": "predicted",
+        "rows": "true"
+      },
+      "data_manifest_sha256": "b3c4f7239650cdbaaf57139f2a125ab8780eac89b394bf84cf1e699c13f0d2b2",
+      "family": "mean_pool_mlp",
+      "label_names": {
+        "0": "specific fls",
+        "1": "not-fls",
+        "2": "non-specific fls"
+      },
+      "metrics": {
+        "accuracy": 0.786,
+        "confusion_matrix": [
+          [
+            100,
+            41,
+            28
+          ],
+          [
+            30,
+            466,
+            43
+          ],
+          [
+            33,
+            39,
+            220
+          ]
+        ],
+        "label_ids": [
+          0,
+          1,
+          2
+        ],
+        "macro_f1": 0.7387042649338333,
+        "per_class": [
+          {
+            "f1": 0.6024096385542169,
+            "label": 0,
+            "precision": 0.6134969325153374,
+            "recall": 0.591715976331361,
+            "support": 169
+          },
+          {
+            "f1": 0.8589861751152074,
+            "label": 1,
+            "precision": 0.8534798534798534,
+            "recall": 0.8645640074211502,
+            "support": 539
+          },
+          {
+            "f1": 0.7547169811320755,
+            "label": 2,
+            "precision": 0.7560137457044673,
+            "recall": 0.7534246575342466,
+            "support": 292
+          }
+        ],
+        "sample_count": 1000
+      },
+      "model_id": "mean-pool-mlp-regularized-v1",
+      "predictions_sha256": "b80162aa7ca60cc20ab9bef94c76bc4bdf91d14e08f140fd966588e0f5885ff0",
+      "primary_metric": "macro_f1",
+      "records_sha256": "335a97f1f77761256067e88b838f82314641795e01d357d226a418124c04d441",
+      "schema_version": 1,
+      "seed": 17,
+      "selection_sha256": "2b30e12bf79c7a7c6437072ffd15d0f6bc527edea9531693fee9152e532834ae",
+      "split": "test",
+      "truncated_rows": 3,
+      "zero_division": 0
+    },
+    {
+      "artifacts": {
+        "metrics": {
+          "path": "artifacts/evaluations/test-v1/tfidf-bigram-c10-v1/metrics.test.json",
+          "sha256": "09180fdb36b340431ea553ac32666a71c3817effa87c536a81bd541e236f25cc",
+          "size_bytes": 1634
+        },
+        "predictions": {
+          "path": "artifacts/evaluations/test-v1/tfidf-bigram-c10-v1/predictions.test.jsonl",
+          "sha256": "921bb5fcb4109dc338b860c88430d0c8a0b32ea03dd9d72c92b7fb6890d05156",
+          "size_bytes": 104000
+        },
+        "scores": {
+          "path": "artifacts/evaluations/test-v1/tfidf-bigram-c10-v1/scores.test.jsonl",
+          "sha256": "af106e01f297ef358740e3953ae62abd95888f4af57948d09dfd0cf9d7e69039",
+          "size_bytes": 292488
+        }
+      },
+      "confusion_matrix_axes": {
+        "columns": "predicted",
+        "rows": "true"
+      },
+      "data_manifest_sha256": "b3c4f7239650cdbaaf57139f2a125ab8780eac89b394bf84cf1e699c13f0d2b2",
+      "family": "tfidf_logreg",
+      "label_names": {
+        "0": "specific fls",
+        "1": "not-fls",
+        "2": "non-specific fls"
+      },
+      "metrics": {
+        "accuracy": 0.791,
+        "confusion_matrix": [
+          [
+            86,
+            41,
+            42
+          ],
+          [
+            10,
+            491,
+            38
+          ],
+          [
+            23,
+            55,
+            214
+          ]
+        ],
+        "label_ids": [
+          0,
+          1,
+          2
+        ],
+        "macro_f1": 0.7332371085250587,
+        "per_class": [
+          {
+            "f1": 0.5972222222222222,
+            "label": 0,
+            "precision": 0.7226890756302521,
+            "recall": 0.5088757396449705,
+            "support": 169
+          },
+          {
+            "f1": 0.872113676731794,
+            "label": 1,
+            "precision": 0.8364565587734242,
+            "recall": 0.9109461966604824,
+            "support": 539
+          },
+          {
+            "f1": 0.7303754266211604,
+            "label": 2,
+            "precision": 0.7278911564625851,
+            "recall": 0.7328767123287672,
+            "support": 292
+          }
+        ],
+        "sample_count": 1000
+      },
+      "model_id": "tfidf-bigram-c10-v1",
+      "predictions_sha256": "921bb5fcb4109dc338b860c88430d0c8a0b32ea03dd9d72c92b7fb6890d05156",
+      "primary_metric": "macro_f1",
+      "records_sha256": "335a97f1f77761256067e88b838f82314641795e01d357d226a418124c04d441",
+      "schema_version": 1,
+      "seed": null,
+      "selection_sha256": "2b30e12bf79c7a7c6437072ffd15d0f6bc527edea9531693fee9152e532834ae",
+      "split": "test",
+      "truncated_rows": 0,
+      "zero_division": 0
+    }
+  ],
+  "new_training_runs": 0,
+  "schema_version": 1,
+  "selection_sha256": "2b30e12bf79c7a7c6437072ffd15d0f6bc527edea9531693fee9152e532834ae",
+  "stage": "final_test_results",
+  "test_driven_selection": false
+}

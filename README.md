@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen and exported as portable bundles. Inference delivery is verified for PyTorch and TF-IDF through the shared Python API, prediction CLI, CPU benchmarks, and an installed wheel. Test evaluation and deployment remain pending.
+**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen and exported as portable bundles. Inference delivery is verified for PyTorch and TF-IDF through the shared Python API, prediction CLI, CPU benchmarks, and an installed wheel. The [final test campaign](reports/test-v1/README.md) is complete for all five frozen models; comparative analysis and final reporting remain pending.
 
 ## Classification task
 
@@ -24,9 +24,9 @@ The pipeline uses a pinned revision of FinanceMTEB/FLS. Of its 2,600 published t
 | --- | ---: | --- |
 | Development train | 2,074 | Model fitting and learned preprocessing |
 | Validation | 519 | Model selection and error analysis |
-| Published test | 1,000 | Reserved for final evaluation |
+| Published test | 1,000 | Final evaluation after freezing all models |
 
-Train and validation keep identical cleaned-text groups together, using a fixed grouped, stratified split with seed `2026`. Test access has been limited to automated text checks; its examples and labels have not been explored.
+Train and validation keep identical cleaned-text groups together, using a fixed grouped, stratified split with seed `2026`. During development, test access was limited to automated text checks. Its labels were first loaded for the final evaluation after model selection was frozen.
 
 The [dataset documentation](data/README.md) records provenance, cleaning rules, class counts, and limitations. The executed [training audit notebook](notebooks/01_data_exploration.ipynb) provides the exploratory evidence behind those rules.
 
@@ -59,7 +59,7 @@ The classifier counts training labels and predicts the most frequent class for e
 
 The run saves `model.json`, `predictions.val.jsonl`, `metrics.val.json`, and `manifest.json`. The model can be restored with [`MajorityClassifier.from_dict`](src/filing_sentence_classifier/baselines/majority.py) without fitting or optional dependencies. The run manifest records input/output hashes, the effective recipe, code hashes, and environment versions. Repeating an identical run verifies its files; changed results require another output directory. `--manifest-sha256` optionally pins the input artifact.
 
-The [validation report](reports/majority-v1/README.md) contains per-class scores, the confusion matrix, and selected run artifacts. The published test remains reserved for final evaluation.
+The [validation report](reports/majority-v1/README.md) contains per-class scores, the confusion matrix, and selected run artifacts. Final test scores are recorded separately in the [test campaign](reports/test-v1/README.md).
 
 ## Run TF-IDF + logistic regression
 
@@ -78,7 +78,7 @@ The [selected configuration](configs/experiments/tfidf-bigram-c10-v1.toml) uses 
 | TF-IDF + logistic regression, initial `C=1` | Validation (519 sentences) | 0.6375 | 0.7360 |
 | TF-IDF + logistic regression, selected `C=10` | Validation (519 sentences) | **0.6924** | **0.7495** |
 
-A [four-configuration comparison](reports/tfidf-selection-v1/README.md) tested unigrams versus unigrams/bigrams and `C=1` versus `C=10`, selecting by unrounded validation macro-F1 under a declared tie rule. The selected model improves macro-F1 by 0.0548 over the initial reference. Its advantage over unigrams with `C=10` is only 0.0031 on this partition; specific FLS recall remains **0.4651**. The report includes per-class scores, the confusion matrix, and the selected model's hash. Test remains reserved for final evaluation.
+A [four-configuration comparison](reports/tfidf-selection-v1/README.md) tested unigrams versus unigrams/bigrams and `C=1` versus `C=10`, selecting by unrounded validation macro-F1 under a declared tie rule. The selected model improves macro-F1 by 0.0548 over the initial reference. Its advantage over unigrams with `C=10` is only 0.0031 on this partition; specific FLS recall remains **0.4651**. The report includes per-class scores, the confusion matrix, and the selected model's hash. This selection was finalized before test evaluation.
 
 The run contains `config.toml`, `model.joblib` (the fitted vectorizer and classifier), `model.json` (metadata), predictions, metrics, and a manifest. [`load_tfidf_model`](src/filing_sentence_classifier/baselines/tfidf.py) checks the supplied model hash and restores the pipeline without training data. Load joblib files only from trusted runs and use the recorded dependency versions: joblib can execute code during loading. [Configuration options](configs/README.md) are recorded in each run's effective recipe.
 
@@ -328,7 +328,7 @@ A [30-example validation error review](reports/validation-errors.md) examines te
 
 The [six-configuration neural study](reports/mlp-selection-v1/README.md) selects **combined dropout (`0.3`) and weight decay (`0.1`)** by the highest unrounded validation macro-F1: **0.7024**, with **0.7437 accuracy** at seed 17. Smaller embeddings and a singleton-retaining vocabulary lower macro-F1. The [selection record](reports/mlp-selection-v1/selection.json) identifies the chosen recipe, vocabulary, encoder, and epoch-8 checkpoint. These development results use all ten initial TF-IDF/MLP configuration slots.
 
-The [three-seed evaluation](reports/mlp-selection-v1/README.md#variation-across-training-seeds) reuses seed 17 and repeats the fixed recipe with seeds 29 and 43. Validation macro-F1 is **0.6961 ± 0.0090** and accuracy **0.7431 ± 0.0029** (mean ± sample SD, n=3). One seed scores below TF-IDF in macro-F1; this does not establish a reliable generalization advantage. The recipe was selected using seed 17, so these results describe variation on the same development split. Every run's checkpoint, predictions, and MLflow records were verified. The predeclared delivery seed remains 17; test is still reserved.
+The [three-seed evaluation](reports/mlp-selection-v1/README.md#variation-across-training-seeds) reuses seed 17 and repeats the fixed recipe with seeds 29 and 43. Validation macro-F1 is **0.6961 ± 0.0090** and accuracy **0.7431 ± 0.0029** (mean ± sample SD, n=3). One seed scores below TF-IDF in macro-F1; this does not establish a reliable generalization advantage. The recipe was selected using seed 17, so these results describe variation on the same development split. Every run's checkpoint, predictions, and MLflow records were verified. The delivery seed remains 17, fixed before test evaluation.
 
 The [final artifact freeze](reports/mlp-selection-v1/freeze.json) closes model selection and pins the neural **seed-17, epoch-8 checkpoint**, its encoder and configuration, and the selected TF-IDF pipeline. It records artifact paths, checksums, data identity, environment, and the preceding study evidence for subsequent evaluation and packaging. The existing trained models are retained without refitting on train plus validation.
 
@@ -559,7 +559,7 @@ The [inference benchmark](reports/inference-v1/README.md) measures both frozen b
 | MeanPoolMLP | 1.562 | 0.082 ms | 25,578 sentences/s | 24,511 sentences/s |
 | TF-IDF + logistic regression | 0.290 | 0.916 ms | 17,637 sentences/s | 28,199 sentences/s |
 
-These warm timings cover the complete Python prediction API, excluding JSON/file I/O. They describe this workload and machine, rather than a service latency guarantee. The report separates startup, full and partial batches, parameters, dependency versions, and raw timings. The `benchmark` command reproduces the protocol with new output files; model artifacts remain unchanged and test remains reserved.
+These warm timings cover the complete Python prediction API, excluding JSON/file I/O. They describe this workload and machine, rather than a service latency guarantee. The report separates startup, full and partial batches, parameters, dependency versions, and raw timings. The `benchmark` command reproduces the protocol with new output files; it uses validation texts without modifying model artifacts or evaluating test.
 
 The [delivery verification record](reports/inference-v1/delivery.json) closes inference packaging. A [complete integration test](tests/integration/test_delivery.py) trains both model families on synthetic data, exports and moves each bundle, removes the original inputs and run, then predicts in a fresh process outside the checkout with networking and MLflow unavailable. Probabilities match the trained state within tolerance, and incompatible bundle versions fail explicitly. The selected real bundles also reproduce the API's example predictions through the installed wheel.
 

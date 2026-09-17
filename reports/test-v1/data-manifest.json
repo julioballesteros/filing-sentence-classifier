@@ -1,0 +1,80 @@
+{
+  "counts": {
+    "by_label": {
+      "0": 169,
+      "1": 539,
+      "2": 292
+    },
+    "changed": 78,
+    "conflicting_label_groups": 0,
+    "duplicate_extra_rows": 0,
+    "duplicate_groups": 0,
+    "excluded": 0,
+    "input": 1000,
+    "kept": 1000,
+    "unique_groups": 1000
+  },
+  "development_overlap_groups": 0,
+  "files": {
+    "changes.jsonl": {
+      "sha256": "f5d018e3e62ac89e09a87681620bede90004fceceffe4e1f243e76203f0da35e",
+      "size_bytes": 11108
+    },
+    "test.jsonl": {
+      "sha256": "335a97f1f77761256067e88b838f82314641795e01d357d226a418124c04d441",
+      "size_bytes": 421372
+    }
+  },
+  "label_names": {
+    "0": "specific fls",
+    "1": "not-fls",
+    "2": "non-specific fls"
+  },
+  "recipe": {
+    "base_cleaning": {
+      "c1_replacements": {
+        "U+0092": "U+2019",
+        "U+0093": "U+201C",
+        "U+0094": "U+201D",
+        "U+0095": "U+2022",
+        "U+0096": "U+2013",
+        "U+0097": "U+2014"
+      },
+      "conflicting_labels": "quarantine_entire_cleaned_text_group",
+      "group_id": "sha256_of_cleaned_text_utf8",
+      "invalid_records": "exclude_with_reasons",
+      "labels": "unchanged",
+      "length_filter": null,
+      "near_duplicates": "no_automatic_merging",
+      "operations_in_order": [
+        "repair_c1_punctuation",
+        "unicode_nfc",
+        "collapse_whitespace"
+      ],
+      "same_label_duplicates": "retain_rows_with_shared_group_id",
+      "unresolved_unicode": "exclude_other_c1_and_replacement_character",
+      "version": "1"
+    },
+    "before_clean_v1": {
+      "U+0099": "U+2122"
+    },
+    "duplicates_and_conflicting_labels": "retain_all_published_rows",
+    "invalid_input": "fail_entire_campaign_without_dropping_rows",
+    "labels": "unchanged",
+    "order": "published_source_row",
+    "version": "published-test-v1"
+  },
+  "sample_id": "sha256_of_sorted_utf8_json(source,source_row); zero-based source row",
+  "schema_version": 1,
+  "source": {
+    "file": {
+      "path": "data/test-00000-of-00001.parquet",
+      "sha256": "9b1c472161fb8a0bbcb2f65f84afe552e33cd7bba5abad0beeb658b42dbb32ec",
+      "size_bytes": 109784
+    },
+    "repo_id": "FinanceMTEB/FLS",
+    "revision": "39b6719f1d7197df4498fea9fce20d4ad782a083",
+    "split": "test"
+  },
+  "stage": "prepared_published_test"
+}

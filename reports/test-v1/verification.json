@@ -1,0 +1,56 @@
+{
+  "all_five_metrics_recomputed_independently": true,
+  "all_five_prediction_vectors_cover_the_same_1000_sample_ids": true,
+  "all_output_inventory_hashes_verified": true,
+  "execution": {
+    "path": "artifacts/evaluations/test-v1/manifest.json",
+    "sha256": "fbeeb35047406ade25dd287f715451449e3e15a2d25aab4b280429d9e1e43312",
+    "size_bytes": 22031
+  },
+  "failed_real_campaign_attempts": 0,
+  "git_note": "Execution uses uncommitted implementation files. The manifest records the actual imported source hashes, Git state, and a complete local source/lockfile snapshot; it does not claim reproduction from HEAD alone.",
+  "identical_files_across_fresh_processes": [
+    "majority-v1/metrics.test.json",
+    "majority-v1/predictions.test.jsonl",
+    "mean-pool-mlp-regularized-seed29-v1/metrics.test.json",
+    "mean-pool-mlp-regularized-seed29-v1/predictions.test.jsonl",
+    "mean-pool-mlp-regularized-seed29-v1/scores.test.jsonl",
+    "mean-pool-mlp-regularized-seed43-v1/metrics.test.json",
+    "mean-pool-mlp-regularized-seed43-v1/predictions.test.jsonl",
+    "mean-pool-mlp-regularized-seed43-v1/scores.test.jsonl",
+    "mean-pool-mlp-regularized-v1/metrics.test.json",
+    "mean-pool-mlp-regularized-v1/predictions.test.jsonl",
+    "mean-pool-mlp-regularized-v1/scores.test.jsonl",
+    "tfidf-bigram-c10-v1/metrics.test.json",
+    "tfidf-bigram-c10-v1/predictions.test.jsonl",
+    "tfidf-bigram-c10-v1/scores.test.jsonl",
+    "data/test.jsonl",
+    "data/changes.jsonl",
+    "data/manifest.json"
+  ],
+  "probability_argmax_matches_saved_labels": true,
+  "schema_version": 1,
+  "selection_sha256": "2b30e12bf79c7a7c6437072ffd15d0f6bc527edea9531693fee9152e532834ae",
+  "static_checks": [
+    "ruff check .",
+    "ruff format --check .",
+    "mypy (55 source files)"
+  ],
+  "technical_reproduction": {
+    "path": "artifacts/evaluations/test-v1-reproduction/manifest.json",
+    "sha256": "4582a51cbfd18aa1eed5af69b3ca5d02e131bfd302067a2b98cb6d16ad3ffc50",
+    "size_bytes": 22031
+  },
+  "test_driven_changes": false,
+  "tests": {
+    "command": ".venv/bin/python -m pytest -q -m \"\" --junitxml=/private/tmp/fsc-final-test-checks.xml",
+    "failed": 0,
+    "junit": {
+      "path": "artifacts/verification/test-v1/tests.xml",
+      "sha256": "8fdeaff8744d307e245cb3deab8de411bab6ce2e60287cfe695894df7be0e590",
+      "size_bytes": 1178588
+    },
+    "passed": 919
+  },
+  "verified_at_utc": "2026-09-17T14:46:28.438682+00:00"
+}

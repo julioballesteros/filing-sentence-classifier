@@ -629,6 +629,51 @@ def evaluate(
     typer.echo(json.dumps(report, indent=2, sort_keys=True, allow_nan=False))
 
 
+@app.command("evaluate-test")
+def evaluate_test(
+    selection: Annotated[Path, typer.Option("--selection", dir_okay=False)],
+    selection_sha256: Annotated[str, typer.Option("--selection-sha256")],
+    output_dir: Annotated[Path, typer.Option("--output-dir", file_okay=False)],
+    project_dir: Annotated[Path, typer.Option("--project-dir", file_okay=False)] = Path(
+        "."
+    ),
+    raw_dir: Annotated[Path, typer.Option("--raw-dir", file_okay=False)] = Path(
+        "data/raw"
+    ),
+) -> None:
+    """Evaluate the five frozen models on published test using a pinned selection."""
+    try:
+        from filing_sentence_classifier.evaluation.campaign import run_test_campaign
+    except ModuleNotFoundError as exc:
+        if (exc.name or "").split(".", 1)[0] not in {
+            "torch",
+            "sklearn",
+            "numpy",
+            "scipy",
+            "pyarrow",
+            "joblib",
+            "threadpoolctl",
+        }:
+            raise
+        typer.echo("Test evaluation requires the [data] and [train] extras.", err=True)
+        raise typer.Exit(code=1) from exc
+    try:
+        result = run_test_campaign(
+            selection,
+            output_dir,
+            expected_selection_sha256=selection_sha256,
+            project_dir=project_dir,
+            raw_dir=raw_dir,
+            dataset=FLS_SOURCE,
+            test_file=FLS_TEST_FILE,
+            label_names=LABEL_NAMES,
+        )
+    except (ValueError, OSError, DataLoadError) as exc:
+        typer.echo(f"Error: {exc}", err=True)
+        raise typer.Exit(code=1) from exc
+    typer.echo(f"Saved final test evaluation: {result}")
+
+
 @baseline_app.command("majority")
 def majority_baseline(
     data_dir: Annotated[

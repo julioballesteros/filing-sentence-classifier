@@ -7,8 +7,9 @@ from collections.abc import Iterable
 from dataclasses import asdict, dataclass
 from importlib.metadata import version
 from pathlib import Path
+from typing import Protocol
 
-from filing_sentence_classifier.data.loading import LoadedSplit, SplitName, load_split
+from filing_sentence_classifier.data.loading import SplitName, load_split
 from filing_sentence_classifier.evaluation.metrics import (
     ClassificationMetrics,
     EvaluationError,
@@ -22,8 +23,24 @@ class Prediction:
     predicted_label: int
 
 
+class EvaluationDataset(Protocol):
+    """Aligned targets and identities; loading and access policy belong to callers."""
+
+    @property
+    def name(self) -> str: ...
+
+    @property
+    def sample_ids(self) -> tuple[str, ...]: ...
+
+    @property
+    def targets(self) -> tuple[int, ...]: ...
+
+    @property
+    def label_ids(self) -> tuple[int, ...]: ...
+
+
 def evaluate_predictions(
-    split: LoadedSplit, predictions: Iterable[Prediction]
+    split: EvaluationDataset, predictions: Iterable[Prediction]
 ) -> ClassificationMetrics:
     """Require exactly one prediction per target ID, allowing any prediction order."""
     by_id: dict[str, int] = {}

@@ -2,7 +2,7 @@
 
 This project uses [FinanceMTEB/FLS](https://huggingface.co/datasets/FinanceMTEB/FLS) for sentence-level classification of forward-looking statements in English financial reports.
 
-**Review status:** Source documentation, the [training audit](../notebooks/01_data_exploration.ipynb), cleaning, and development splitting are complete. The published test has been accessed only for automated text checks; its examples and labels have not been explored.
+**Review status:** Source documentation, the [training audit](../notebooks/01_data_exploration.ipynb), cleaning, and development splitting are complete. The [final test campaign](../reports/test-v1/README.md) has evaluated all 1,000 published rows after model selection was frozen. Before that campaign, test access was limited to automated text checks.
 
 ## Published dataset
 
@@ -14,7 +14,7 @@ The selected source revision is `39b6719f1d7197df4498fea9fce20d4ad782a083`, also
 | Test | 1,000 |
 | **Total** | **3,600** |
 
-Files are published as Parquet under the `default` configuration. Each row contains `text` (string), `label` (integer), and `label_text` (string). These figures and fields come from the [publisher's metadata](https://huggingface.co/api/datasets/FinanceMTEB/FLS). Both row counts and the training schema have also been verified locally; test labels have not been loaded.
+Files are published as Parquet under the `default` configuration. Each row contains `text` (string), `label` (integer), and `label_text` (string). These figures and fields come from the [publisher's metadata](https://huggingface.co/api/datasets/FinanceMTEB/FLS). Both splits' row counts, schema, and label mapping have been verified locally; test labels were first loaded during the final campaign.
 
 ## Labels
 
@@ -41,7 +41,7 @@ Sampling deliberately selected 75% of sentences with a forward-looking keyword a
 
 ## Data storage and evaluation policy
 
-Only this description is versioned in `data/`; downloaded and generated datasets are excluded from Git. Source files are treated as immutable, with revisions, file hashes, and split manifests providing provenance. The published test split is reserved for final evaluation.
+Only this description is versioned in `data/`; downloaded and generated datasets are excluded from Git. Source files are treated as immutable, with revisions, file hashes, and split manifests providing provenance. The published test split was reserved through model selection and is now used only for final evaluation and its technical reproduction.
 
 ## Download
 
@@ -126,3 +126,7 @@ Use `--prepared-dir PATH` to select a cleaned artifact, `--raw-dir PATH` for sou
 [`load_split(directory, "train" | "val")`](../src/filing_sentence_classifier/data/loading.py) returns immutable records and aligned `texts`, `targets`, and `sample_ids`. It verifies the selected partition and assignment/exclusion ledgers against the saved manifest, including identities, group separation, and class counts. It needs only the standard library and does not open raw data, test, or the other partition's text. Pass `expected_manifest_sha256` to pin an exact artifact.
 
 The returned `label_ids` and `label_names` define the numeric class order for downstream evaluation. The project README describes the [prediction format, evaluation command, and shared metrics](../README.md#evaluate-saved-predictions).
+
+## Published test preparation
+
+The separate `evaluate-test` command verifies a frozen selection before invoking [data/heldout.py](../src/filing_sentence_classifier/data/heldout.py). It retains all 1,000 source rows and labels, writes prepared records and a changes ledger under `artifacts/evaluations/<campaign>/data/`, and leaves the development loader restricted to train/validation. Its declared `published-test-v1` adapter repairs the previously identified `U+0099` to `™` before clean-v1 normalization; unsupported inputs stop evaluation instead of being excluded. The [test campaign report](../reports/test-v1/README.md) records the preparation manifest, verified absence of development overlap, and reproduction command.
