@@ -40,6 +40,8 @@ The selected neural recipe is [mean-pool-mlp-regularized-v1.toml](experiments/me
 
 The completed [seed study](../reports/mlp-selection-v1/README.md#variation-across-training-seeds) adds [seed 29](experiments/mean-pool-mlp-regularized-seed29-v1.toml) and [seed 43](experiments/mean-pool-mlp-regularized-seed43-v1.toml). Their effective settings differ from the selected recipe only in `runtime.seed`; they are fixed-recipe repetitions, not new hyperparameter candidates. All three use the same data, vocabulary, and encoding settings. Delivery seed 17 is retained.
 
+The [final artifact freeze](../reports/mlp-selection-v1/freeze.json) binds the original selected recipe to its seed-17, epoch-8 checkpoint and saved encoder, and pins the existing TF-IDF reference. Subsequent evaluation and packaging use these identities; changes to a frozen recipe require a new version.
+
 [`create_optimizer`](../src/filing_sentence_classifier/training/optimizers.py) creates [AdamW](https://docs.pytorch.org/docs/2.14/generated/torch.optim.AdamW.html) with the configured learning rate and weight decay, `betas=(0.9, 0.999)`, `eps=1e-8`, and `amsgrad=False`. Both `foreach` and `fused` are disabled for an explicit implementation choice. One parameter group contains all trainable parameters, including biases and embeddings; frozen parameters are excluded. Construct it after placing the model on its device, and retain it across calls to `train_epoch`. [`fit`](../src/filing_sentence_classifier/training/fit.py) creates and retains its own optimizer and consumes the epoch/stopping limits.
 
 Using the existing `encoder`, verified `train` partition, and `dataset` from the main README:

@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Neural configuration selection and three-seed validation are complete; the final delivery freeze, test evaluation, and deployment remain pending.
+**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen; test evaluation and deployment remain pending.
 
 ## Classification task
 
@@ -327,6 +327,8 @@ A [30-example validation error review](reports/validation-errors.md) examines te
 The [six-configuration neural study](reports/mlp-selection-v1/README.md) selects **combined dropout (`0.3`) and weight decay (`0.1`)** by the highest unrounded validation macro-F1: **0.7024**, with **0.7437 accuracy** at seed 17. Smaller embeddings and a singleton-retaining vocabulary lower macro-F1. The [selection record](reports/mlp-selection-v1/selection.json) identifies the chosen recipe, vocabulary, encoder, and epoch-8 checkpoint. These development results use all ten initial TF-IDF/MLP configuration slots.
 
 The [three-seed evaluation](reports/mlp-selection-v1/README.md#variation-across-training-seeds) reuses seed 17 and repeats the fixed recipe with seeds 29 and 43. Validation macro-F1 is **0.6961 ± 0.0090** and accuracy **0.7431 ± 0.0029** (mean ± sample SD, n=3). One seed scores below TF-IDF in macro-F1; this does not establish a reliable generalization advantage. The recipe was selected using seed 17, so these results describe variation on the same development split. Every run's checkpoint, predictions, and MLflow records were verified. The predeclared delivery seed remains 17; test is still reserved.
+
+The [final artifact freeze](reports/mlp-selection-v1/freeze.json) closes model selection and pins the neural **seed-17, epoch-8 checkpoint**, its encoder and configuration, and the selected TF-IDF pipeline. It records artifact paths, checksums, data identity, environment, and the preceding study evidence for subsequent evaluation and packaging. The existing trained models are retained without refitting on train plus validation.
 
 After preparing the data and building the vocabulary:
 

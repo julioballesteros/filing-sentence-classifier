@@ -1,6 +1,6 @@
 # MLP selection study
 
-**Status: neural configuration selected and evaluated at all three declared seeds; final delivery freeze is pending.** Combined dropout and weight decay averages validation macro-F1 **0.6961 ± 0.0090** across seeds 17, 29, and 43. The seed-17 result used for configuration selection is **0.7024**; selected TF-IDF scores **0.6924**. All results use the same frozen development partition.
+**Status: experimentation and model selection complete; delivery artifacts frozen.** Combined dropout and weight decay averages validation macro-F1 **0.6961 ± 0.0090** across seeds 17, 29, and 43. The frozen neural model is the predeclared seed-17 run, with macro-F1 **0.7024**; selected TF-IDF scores **0.6924**. All results use the same frozen development partition.
 
 The immutable [registration](plan.json) predates the new runs. [Execution evidence](execution.json) records the commands, order, timestamps, exit codes, and manifest hashes. [Comparison data](comparison.json) contains unrounded scores, full per-class metrics and confusion matrices, numerical learning curves, preprocessing statistics, artifact identities, MLflow run IDs, and verification results.
 
@@ -106,4 +106,12 @@ The [seed execution record](seed-execution.json) preserves both commands, the co
 
 Verification passed for all three runs: matching frozen identities and configuration except for the seed, complete artifact inventories, the best-epoch rule, and shared evaluation of saved predictions. A process separate from training restored every checkpoint and encoder and reproduced predictions, metrics, and validation loss exactly. MLflow reports all three runs as `FINISHED`, with matching parameters, metric histories, summaries, and byte-identical artifact mirrors. There were no failures or retries.
 
-All **ten** initial configuration slots remain consumed: four TF-IDF and six MLP recipes; fixed-recipe seed repetitions add no tuning configurations. The next step records the final delivery freeze, retaining the identified seed-17 model. Test remains reserved, and there is no refit on train plus validation.
+## Final artifact freeze
+
+The [freeze record](freeze.json) closes this study and fixes **`mean-pool-mlp-regularized-v1`, seed 17, epoch 8** for subsequent evaluation and packaging. It identifies the checkpoint, encoder, training configuration, label mapping, input manifests, source commit, environment, and MLflow run. The existing **`tfidf-bigram-c10-v1`** pipeline remains the classical reference, with its fitted artifact and selection evidence pinned alongside the neural model.
+
+The record links the original plan, execution, comparison, configuration selection, and seed study by SHA-256. Those earlier files retain their historical states. The weights and preprocessing artifacts remain in their original local run directories and MLflow; their paths, sizes, and hashes are recorded for downstream consumers. A later model change requires a new version with its rationale and prior data exposure recorded.
+
+Final verification restored the frozen neural checkpoint in a separate process and exactly reproduced all 519 validation predictions, metrics, and loss. Its MLflow artifact mirror is byte-identical. The classical reference's inventory and both models' saved-prediction metrics were also verified. Closing the phase required no new training or train-plus-validation refit.
+
+All **ten** initial configuration slots are accounted for: four TF-IDF and six MLP recipes; fixed-recipe seed repetitions add no tuning configurations. The observed seed variation and remaining class-level weaknesses are retained in the conclusions above. **Test remains reserved for final evaluation.**

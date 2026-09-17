@@ -1,0 +1,258 @@
+{
+  "classical_reference": {
+    "artifacts": {
+      "config.toml": {
+        "path": "artifacts/runs/tfidf-bigram-c10-v1/config.toml",
+        "sha256": "1a6199141dd46cbbc5f4aa7d34f803d42bbe00cf0bf7865375170d80493f5e00",
+        "size_bytes": 175
+      },
+      "manifest.json": {
+        "path": "artifacts/runs/tfidf-bigram-c10-v1/manifest.json",
+        "sha256": "a39ef37233215635063e47f1cc932368438bf584bdbe579e85c829746e86063d",
+        "size_bytes": 2970
+      },
+      "metrics.val.json": {
+        "path": "artifacts/runs/tfidf-bigram-c10-v1/metrics.val.json",
+        "sha256": "b576d9c17a2b1615c6d10744185c0c0728461d2eb306c122fe91868c2dbd4eed",
+        "size_bytes": 1752
+      },
+      "model.joblib": {
+        "path": "artifacts/runs/tfidf-bigram-c10-v1/model.joblib",
+        "sha256": "e59dc2f247ddbd2b1bda85a989367e15a42dfdd58bf14b852e134e0bb94576e5",
+        "size_bytes": 302717
+      }
+    },
+    "run_id": "tfidf-bigram-c10-v1",
+    "selection": {
+      "path": "reports/tfidf-selection-v1/selection.json",
+      "sha256": "8cba6034f5acc39fddc065234d19597a9bd03f36858dfe783a0a42d00c829ebb",
+      "size_bytes": 4222
+    },
+    "validation_metrics": {
+      "accuracy": 0.7495183044315993,
+      "macro_f1": 0.6923656512369
+    }
+  },
+  "configuration_budget": {
+    "evaluated": 10,
+    "limit": 10,
+    "mlp": 6,
+    "seed_repetitions_count_as_new_configurations": false,
+    "tfidf": 4
+  },
+  "data": {
+    "label_names": {
+      "0": "specific fls",
+      "1": "not-fls",
+      "2": "non-specific fls"
+    },
+    "manifest_sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+    "train_rows": 2074,
+    "train_sha256": "cc0ba0925cf6bec54d822d67ca28db3309dc145bc72444497418b293444a9119",
+    "val_rows": 519,
+    "val_sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d"
+  },
+  "evidence": {
+    "comparison.json": {
+      "path": "reports/mlp-selection-v1/comparison.json",
+      "sha256": "413f7e490b75a455d0336abb688eca2a60efb61cd68554f86d511ee8222d2be1",
+      "size_bytes": 79184
+    },
+    "execution.json": {
+      "path": "reports/mlp-selection-v1/execution.json",
+      "sha256": "b229aa86408044b59a02296a170b4efd4f9055d6a77451ae0304d29520abf7ba",
+      "size_bytes": 7622
+    },
+    "plan.json": {
+      "path": "reports/mlp-selection-v1/plan.json",
+      "sha256": "bc30d4a6af1e448f9eadff80a2d3c5de10506bb4e07b69b08b7d10b1ae92e0c1",
+      "size_bytes": 15675
+    },
+    "seed-execution.json": {
+      "path": "reports/mlp-selection-v1/seed-execution.json",
+      "sha256": "db217449d2261f49efc732eb9e31fa67024f0aebaa9a22e0c2e2cdb3a4f0f9b0",
+      "size_bytes": 6073
+    },
+    "seeds.json": {
+      "path": "reports/mlp-selection-v1/seeds.json",
+      "sha256": "9919116baaacb4ae8df3bf8ff532a0b66ec0353f086d93f3e5468a319bbf5ab0",
+      "size_bytes": 28020
+    },
+    "selection.json": {
+      "path": "reports/mlp-selection-v1/selection.json",
+      "sha256": "86ac1a9850442bb6ca910b4809514b0e636c0d215510efe355a01a3dd93a1681",
+      "size_bytes": 8018
+    }
+  },
+  "freeze_policy": "Preserve this record, prior evidence and referenced run bytes. Any later model change requires a new version with its reason and previous validation/test exposure recorded.",
+  "frozen_at_utc": "2026-09-17T08:14:55.143116+00:00",
+  "neural_model": {
+    "architecture": "MeanPoolMLP",
+    "artifacts": {
+      "checkpoints/best.pt": {
+        "path": "artifacts/runs/mean-pool-mlp-regularized-v1/checkpoints/best.pt",
+        "sha256": "564282e17ac5eddfa1ce904826730a7f8a48315148782614b39bfba94bd8364f",
+        "size_bytes": 1556057
+      },
+      "config.toml": {
+        "path": "artifacts/runs/mean-pool-mlp-regularized-v1/config.toml",
+        "sha256": "0b59b171b3d219d84c0f546f9b1e8fb8a863d6ee34bef1beb6bfbe3e82e1c128",
+        "size_bytes": 343
+      },
+      "data-manifest.json": {
+        "path": "artifacts/runs/mean-pool-mlp-regularized-v1/data-manifest.json",
+        "sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+        "size_bytes": 4441
+      },
+      "encoder.json": {
+        "path": "artifacts/runs/mean-pool-mlp-regularized-v1/encoder.json",
+        "sha256": "67d19b3dd62ae1514e8dca03dffa0a16ef6ef112230874ab685f0e8ea84b676e",
+        "size_bytes": 80078
+      },
+      "manifest.json": {
+        "path": "artifacts/runs/mean-pool-mlp-regularized-v1/manifest.json",
+        "sha256": "5e4851f6ce4692b6feec81c632dba2ca67d0bdce97f97741c132c7e837c0f506",
+        "size_bytes": 19702
+      },
+      "metrics.val.json": {
+        "path": "artifacts/runs/mean-pool-mlp-regularized-v1/metrics.val.json",
+        "sha256": "d5b02e499dd2220bc4f6a9d698b32b6346617076ad9ee2a06b148e2a785070bc",
+        "size_bytes": 1731
+      },
+      "predictions.val.jsonl": {
+        "path": "artifacts/runs/mean-pool-mlp-regularized-v1/predictions.val.jsonl",
+        "sha256": "2f5acee1ea7aa05099494efd630bf5cfdf08e0c552fc7bb8d522f48524a22ea0",
+        "size_bytes": 53976
+      },
+      "summary.json": {
+        "path": "artifacts/runs/mean-pool-mlp-regularized-v1/summary.json",
+        "sha256": "86bee97e136ae2bf2eb65b76812bf6d5a3704f138a86bba908e469ae515c97a5",
+        "size_bytes": 249
+      },
+      "vocabulary-manifest.json": {
+        "path": "artifacts/runs/mean-pool-mlp-regularized-v1/vocabulary-manifest.json",
+        "sha256": "891b82294554711a19c6ef84ef5a3ceda0995f3ef23b16ccc8e8ac83b873da6b",
+        "size_bytes": 2138
+      }
+    },
+    "candidate_id": "mean-pool-mlp-regularized-v1",
+    "checkpoint_epoch": 8,
+    "config": {
+      "model": {
+        "dropout": 0.3,
+        "embedding_dim": 128,
+        "hidden_dim": 64
+      },
+      "runtime": {
+        "device": "cpu",
+        "num_threads": 1,
+        "num_workers": 0,
+        "seed": 17
+      },
+      "schema_version": 2,
+      "training": {
+        "batch_size": 32,
+        "learning_rate": 0.001,
+        "max_epochs": 30,
+        "min_delta": 0.0,
+        "patience": 5,
+        "weight_decay": 0.1
+      }
+    },
+    "config_source": {
+      "path": "configs/experiments/mean-pool-mlp-regularized-v1.toml",
+      "sha256": "0b59b171b3d219d84c0f546f9b1e8fb8a863d6ee34bef1beb6bfbe3e82e1c128",
+      "size_bytes": 343
+    },
+    "delivery_seed_basis": "Seed 17 was declared before the seed repetitions; their results do not reselect the delivery run.",
+    "encoding": {
+      "added_special_tokens": [],
+      "empty_input": "raise_value_error",
+      "input": "prepared_text",
+      "max_length": 128,
+      "padding": false,
+      "truncation": "keep_first_tokens",
+      "version": "1"
+    },
+    "environment": {
+      "logical_cpus": 14,
+      "machine": "arm64",
+      "packages": {
+        "filing-sentence-classifier": "0.1.0",
+        "matplotlib": "3.11.2",
+        "numpy": "2.5.3",
+        "scikit-learn": "1.9.1",
+        "scipy": "1.18.1",
+        "torch": "2.14.0"
+      },
+      "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+      "python": "3.13.9"
+    },
+    "label_names": {
+      "0": "specific fls",
+      "1": "not-fls",
+      "2": "non-specific fls"
+    },
+    "mlflow": {
+      "experiment_id": "1",
+      "experiment_name": "filing-sentence-classifier",
+      "run_id": "2f7f7aa911254312a463506c933aa26b",
+      "version": "3.16.0"
+    },
+    "num_parameters": 388227,
+    "run_id": "mean-pool-mlp-regularized-v1",
+    "seed": 17,
+    "training_source_commit": "029c484b360df0a2f2383c43d1c77ea10fc25228",
+    "validation_metrics": {
+      "accuracy": 0.74373795761079,
+      "macro_f1": 0.7024286921089247
+    },
+    "vocabulary_id": "vocabulary-v1",
+    "vocabulary_size": 2967
+  },
+  "new_training_runs": 0,
+  "phase": {
+    "name": "Experimentation and model selection",
+    "number": 5,
+    "status": "completed"
+  },
+  "refit_train_and_validation": false,
+  "reserved_test_evaluation": false,
+  "schema_version": 1,
+  "scope": "Fixed neural model and existing classical reference for subsequent evaluation and packaging.",
+  "seed_summary": {
+    "interpretation": "Descriptive variation across three training seeds on one frozen validation split. The recipe was selected using seed 17, which is reused here. This does not estimate split uncertainty or establish a generalization advantage; no seed or configuration is selected from these repetitions.",
+    "metrics": {
+      "accuracy": {
+        "max": 0.7456647398843931,
+        "mean": 0.7430956968529223,
+        "min": 0.7398843930635838,
+        "sample_std": 0.0029432085388284403
+      },
+      "macro_f1": {
+        "max": 0.7024286921089247,
+        "mean": 0.6960981375429394,
+        "min": 0.6858409012201799,
+        "sample_std": 0.008963973664420114
+      }
+    },
+    "n": 3,
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "standard_deviation_ddof": 1
+  },
+  "stage": "delivery_freeze",
+  "status": "frozen",
+  "study_id": "mlp-selection-v1",
+  "verification": {
+    "both_models_saved_predictions_recomputed": true,
+    "classical_reference_inventory_valid": true,
+    "evidence_chain_and_seed_run_inventories_valid": true,
+    "neural_checkpoint_restored_in_separate_process": true,
+    "restored_validation_predictions_metrics_loss_exact": true,
+    "selected_mlflow_run_finished_and_artifact_mirror_identical": true
+  }
+}
