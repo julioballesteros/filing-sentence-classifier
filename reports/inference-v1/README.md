@@ -54,7 +54,8 @@ from filing_sentence_classifier.data.loading import load_split
 protocol = json.loads(Path("reports/inference-v1/protocol.json").read_text())
 workload = protocol["workload"]
 validation = load_split(
-    Path(workload["source_directory"]), "val",
+    Path(workload["source_directory"]),
+    "val",
     expected_manifest_sha256=workload["source_manifest_sha256"],
 )
 content = "".join(
@@ -88,3 +89,9 @@ uv run --no-sync filing-sentence-classifier benchmark \
 ```
 
 Defaults reproduce the registered settings. `--batch-size` can be repeated; `--warmup-passes`, `--passes`, and `--trials` control the protocol. Batch sizes must fit both the workload and the bundle's request limit. The benchmark pins bundle contents across workers and refuses publication if files or package sources change. It never overwrites an existing report. Repeated runs reproduce the procedure and identities, not exact wall-clock timings.
+
+## Delivery verification
+
+The [delivery record](delivery.json) adds wheel installation and end-to-end verification to these measurements. Both model families pass synthetic training → export → relocated-bundle prediction checks with their original data and runs removed, networking disabled, and MLflow unavailable. Incompatible bundle versions are rejected. The installed wheel also reproduces the selected bundles' example probabilities exactly.
+
+The record identifies the wheel, local validation environment, full-suite result, and CI configuration. Its package sources match the benchmarked code, so the existing timings are retained. The selected model files, benchmark JSON reports, and model-selection freeze remain unchanged. Test is still reserved for final evaluation.

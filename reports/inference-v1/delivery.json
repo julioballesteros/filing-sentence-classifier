@@ -1,0 +1,143 @@
+{
+  "benchmarked_package_code_unchanged": true,
+  "ci": {
+    "builds_and_installs_wheel": true,
+    "remote_run_triggered": false,
+    "workflow": {
+      "path": ".github/workflows/ci.yml",
+      "sha256": "eb8420f1410944b95f90fbf87cacc2860baf255e990ce7eb59df709e13393746",
+      "size_bytes": 1446
+    }
+  },
+  "delivery_checks": {
+    "bundle_relocated": true,
+    "families": [
+      "mean_pool_mlp",
+      "tfidf_logreg"
+    ],
+    "incompatible_bundle_rejected": true,
+    "installed_console_script_checked": true,
+    "network_and_mlflow_unavailable": true,
+    "new_inference_process": true,
+    "original_data_vocabulary_config_and_run_removed": true,
+    "probability_tolerance": {
+      "absolute": 1e-07,
+      "relative": 1e-06
+    },
+    "saved_validation_labels_preserved": true,
+    "synthetic_training_export_prediction": true
+  },
+  "environment": {
+    "dependencies": "Reused the existing locked runtime and development packages through a plain .pth path; the original editable .pth hooks were not activated.",
+    "installation": "Non-editable wheel in a separate temporary virtual environment.",
+    "package_import_location_verified": "Temporary environment site-packages, with checkout/PYTHONPATH excluded by Python -I.",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.9",
+    "test_working_directory": "Outside the checkout.",
+    "uv": "0.9.13"
+  },
+  "full_suite": {
+    "all_markers_included": true,
+    "duration_seconds": 102.161,
+    "errors": 0,
+    "failures": 0,
+    "junit": {
+      "path": "artifacts/delivery/phase6-v1/tests.xml",
+      "sha256": "9c13ec21b12cea87660c49c57c2fc5b68bddfd44faa0c8f2af4e4754835ebd5b",
+      "size_bytes": 1176069
+    },
+    "required_wheel_environment": "FSC_REQUIRE_WHEEL=1",
+    "skipped": 0,
+    "tests": 900
+  },
+  "package": {
+    "python_source_files": 53,
+    "source_hash_map_sha256": "9f228d6703fce87521d7494a6603002ec778c6bf368e33694f338b65d0c46e86",
+    "version": "0.1.0"
+  },
+  "phase": {
+    "name": "Inference and technical delivery",
+    "number": 6,
+    "status": "completed"
+  },
+  "published_test_evaluated": false,
+  "retained_benchmark_reports": [
+    {
+      "path": "reports/inference-v1/mean-pool-mlp.json",
+      "sha256": "c70c2e368498e8f769a834c0ac7165b44810b0ddf69fd7d1931c39bd13882e35",
+      "size_bytes": 210853
+    },
+    {
+      "path": "reports/inference-v1/tfidf.json",
+      "sha256": "2572bbe9cb38b79a6fc60bfe17e2ae77e8a6ac4ede57ffdbe3b787293fcd198e",
+      "size_bytes": 218341
+    }
+  ],
+  "schema_version": 1,
+  "selected_bundle_smoke_checks": [
+    {
+      "installed_wheel_required": true,
+      "label_ids": [
+        0,
+        1
+      ],
+      "manifest_sha256": "77ced5004162a6a85f173ca1ada2649fed61891e92e20d08e896fac6c6596f2b",
+      "max_probability_difference": 0.0,
+      "model_id": "mean-pool-mlp-regularized-v1",
+      "offline": true,
+      "sentences": 2
+    },
+    {
+      "installed_wheel_required": true,
+      "label_ids": [
+        0,
+        1
+      ],
+      "manifest_sha256": "6c6be38bd1a9e28fcf6e3fabbd0f514a283bad2555242a300cafccb4a357a962",
+      "max_probability_difference": 0.0,
+      "model_id": "tfidf-bigram-c10-v1",
+      "offline": true,
+      "sentences": 2
+    }
+  ],
+  "selected_model_bytes_unchanged": true,
+  "selection_freeze": {
+    "path": "reports/mlp-selection-v1/freeze.json",
+    "sha256": "2c78cc5d11f53311136dad9c6bcf506ad6cf871651c69e152a6432d36dbb0bb4",
+    "size_bytes": 9227
+  },
+  "stage": "inference_delivery_verification",
+  "static_checks": {
+    "mypy": "passed",
+    "ruff_check": "passed",
+    "ruff_format": "passed"
+  },
+  "verification_sources": [
+    {
+      "path": "tests/integration/test_delivery.py",
+      "sha256": "232f2aa81b7a1d872e56a39637a2948e803acf08e59632cf53751ebfc8244922",
+      "size_bytes": 9870
+    },
+    {
+      "path": "tests/integration/test_tfidf_run.py",
+      "sha256": "d79291c2288fdcb7c20ba687ea3875add773a49ac9889d57f89c3003c8c80776",
+      "size_bytes": 9639
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "3d0a0b592bb5e1493e99e9e76eefee88b086408c545f60d6b5aa1a9908ccb3d6",
+      "size_bytes": 1776
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "8ad5a5040f0a6f14961c6b5330a2072f6c7600791c13c4d2cf1b89623f343ebc",
+      "size_bytes": 644409
+    }
+  ],
+  "verified_at_utc": "2026-09-17T13:53:57.370714+00:00",
+  "wheel": {
+    "path": "artifacts/delivery/phase6-v1/filing_sentence_classifier-0.1.0-py3-none-any.whl",
+    "sha256": "9c03d49f5f8dc98779866d33685371bbe8ba82bf52de32ef4326951d3533992a",
+    "size_bytes": 100996
+  }
+}

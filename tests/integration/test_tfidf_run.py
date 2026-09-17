@@ -6,6 +6,7 @@ import subprocess
 import sys
 from pathlib import Path
 
+import numpy as np
 import pytest
 from typer.testing import CliRunner
 
@@ -124,7 +125,52 @@ def test_cli_saves_pipeline_and_matches_common_evaluation(
         check=True,
     )
     assert int(child.stdout) == predict_labels(restored, ["Plan 1-2."])[0]
-    assert payloads(tmp_path / "child-run") == before
+    child_files = payloads(tmp_path / "child-run")
+    for name in (
+        "config.toml",
+        "model.json",
+        "predictions.val.jsonl",
+        "metrics.val.json",
+    ):
+        assert child_files[name] == before[name]
+    child_manifest = json.loads(child_files["manifest.json"])
+    assert {key: value for key, value in child_manifest.items() if key != "files"} == {
+        key: value for key, value in manifest.items() if key != "files"
+    }
+    for name, metadata in child_manifest["files"].items():
+        assert metadata == {
+            "size_bytes": len(child_files[name]),
+            "sha256": hashlib.sha256(child_files[name]).hexdigest(),
+        }
+    # Pickle memoization can encode equal strings as different shared references
+    # across processes. Require identical learned state, not identical new pickle
+    # bytes; each published file still has its own verified checksum.
+    child_model = load_tfidf_model(
+        tmp_path / "child-run/model.joblib",
+        expected_sha256=child_manifest["files"]["model.joblib"]["sha256"],
+    )
+    for name in ("tfidf", "logreg"):
+        assert child_model.named_steps[name].get_params(
+            deep=False
+        ) == restored.named_steps[name].get_params(deep=False)
+    assert (
+        child_model.named_steps["tfidf"].vocabulary_
+        == restored.named_steps["tfidf"].vocabulary_
+    )
+    for name, attribute in (
+        ("tfidf", "idf_"),
+        ("logreg", "classes_"),
+        ("logreg", "coef_"),
+        ("logreg", "intercept_"),
+        ("logreg", "n_iter_"),
+    ):
+        np.testing.assert_array_equal(
+            getattr(child_model.named_steps[name], attribute),
+            getattr(restored.named_steps[name], attribute),
+        )
+    np.testing.assert_array_equal(
+        child_model.predict_proba(val.texts), restored.predict_proba(val.texts)
+    )
 
 
 def test_fit_is_finished_before_val_is_loaded_and_no_raw_data_is_read(

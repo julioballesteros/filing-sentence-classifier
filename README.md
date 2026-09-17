@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen and exported as portable bundles. PyTorch and TF-IDF inference share a Python API and prediction CLI; test evaluation and deployment remain pending.
+**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen and exported as portable bundles. Inference delivery is verified for PyTorch and TF-IDF through the shared Python API, prediction CLI, CPU benchmarks, and an installed wheel. Test evaluation and deployment remain pending.
 
 ## Classification task
 
@@ -81,6 +81,8 @@ The [selected configuration](configs/experiments/tfidf-bigram-c10-v1.toml) uses 
 A [four-configuration comparison](reports/tfidf-selection-v1/README.md) tested unigrams versus unigrams/bigrams and `C=1` versus `C=10`, selecting by unrounded validation macro-F1 under a declared tie rule. The selected model improves macro-F1 by 0.0548 over the initial reference. Its advantage over unigrams with `C=10` is only 0.0031 on this partition; specific FLS recall remains **0.4651**. The report includes per-class scores, the confusion matrix, and the selected model's hash. Test remains reserved for final evaluation.
 
 The run contains `config.toml`, `model.joblib` (the fitted vectorizer and classifier), `model.json` (metadata), predictions, metrics, and a manifest. [`load_tfidf_model`](src/filing_sentence_classifier/baselines/tfidf.py) checks the supplied model hash and restores the pipeline without training data. Load joblib files only from trusted runs and use the recorded dependency versions: joblib can execute code during loading. [Configuration options](configs/README.md) are recorded in each run's effective recipe.
+
+Fresh-process reproduction checks exact learned parameters and predictions. Joblib can serialize identical state into different bytes because of pickle reference memoization; each published artifact retains its own checksum. Export preserves the selected artifact's bytes exactly.
 
 ## Tokenization for the PyTorch model
 
@@ -559,6 +561,8 @@ The [inference benchmark](reports/inference-v1/README.md) measures both frozen b
 
 These warm timings cover the complete Python prediction API, excluding JSON/file I/O. They describe this workload and machine, rather than a service latency guarantee. The report separates startup, full and partial batches, parameters, dependency versions, and raw timings. The `benchmark` command reproduces the protocol with new output files; model artifacts remain unchanged and test remains reserved.
 
+The [delivery verification record](reports/inference-v1/delivery.json) closes inference packaging. A [complete integration test](tests/integration/test_delivery.py) trains both model families on synthetic data, exports and moves each bundle, removes the original inputs and run, then predicts in a fresh process outside the checkout with networking and MLflow unavailable. Probabilities match the trained state within tolerance, and incompatible bundle versions fail explicitly. The selected real bundles also reproduce the API's example predictions through the installed wheel.
+
 ## Code organization
 
 ```text
@@ -599,7 +603,7 @@ uv run --no-sync pytest
 
 Tests marked `training`, including the memorization check, are excluded by default. Run them explicitly with `uv run --no-sync pytest -m training`, or run the complete suite with `uv run --no-sync pytest -m ""`.
 
-[CI](.github/workflows/ci.yml) runs the standard suite and training checks as separate steps against a non-editable package installation. Tests use synthetic fixtures without downloading the dataset. Local Git hooks are available with `uv run --no-sync pre-commit install`.
+[CI](.github/workflows/ci.yml) builds and installs the wheel, then runs the standard suite and training checks as separate steps. Delivery checks use `FSC_REQUIRE_WHEEL=1` to reject imports from an editable checkout. Tests use synthetic fixtures without downloading the dataset. Local Git hooks are available with `uv run --no-sync pre-commit install`.
 
 ## Scope and limitations
 

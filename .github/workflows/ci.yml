@@ -17,6 +17,8 @@ jobs:
     name: Python checks
     runs-on: ubuntu-24.04
     timeout-minutes: 10
+    env:
+      FSC_REQUIRE_WHEEL: "1"
 
     steps:
       - name: Check out repository
@@ -34,8 +36,13 @@ jobs:
       - name: Set up Python
         run: uv python install
 
-      - name: Install project and development dependencies
-        run: uv sync --locked --dev --extra data --extra train --extra tracking --no-editable
+      - name: Install development and runtime dependencies
+        run: uv sync --locked --dev --extra data --extra train --extra tracking --no-install-project
+
+      - name: Build and install the delivery wheel
+        run: |
+          uv build --wheel
+          uv pip install --no-deps --reinstall dist/*.whl
 
       - name: Lint
         run: uv run --no-sync ruff check .
