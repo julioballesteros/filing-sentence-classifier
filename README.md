@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen; test evaluation and deployment remain pending.
+**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen and exported as portable bundles. Prediction contracts are defined; prediction adapters, test evaluation, and deployment remain pending.
 
 ## Classification task
 
@@ -413,6 +413,60 @@ Predictions are aligned by ID, so their order is arbitrary; duplicate, missing, 
 
 The same implementation is available through [`classification_metrics`](src/filing_sentence_classifier/evaluation/metrics.py) for aligned vectors and [`evaluate_predictions`](src/filing_sentence_classifier/evaluation/evaluate.py) for predictions identified by sample ID. Class order comes from the [loaded partition](data/README.md#loading-saved-partitions).
 
+## Inference bundle and prediction contracts
+
+[`BundleManifest` and `verify_bundle`](src/filing_sentence_classifier/artifacts.py) define bundle schema `1`. Each bundle is a portable directory with fixed filenames:
+
+| Family | Files alongside `manifest.json` |
+| --- | --- |
+| `mean_pool_mlp` | `config.toml`, `model.pt`, `encoder.json` |
+| `tfidf_logreg` | `config.toml`, `model.joblib` |
+
+`model.pt` uses the existing checkpoint format; `encoder.json` contains the complete vocabulary, tokenizer recipe, and truncation settings. `model.joblib` contains the fitted vectorizer and classifier. Each bundle includes the original run configuration. The manifest records a versioned `model_id`, explicit class IDs and names, the cleaning version, input limits, dependency versions, source run identity and manifest hash, and each payload's size and SHA-256. It requires no paths to training data or the original run.
+
+`verify_bundle(Path(...))` validates metadata, supported schema and cleaning versions, and the complete file inventory without importing model runtimes or deserializing weights. It rejects missing, extra, altered, and symlinked entries. An optional `expected_manifest_sha256` also pins the metadata. Payload semantics and installed dependency compatibility will be checked by the model adapters. Changing bundle contents requires a new `model_id`; the schema version identifies the format separately.
+
+The shared [`inference.contracts`](src/filing_sentence_classifier/inference/contracts.py) module defines:
+
+- **Inputs:** `prepare_texts` accepts a sequence of raw sentences, applies the existing cleaning policy, and preserves order and duplicates. Default limits are 256 sentences per request and 10,000 Unicode characters per raw sentence, before cleaning. Invalid items reject the complete request with their zero-based index; an empty request returns an empty tuple. Token truncation belongs to the saved encoder.
+- **Outputs:** immutable `Prediction` values carry the model ID, class probabilities, and a truncation flag. The winning label is derived from the largest probability, with the lowest class ID winning exact ties. Scores must be finite, in `[0, 1]`, and sum to one within `1e-6`; they are not silently normalized or assumed calibrated.
+
+A synthetic example of the serialized output contract:
+
+```json
+{"schema_version": 1, "model_id": "example-v1", "label_id": 0, "label": "specific fls", "probabilities": {"0": 0.7, "1": 0.2, "2": 0.1}, "truncated": false}
+```
+
+Model prediction adapters are pending. Both contract modules use only the Python standard library and shared cleaning code.
+
+## Export a saved model
+
+The [`export_bundle`](src/filing_sentence_classifier/exporting.py) function and `export` command copy the selected checkpoint or fitted pipeline without fitting, deserializing, or changing model bytes. Export uses the standard library and records the original training environment. For the frozen neural model:
+
+```bash
+uv run --no-sync filing-sentence-classifier export \
+  --run-dir artifacts/runs/mean-pool-mlp-regularized-v1 \
+  --output-dir artifacts/bundles/mean-pool-mlp-regularized-v1 \
+  --model-id mean-pool-mlp-regularized-v1
+```
+
+For the selected classical reference:
+
+```bash
+DATASET_DIR=data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1
+uv run --no-sync filing-sentence-classifier export \
+  --run-dir artifacts/runs/tfidf-bigram-c10-v1 \
+  --output-dir artifacts/bundles/tfidf-bigram-c10-v1 \
+  --model-id tfidf-bigram-c10-v1 \
+  --data-manifest "$DATASET_DIR/manifest.json"
+```
+
+Legacy TF-IDF runs do not contain a dataset manifest, so export requires that JSON to verify the cleaning recipe and labels against the run's recorded dataset hash. Neural runs already contain a copy. No dataset rows are read. Legacy baseline run IDs use the source directory name; the source manifest hash identifies its exact contents.
+
+`--manifest-sha256` optionally pins the **source run** manifest. Export verifies the files it consumes and checks configuration, encoder metadata, classes, and run status before publishing the complete bundle. Identical repetition verifies existing bytes without rewriting them; changed or incomplete destinations fail. Concurrent exporters to the same destination are excluded by a sibling lock. `--max-characters` and `--max-batch-size` set the saved request limits.
+
+The exported neural bundle contains **4 files / 1,637,623 bytes**; the TF-IDF bundle contains **3 files / 303,884 bytes**, including their manifests. Both retain the model hashes recorded in the [selection freeze](reports/mlp-selection-v1/freeze.json). Bundles are local generated artifacts excluded from Git. Integration tests verify exact probability preservation after exporting synthetic models, moving their bundles, and removing their source runs.
+
 ## Code organization
 
 ```text
@@ -423,6 +477,9 @@ src/filing_sentence_classifier/
   training/      Runtime, epochs, selection, checkpoints, run artifacts, curves, and tracking
   baselines/     Reference classifiers and reproducible run orchestration
   evaluation/    Classification metrics and prediction alignment/reporting
+  inference/     Shared input validation and immutable prediction contracts
+  artifacts.py   Portable inference bundle metadata and file integrity checks
+  exporting.py   Verified run-to-bundle copying and publication
   cli.py         Command wiring and user-facing errors
 notebooks/       Exploration using reusable package code
 tests/
