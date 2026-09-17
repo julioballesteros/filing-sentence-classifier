@@ -16,6 +16,8 @@ The [selection manifest](selection.json) was registered before reading test labe
 
 [Full results](results.json) include per-class metrics and confusion matrices. The [data manifest](data-manifest.json) records 1,000 retained rows: 169 specific FLS, 539 not-FLS, and 292 non-specific FLS. There are no exact duplicates after normalization and no overlap with development. Text normalization changed 78 rows (42 whitespace repairs, 40 existing punctuation repairs, and one trademark repair; operations can coexist). Each neural run truncates the same three sentences using its frozen 128-token encoder.
 
+The [comparative analysis](analysis.md) covers seed variability, per-class tradeoffs, 15 reviewed errors, and the existing inference-cost measurements. Neural test macro-F1 is **0.7253 ± 0.0121** across seeds (mean ± sample SD, n=3), below TF-IDF's **0.7332**; the seed-17 delivery run remains fixed. Reproducible calculations and review IDs are in [analysis.json](analysis.json).
+
 The [execution record](execution.json) captures the actual source and environment. It records uncommitted implementation files explicitly and preserves their complete local source snapshot; it does not claim reproduction from the recorded Git commit alone. The [verification record](verification.json) confirms **919 passing tests**, Ruff and mypy checks, independent metric recomputation, and byte-identical prepared data, predictions, probabilities, and metrics in a second process. Both executions use the same selection; no real campaign attempt failed and no model or preparation changes followed test exposure.
 
 ## Preparation contract
@@ -62,4 +64,4 @@ The local output under `artifacts/evaluations/` is excluded from Git:
 - `<model_id>/metrics.test.json`: macro-F1, accuracy, precision/recall/F1/support per class, confusion matrix (true rows, predicted columns), and input/prediction hashes.
 - `manifest.json` and `source/`: execution status, timestamps, environment, runtime settings, complete file inventory, imported Python source snapshot, and checkout provenance.
 
-Failures after preflight retain an explicit test-access record and any partial artifacts; only `status: completed` represents the full five-model campaign. Technical reproduction does not permit test-driven tuning. Comparative interpretation, seed aggregation, and the final model card belong to the subsequent reporting task.
+Failures after preflight retain an explicit test-access record and any partial artifacts; only `status: completed` represents the full five-model campaign. Technical reproduction does not permit test-driven tuning. Comparative interpretation and seed aggregation are complete in the [analysis](analysis.md); the final project report and model card remain pending.

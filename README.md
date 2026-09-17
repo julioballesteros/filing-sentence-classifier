@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen and exported as portable bundles. Inference delivery is verified for PyTorch and TF-IDF through the shared Python API, prediction CLI, CPU benchmarks, and an installed wheel. The [final test campaign](reports/test-v1/README.md) is complete for all five frozen models; comparative analysis and final reporting remain pending.
+**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Model selection and three-seed validation are complete, with delivery artifacts frozen and exported as portable bundles. Inference delivery is verified for PyTorch and TF-IDF through the shared Python API, prediction CLI, CPU benchmarks, and an installed wheel. The [final test campaign](reports/test-v1/README.md) and [comparative analysis](reports/test-v1/analysis.md) are complete for all five frozen models; the final project report and model card remain pending.
 
 ## Classification task
 
