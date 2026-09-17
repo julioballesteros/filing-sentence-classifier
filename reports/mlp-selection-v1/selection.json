@@ -1,0 +1,215 @@
+{
+  "candidates": [
+    {
+      "candidate_id": "mean-pool-mlp-v1",
+      "eligible": true,
+      "macro_f1": 0.6918605265426075,
+      "manifest_sha256": "15a7dacb861acfc50d39a66003b2920ea6f311ddbb060807637806b9e736db8e",
+      "metrics_sha256": "7d06c4d089d747f4c0b7791f9b918525a4be680521549824ddb95474aceffd34",
+      "run_id": "mean-pool-mlp-v1-tracked"
+    },
+    {
+      "candidate_id": "mean-pool-mlp-dropout-v1",
+      "eligible": true,
+      "macro_f1": 0.6922587161716846,
+      "manifest_sha256": "abeeb640faaf435be238e7d85919ac1e58cc6e34f338a551005dcac23aca4bd9",
+      "metrics_sha256": "fc1629ebe7c587bcce55f4ccc3f99df886e54746a3e228c2065efd3e11e89b0e",
+      "run_id": "mean-pool-mlp-dropout-v1"
+    },
+    {
+      "candidate_id": "mean-pool-mlp-weight-decay-v1",
+      "eligible": true,
+      "macro_f1": 0.6916406677006278,
+      "manifest_sha256": "abb69c147adc0671101f9f50a2d4e65432402252874a8eecdba4dbd0b24cc50b",
+      "metrics_sha256": "7cda922a83d7582a47bbe70ccff07bc0dc521c9ee81779deab626c2b8f54f44a",
+      "run_id": "mean-pool-mlp-weight-decay-v1"
+    },
+    {
+      "candidate_id": "mean-pool-mlp-regularized-v1",
+      "eligible": true,
+      "macro_f1": 0.7024286921089247,
+      "manifest_sha256": "5e4851f6ce4692b6feec81c632dba2ca67d0bdce97f97741c132c7e837c0f506",
+      "metrics_sha256": "d5b02e499dd2220bc4f6a9d698b32b6346617076ad9ee2a06b148e2a785070bc",
+      "run_id": "mean-pool-mlp-regularized-v1"
+    },
+    {
+      "candidate_id": "mean-pool-mlp-small-v1",
+      "eligible": true,
+      "macro_f1": 0.6880449709693308,
+      "manifest_sha256": "1a32e7b930ecbad1af00ce556dbd54a8fac50ecd9ee8a0781ec87b07a7e15988",
+      "metrics_sha256": "bdfb0d4fe94c7aeb0c9c837aacdac0f5c90f3751c12ca2016138e64bd809f2f9",
+      "run_id": "mean-pool-mlp-small-v1"
+    },
+    {
+      "candidate_id": "mean-pool-mlp-vocab-min1-v1",
+      "eligible": true,
+      "macro_f1": 0.6787780589576169,
+      "manifest_sha256": "b2b003fe6a180f8ceb9d75f9d8260c13676b4290da7efef82fcd853795053dce",
+      "metrics_sha256": "c5bbc8d69fbe724b4d3d13d4d764be629c9821a16f7428f6c7b32002c3566061",
+      "run_id": "mean-pool-mlp-vocab-min1-v1"
+    }
+  ],
+  "data": {
+    "label_names": {
+      "0": "specific fls",
+      "1": "not-fls",
+      "2": "non-specific fls"
+    },
+    "manifest_sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+    "train_rows": 2074,
+    "train_sha256": "cc0ba0925cf6bec54d822d67ca28db3309dc145bc72444497418b293444a9119",
+    "val_rows": 519,
+    "val_sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d"
+  },
+  "evidence": {
+    "comparison.json": {
+      "path": "reports/mlp-selection-v1/comparison.json",
+      "sha256": "413f7e490b75a455d0336abb688eca2a60efb61cd68554f86d511ee8222d2be1"
+    },
+    "execution.json": {
+      "path": "reports/mlp-selection-v1/execution.json",
+      "sha256": "b229aa86408044b59a02296a170b4efd4f9055d6a77451ae0304d29520abf7ba"
+    },
+    "plan.json": {
+      "path": "reports/mlp-selection-v1/plan.json",
+      "sha256": "bc30d4a6af1e448f9eadff80a2d3c5de10506bb4e07b69b08b7d10b1ae92e0c1"
+    }
+  },
+  "final_delivery_freeze_status": "pending",
+  "macro_f1_gain_over_reference": 0.010568165566317123,
+  "macro_f1_margin_over_runner_up": 0.010169975937240117,
+  "neural_delivery_seed": 17,
+  "new_training_runs": 0,
+  "ranking": [
+    "mean-pool-mlp-regularized-v1",
+    "mean-pool-mlp-dropout-v1",
+    "mean-pool-mlp-v1",
+    "mean-pool-mlp-weight-decay-v1",
+    "mean-pool-mlp-small-v1",
+    "mean-pool-mlp-vocab-min1-v1"
+  ],
+  "refit_train_and_validation": false,
+  "reserved_test_evaluation": false,
+  "schema_version": 1,
+  "scope": "Neural configuration selection for the declared seed repetitions; final delivery freeze follows that study.",
+  "seed_repetitions": {
+    "reuse_seed_17_run_id": "mean-pool-mlp-regularized-v1",
+    "seeds": [
+      17,
+      29,
+      43
+    ],
+    "status": "pending"
+  },
+  "selected_artifacts": {
+    "checkpoints/best.pt": {
+      "path": "artifacts/runs/mean-pool-mlp-regularized-v1/checkpoints/best.pt",
+      "sha256": "564282e17ac5eddfa1ce904826730a7f8a48315148782614b39bfba94bd8364f",
+      "size_bytes": 1556057
+    },
+    "encoder.json": {
+      "path": "artifacts/runs/mean-pool-mlp-regularized-v1/encoder.json",
+      "sha256": "67d19b3dd62ae1514e8dca03dffa0a16ef6ef112230874ab685f0e8ea84b676e",
+      "size_bytes": 80078
+    },
+    "metrics.val.json": {
+      "path": "artifacts/runs/mean-pool-mlp-regularized-v1/metrics.val.json",
+      "sha256": "d5b02e499dd2220bc4f6a9d698b32b6346617076ad9ee2a06b148e2a785070bc",
+      "size_bytes": 1731
+    },
+    "predictions.val.jsonl": {
+      "path": "artifacts/runs/mean-pool-mlp-regularized-v1/predictions.val.jsonl",
+      "sha256": "2f5acee1ea7aa05099494efd630bf5cfdf08e0c552fc7bb8d522f48524a22ea0",
+      "size_bytes": 53976
+    },
+    "summary.json": {
+      "path": "artifacts/runs/mean-pool-mlp-regularized-v1/summary.json",
+      "sha256": "86bee97e136ae2bf2eb65b76812bf6d5a3704f138a86bba908e469ae515c97a5",
+      "size_bytes": 249
+    }
+  },
+  "selected_at_utc": "2026-09-16T16:24:45.730711+00:00",
+  "selected_candidate_id": "mean-pool-mlp-regularized-v1",
+  "selected_config": {
+    "model": {
+      "dropout": 0.3,
+      "embedding_dim": 128,
+      "hidden_dim": 64
+    },
+    "runtime": {
+      "device": "cpu",
+      "num_threads": 1,
+      "num_workers": 0,
+      "seed": 17
+    },
+    "schema_version": 2,
+    "training": {
+      "batch_size": 32,
+      "learning_rate": 0.001,
+      "max_epochs": 30,
+      "min_delta": 0.0,
+      "patience": 5,
+      "weight_decay": 0.1
+    }
+  },
+  "selected_config_path": "configs/experiments/mean-pool-mlp-regularized-v1.toml",
+  "selected_config_sha256": "0b59b171b3d219d84c0f546f9b1e8fb8a863d6ee34bef1beb6bfbe3e82e1c128",
+  "selected_max_length": 128,
+  "selected_mlflow": {
+    "experiment_id": "1",
+    "experiment_name": "filing-sentence-classifier",
+    "run_id": "2f7f7aa911254312a463506c933aa26b",
+    "version": "3.16.0"
+  },
+  "selected_run_id": "mean-pool-mlp-regularized-v1",
+  "selected_run_manifest_sha256": "5e4851f6ce4692b6feec81c632dba2ca67d0bdce97f97741c132c7e837c0f506",
+  "selected_summary": {
+    "best_epoch": 8,
+    "epochs_completed": 13,
+    "stopped_early": true,
+    "training_seconds": 2.1380892081651837,
+    "validation_accuracy": 0.74373795761079,
+    "validation_macro_f1": 0.7024286921089247,
+    "validation_mean_loss": 0.6193052540624762
+  },
+  "selected_vocabulary": {
+    "directory": "artifacts/preprocessing/vocabulary-v1",
+    "expected_encoder_sha256": "67d19b3dd62ae1514e8dca03dffa0a16ef6ef112230874ab685f0e8ea84b676e",
+    "manifest_sha256": "891b82294554711a19c6ef84ef5a3ceda0995f3ef23b16ccc8e8ac83b873da6b",
+    "max_size": null,
+    "min_frequency": 2,
+    "size_including_reserved": 2967,
+    "vocabulary_sha256": "c8ce9ac3ba6c7abfa0c0f704b5e6ee0a1266756045d72c54bda8751c5a9819dd"
+  },
+  "selected_vocabulary_id": "vocabulary-v1",
+  "selection_rule": {
+    "direction": "maximize",
+    "exact_score_tie_break_order": [
+      "mean-pool-mlp-small-v1",
+      "mean-pool-mlp-v1",
+      "mean-pool-mlp-weight-decay-v1",
+      "mean-pool-mlp-dropout-v1",
+      "mean-pool-mlp-regularized-v1",
+      "mean-pool-mlp-vocab-min1-v1"
+    ],
+    "metric_path": "metrics.val.json:metrics.macro_f1",
+    "minimum_gain_over_reference": 0.0,
+    "primary_metric": "macro_f1",
+    "round_before_selection": false,
+    "secondary_diagnostics_change_selection": false,
+    "split": "val"
+  },
+  "status": "selected",
+  "study_id": "mlp-selection-v1",
+  "tie_break_used_for_winner": false,
+  "top_score_tied_candidate_ids": [
+    "mean-pool-mlp-regularized-v1"
+  ],
+  "verification": {
+    "eligible_candidates": 6,
+    "exact_tie_order_and_unrounded_ranking_checked": true,
+    "metrics_recomputed_from_saved_predictions": true,
+    "restoration_and_tracking_evidence": "Passed checks from the hash-pinned comparison; associated run files are unchanged.",
+    "run_inventories_and_registered_identities_rechecked": true
+  }
+}

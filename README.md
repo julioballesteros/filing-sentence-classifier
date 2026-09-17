@@ -2,7 +2,7 @@
 
 Sentence-level classification of forward-looking statements in English financial filings. The project combines reproducible data preparation with shared evaluation, building toward a comparison of classical baselines and a PyTorch model trained from scratch.
 
-**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. Neural model selection and deployment are next.
+**Work in progress:** the data pipeline, classical baselines, and complete PyTorch training CLI are implemented, with shared evaluation, early stopping, checkpoints, learning curves, reproducibility artifacts, optional local MLflow tracking, and CI. The neural configuration is selected; seed repetitions, final evaluation, and deployment remain pending.
 
 ## Classification task
 
@@ -324,7 +324,7 @@ The [initial neural reference](reports/mean-pool-mlp-v1/README.md) reaches valid
 
 A [30-example validation error review](reports/validation-errors.md) examines temporal meaning, specificity, negation, and annotation ambiguity alongside full-partition diagnostics. The models share 92 errors; only two MLP errors involve truncated sentences, and 31 contain no unknown tokens. Regularization is the first hypothesis proposed for the next experiments.
 
-The [six-configuration neural comparison](reports/mlp-selection-v1/README.md) has now evaluated the five additional candidates under the registered plan. Combined dropout (`0.3`) and weight decay (`0.1`) reaches the highest validation macro-F1, **0.7024**, with **0.7437 accuracy** at seed 17. Smaller embeddings and a singleton-retaining vocabulary lower macro-F1. All checkpoints, saved predictions, and MLflow records were verified; formal configuration selection and seed repetitions remain pending. These development results use all ten initial TF-IDF/MLP configuration slots.
+The [six-configuration neural study](reports/mlp-selection-v1/README.md) selects **combined dropout (`0.3`) and weight decay (`0.1`)** by the highest unrounded validation macro-F1: **0.7024**, with **0.7437 accuracy** at seed 17. Smaller embeddings and a singleton-retaining vocabulary lower macro-F1. The [selection record](reports/mlp-selection-v1/selection.json) identifies the chosen recipe, vocabulary, encoder, and epoch-8 checkpoint. All checkpoints, saved predictions, and MLflow records were verified; repetitions with seeds 17, 29, and 43 remain pending. These development results use all ten initial TF-IDF/MLP configuration slots.
 
 After preparing the data and building the vocabulary:
 

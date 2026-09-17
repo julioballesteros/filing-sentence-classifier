@@ -1,8 +1,10 @@
 # MLP selection study
 
-**Status: all five planned runs completed and verified; formal configuration selection is pending.** With seed 17, combined dropout and weight decay achieves the highest validation macro-F1, **0.7024**, compared with **0.6919** for the initial MLP and **0.6924** for selected TF-IDF. These are development results from one partition and one seed.
+**Status: neural configuration selected; seed repetitions are pending.** The registered rule selects **combined dropout and weight decay**, with validation macro-F1 **0.7024** at seed 17, compared with **0.6919** for the initial MLP and **0.6924** for selected TF-IDF. These are development results from one partition and one seed.
 
 The immutable [registration](plan.json) predates the new runs. [Execution evidence](execution.json) records the commands, order, timestamps, exit codes, and manifest hashes. [Comparison data](comparison.json) contains unrounded scores, full per-class metrics and confusion matrices, numerical learning curves, preprocessing statistics, artifact identities, MLflow run IDs, and verification results.
+
+The [selection record](selection.json) applies the rule to all six eligible candidates and identifies the chosen configuration, vocabulary, encoder, checkpoint, and MLflow run by their saved identities. Earlier evidence files remain unchanged, including their selection status at the time they were recorded.
 
 ## Validation results
 
@@ -73,8 +75,10 @@ Verification passed for all six neural runs: every manifest file hash and size, 
 
 Complete checkpoints, encoders, predictions, source snapshots, and histories remain under `artifacts/runs/<run_id>/` and in local MLflow, outside Git. The comparison JSON publishes aggregate evidence and their hashes; execution commands use paths relative to the repository root. Reproduction requires the frozen inputs and environment and a new output directory.
 
-## Selection rule and remaining work
+## Selected configuration and remaining work
 
-The registered rule maximizes **unrounded validation macro-F1** among the six eligible candidates. Exact ties prefer, in order: smaller embeddings, reference, weight decay, dropout, combined regularization, expanded vocabulary. Secondary diagnostics do not override that rule. Applying it and recording the selected configuration is the next step; this report records observed results without freezing a delivery model.
+The registered rule maximizes **unrounded validation macro-F1** among the six eligible candidates. Exact ties prefer, in order: smaller embeddings, reference, weight decay, dropout, combined regularization, expanded vocabulary. Secondary diagnostics do not override that rule. Applying it selects [mean-pool-mlp-regularized-v1](../../configs/experiments/mean-pool-mlp-regularized-v1.toml) with **0.7024286921089247** macro-F1. There is no top-score tie; the margin over the runner-up, dropout alone, is **0.010170** (rounded for display).
 
-All **ten** initial configuration slots have now been evaluated: four TF-IDF and six MLP recipes. Later repetitions of the chosen neural configuration use seeds **17, 29, and 43**, reusing the verified seed-17 run when its identity matches. The predeclared neural delivery seed is 17. Test remains reserved, and there is no refit on train plus validation.
+The chosen recipe uses 128-dimensional embeddings, hidden dimension 64, dropout **0.3**, AdamW weight decay **0.1**, and the original train-only vocabulary (`min_frequency=2`, 2,967 IDs), with prefix length 128. Its existing seed-17 run supplies the **epoch-8 checkpoint** and matching encoder. Selection rechecked run inventories and registered identities and recomputed all six candidates' saved-prediction metrics; it required no new training. The selection JSON pins the evidence hashes and selected artifact paths and checksums, preserving the original configuration file.
+
+All **ten** initial configuration slots have now been evaluated: four TF-IDF and six MLP recipes. The next step measures variation with seeds **17, 29, and 43**, keeping this recipe and the partitions fixed and reusing the identified seed-17 run. The predeclared neural delivery seed is 17; the final delivery freeze follows the seed study. Test remains reserved, and there is no refit on train plus validation.

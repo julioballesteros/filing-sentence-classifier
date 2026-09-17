@@ -12,7 +12,7 @@ Measured results and selected artifacts from reproducible runs on the frozen FLS
 | [mean-pool-mlp-v1](mean-pool-mlp-v1/README.md) | Initial PyTorch mean-pooling MLP | Validation | 0.6919 | 0.7360 |
 | [mean-pool-mlp-dropout-v1](mlp-selection-v1/README.md) | MLP, dropout 0.3 | Validation | 0.6923 | 0.7360 |
 | [mean-pool-mlp-weight-decay-v1](mlp-selection-v1/README.md) | MLP, weight decay 0.1 | Validation | 0.6916 | 0.7360 |
-| [mean-pool-mlp-regularized-v1](mlp-selection-v1/README.md) | MLP, dropout + weight decay | Validation | **0.7024** | 0.7437 |
+| [mean-pool-mlp-regularized-v1](mlp-selection-v1/README.md) | MLP, dropout + weight decay — selected neural configuration | Validation | **0.7024** | 0.7437 |
 | [mean-pool-mlp-small-v1](mlp-selection-v1/README.md) | MLP, 64-dimensional embeddings | Validation | 0.6880 | 0.7380 |
 | [mean-pool-mlp-vocab-min1-v1](mlp-selection-v1/README.md) | MLP, expanded vocabulary | Validation | 0.6788 | 0.7360 |
 
@@ -24,4 +24,4 @@ All models use the same 2,074 training rows and 519 validation rows. The [TF-IDF
 
 The [validation error analysis](validation-errors.md) compares both models across the full partition and reviews 30 deterministically selected MLP errors. It records semantic patterns, vocabulary and truncation diagnostics, and questions about annotation context, with [sample identities and quantitative evidence](validation-errors.json). It motivates the next experiments without changing labels or consuming configuration slots.
 
-The [MLP selection study](mlp-selection-v1/README.md) compares all six neural configurations at seed 17, following the immutable registration. Combined regularization has the highest observed macro-F1; formal configuration selection and later seed repetitions remain pending. Its [comparison data](mlp-selection-v1/comparison.json) publishes full per-class metrics, numerical learning curves, paired error counts, the same 30 reviewed IDs, artifact hashes, and MLflow identities. The [execution record](mlp-selection-v1/execution.json) preserves all five new commands and successful attempts; there were no failures or retries.
+The [MLP selection study](mlp-selection-v1/README.md) compares all six neural configurations at seed 17, following the immutable registration. Its [selection record](mlp-selection-v1/selection.json) chooses combined regularization by unrounded macro-F1 and pins its configuration, vocabulary, encoder, checkpoint, and MLflow identity; seed repetitions remain pending. The [comparison data](mlp-selection-v1/comparison.json) publishes full per-class metrics, numerical learning curves, paired error counts, the same 30 reviewed IDs, artifact hashes, and MLflow identities. The [execution record](mlp-selection-v1/execution.json) preserves all five new commands and successful attempts; there were no failures or retries.
