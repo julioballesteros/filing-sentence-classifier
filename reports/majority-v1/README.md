@@ -28,7 +28,7 @@ Accuracy reflects the validation frequency of `not-fls`. The classifier misses e
 
 ## Reproduction and evidence
 
-Use the [baseline command](../../README.md#run-the-majority-baseline) with the saved `split-v1` artifact for source revision `39b6719f1d7197df4498fea9fce20d4ad782a083`. The run was reproduced with identical output bytes, and the fitted model was restored in a separate process.
+Use the [baseline command](../reproduction.md#2-rebuild-data-and-the-selected-recipes) with the saved `split-v1` artifact for source revision `39b6719f1d7197df4498fea9fce20d4ad782a083`. The run was reproduced with identical output bytes, and the fitted model was restored in a separate process.
 
 - [Fitted model](model.json): selected class, training counts, class order, and tie rule.
 - [Validation metrics](metrics.val.json): scores, class mapping, prediction/data hashes, and evaluation provenance.

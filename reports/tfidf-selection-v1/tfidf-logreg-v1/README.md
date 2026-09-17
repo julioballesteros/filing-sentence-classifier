@@ -35,7 +35,7 @@ Macro-F1 improves by 0.4077 over the majority reference on this partition. Speci
 
 ## Reproduction and artifacts
 
-Use the [TF-IDF command](../../../README.md#run-tf-idf--logistic-regression) with `--config configs/experiments/tfidf-logreg-v1.toml` and `--output-dir artifacts/runs/tfidf-logreg-v1` to reproduce this initial run. The data is the frozen `split-v1` artifact for source revision `39b6719f1d7197df4498fea9fce20d4ad782a083`. Repeated runs in separate processes reproduced the model, predictions, and reports byte-for-byte in the recorded environment. Loading the pipeline preserves predictions without access to training data.
+Use the [TF-IDF command](../../reproduction.md#2-rebuild-data-and-the-selected-recipes) with `--config configs/experiments/tfidf-logreg-v1.toml` and `--output-dir artifacts/runs/tfidf-logreg-v1` to reproduce this initial run. The data is the frozen `split-v1` artifact for source revision `39b6719f1d7197df4498fea9fce20d4ad782a083`. Repeated runs in separate processes reproduced the model, predictions, and reports byte-for-byte in the recorded environment. Loading the pipeline preserves predictions without access to training data.
 
 - [Configuration](config.toml): original experiment settings.
 - [Model metadata](model.json): class order, training counts, vocabulary size, and convergence.

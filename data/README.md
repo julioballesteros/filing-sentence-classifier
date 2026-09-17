@@ -125,7 +125,7 @@ Use `--prepared-dir PATH` to select a cleaned artifact, `--raw-dir PATH` for sou
 
 [`load_split(directory, "train" | "val")`](../src/filing_sentence_classifier/data/loading.py) returns immutable records and aligned `texts`, `targets`, and `sample_ids`. It verifies the selected partition and assignment/exclusion ledgers against the saved manifest, including identities, group separation, and class counts. It needs only the standard library and does not open raw data, test, or the other partition's text. Pass `expected_manifest_sha256` to pin an exact artifact.
 
-The returned `label_ids` and `label_names` define the numeric class order for downstream evaluation. The project README describes the [prediction format, evaluation command, and shared metrics](../README.md#evaluate-saved-predictions).
+The returned `label_ids` and `label_names` define the numeric class order for downstream evaluation. The [project README](../README.md#run-a-local-demo) describes prediction outputs; the [reproduction guide](../reports/reproduction.md#3-verify-the-rebuilt-results-and-try-inference) explains verification against the recorded campaign. Use `filing-sentence-classifier evaluate --help` for evaluation of saved predictions.
 
 ## Published test preparation
 

@@ -1,7 +1,8 @@
 [project]
 name = "filing-sentence-classifier"
 version = "0.1.0"
-description = "Add your description here"
+description = "Reproducible classification of forward-looking statements with PyTorch and classical baselines."
+readme = "README.md"
 authors = [
     { name = "Julio Ballesteros", email = "ballesterosg.julio@gmail.com" }
 ]

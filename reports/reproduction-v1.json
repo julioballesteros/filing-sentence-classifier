@@ -1,0 +1,525 @@
+{
+  "data_and_vocabulary": [
+    {
+      "identical_to_original": true,
+      "original_path": "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1/manifest.json",
+      "path": "artifacts/reproduction-v1/rebuilt/data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1/manifest.json",
+      "sha256": "4ee27835475f8b5395e0b67bc29b3ae56faab36d365b8e1175f28f2a876b065a",
+      "size_bytes": 4441
+    },
+    {
+      "identical_to_original": true,
+      "original_path": "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1/train.jsonl",
+      "path": "artifacts/reproduction-v1/rebuilt/data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1/train.jsonl",
+      "sha256": "cc0ba0925cf6bec54d822d67ca28db3309dc145bc72444497418b293444a9119",
+      "size_bytes": 880167
+    },
+    {
+      "identical_to_original": true,
+      "original_path": "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1/val.jsonl",
+      "path": "artifacts/reproduction-v1/rebuilt/data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1/val.jsonl",
+      "sha256": "d2fafa1c14defb972964476f482df5a5687dea05828e46a8b3ec4d4e0987b99d",
+      "size_bytes": 221678
+    },
+    {
+      "identical_to_original": true,
+      "original_path": "data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1/assignments.jsonl",
+      "path": "artifacts/reproduction-v1/rebuilt/data/processed/39b6719f1d7197df4498fea9fce20d4ad782a083/split-v1/assignments.jsonl",
+      "sha256": "6d72c5a77473f3d581fdbf645ada5d92e1232c7e7dc2f9053c94c77da5097681",
+      "size_bytes": 516454
+    },
+    {
+      "identical_to_original": true,
+      "original_path": "artifacts/preprocessing/vocabulary-v1/manifest.json",
+      "path": "artifacts/reproduction-v1/rebuilt/artifacts/preprocessing/vocabulary-v1/manifest.json",
+      "sha256": "891b82294554711a19c6ef84ef5a3ceda0995f3ef23b16ccc8e8ac83b873da6b",
+      "size_bytes": 2138
+    },
+    {
+      "identical_to_original": true,
+      "original_path": "artifacts/preprocessing/vocabulary-v1/vocabulary.json",
+      "path": "artifacts/reproduction-v1/rebuilt/artifacts/preprocessing/vocabulary-v1/vocabulary.json",
+      "sha256": "c8ce9ac3ba6c7abfa0c0f704b5e6ee0a1266756045d72c54bda8751c5a9819dd",
+      "size_bytes": 67290
+    }
+  ],
+  "demo": {
+    "execution": {
+      "path": "artifacts/reproduction-v1/relocation.json",
+      "sha256": "2f9a4c73ab91601355946a795e4bbdfdcb263228804146233750a89a921d253d",
+      "size_bytes": 1851
+    },
+    "label_ids": [
+      0,
+      1
+    ],
+    "models": [
+      "mean-pool-mlp-regularized-v1",
+      "tfidf-bigram-c10-v1"
+    ],
+    "network_socket_connections_blocked": true,
+    "output_identical_after_relocation": true,
+    "predictions": [
+      {
+        "path": "artifacts/reproduction-v1/demo-mean-pool-mlp-regularized-v1.jsonl",
+        "sha256": "79a0bae6e0f58c383b1400c0680a702afba9573b1401fa51431105cb8448a4dc",
+        "size_bytes": 499
+      },
+      {
+        "path": "artifacts/reproduction-v1/demo-tfidf-bigram-c10-v1.jsonl",
+        "sha256": "e64c382a6b60e4ed468ec6bb9f8448d76dc5e2bc292a3f739c3373feecc7cf6b",
+        "size_bytes": 479
+      }
+    ],
+    "relocated_outside_checkout": true,
+    "synthetic_sentences": 2
+  },
+  "differences": "All five saved model payloads, validation/test prediction files, all four probability outputs, and all test metrics match the originals. Neural/TF-IDF run manifests and bundle manifests record a new execution and have different hashes; they do not replace the frozen originals.",
+  "environment": {
+    "all_distributions_inside_fresh_environment": true,
+    "dependencies_borrowed_from_existing_venv": false,
+    "dependency_installation": "uv sync --offline --locked --python 3.13.9 --dev --extra data --extra train --extra tracking --no-install-project --link-mode copy",
+    "details": {
+      "path": "artifacts/reproduction-v1/environment.json",
+      "sha256": "2e38c7765e28f8ea990f1ac2a483451c94d32037dbd7e40f0b71ef2cc29e0d83",
+      "size_bytes": 26086
+    },
+    "fresh_virtual_environment": true,
+    "installation_log": {
+      "path": "artifacts/reproduction-v1/environment-install.log",
+      "sha256": "4084a7e4e33b0f6ebdb161f3ea17f46ad1b839058fb51a4a0b66eca0866da516",
+      "size_bytes": 2711
+    },
+    "installed_distribution_count": 123,
+    "installed_project_is_wheel": true,
+    "interpreter_and_distribution_cache_reused": true,
+    "logical_cpus": 14,
+    "machine": "arm64",
+    "packages": {
+      "filing-sentence-classifier": "0.1.0",
+      "matplotlib": "3.11.2",
+      "numpy": "2.5.3",
+      "scikit-learn": "1.9.1",
+      "scipy": "1.18.1",
+      "torch": "2.14.0"
+    },
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "python": "3.13.9",
+    "system_site_packages": false,
+    "uv": "0.9.13"
+  },
+  "execution": {
+    "local_artifact_directory": "artifacts/reproduction-v1",
+    "recipe_log": {
+      "path": "artifacts/reproduction-v1/execution.json",
+      "sha256": "74b3e67af0924895671287e4075f924fed1825b9b9b93766952519654dc5bc20",
+      "size_bytes": 8613
+    },
+    "sandbox_cache_retry": "The initial uv --offline --no-sync --version invocation was blocked from opening its cache before any model/data command ran. It was rerun with cache access; the full recipe then completed without model/data retries.",
+    "successful_recipe_commands": 17,
+    "verification_manifest": {
+      "path": "artifacts/reproduction-v1/rebuilt/artifacts/reproduction-check/manifest.json",
+      "sha256": "5d01bdc3202878b96ebfd4d167da1ad341e032f90f8f9ccc67ebb84f061ffbc9",
+      "size_bytes": 28902
+    }
+  },
+  "inputs": {
+    "all_frozen_evidence_unchanged_from_base_commit": true,
+    "frozen_evidence": [
+      {
+        "path": "reports/mlp-selection-v1/freeze.json",
+        "sha256": "2c78cc5d11f53311136dad9c6bcf506ad6cf871651c69e152a6432d36dbb0bb4",
+        "size_bytes": 9227
+      },
+      {
+        "path": "reports/test-v1/selection.json",
+        "sha256": "2b30e12bf79c7a7c6437072ffd15d0f6bc527edea9531693fee9152e532834ae",
+        "size_bytes": 4459
+      },
+      {
+        "path": "reports/test-v1/results.json",
+        "sha256": "d5e44ce031b94b13079f9ec3fb5318068ddc6f7b61e96428ac51973cde3ca96b",
+        "size_bytes": 13846
+      },
+      {
+        "path": "reports/test-v1/analysis.json",
+        "sha256": "c15203ad45504c121037a7832d94c6406da0e635ca2bb4c096eb89d321798eb2",
+        "size_bytes": 31451
+      },
+      {
+        "path": "reports/inference-v1/mean-pool-mlp.json",
+        "sha256": "c70c2e368498e8f769a834c0ac7165b44810b0ddf69fd7d1931c39bd13882e35",
+        "size_bytes": 210853
+      },
+      {
+        "path": "reports/inference-v1/tfidf.json",
+        "sha256": "2572bbe9cb38b79a6fc60bfe17e2ae77e8a6ac4ede57ffdbe3b787293fcd198e",
+        "size_bytes": 218341
+      }
+    ],
+    "raw_snapshot": "The previously downloaded pinned raw snapshot was copied and verified by download-data. No prepared data, vocabulary, model, or bundle was copied into the reconstruction.",
+    "source_revision": "39b6719f1d7197df4498fea9fce20d4ad782a083"
+  },
+  "limitations": [
+    "Verified on the recorded macOS arm64 CPU runtime; cross-platform byte equality is not promised.",
+    "Raw inputs and dependency distributions were already cached; this run did not exercise a new remote download.",
+    "Run/bundle manifests differ from the historical selection because they include the new execution provenance.",
+    "Local verification did not run a remote CI job or publish a release."
+  ],
+  "models": [
+    {
+      "model_id": "majority-v1",
+      "model_payload": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/majority-v1/model.json",
+        "sha256": "6fcc8295142834e1ada9fa772d5d6774baf1931f0ed1dbf49166e869985b0800",
+        "size_bytes": 203
+      },
+      "model_payload_identical": true,
+      "run_manifest": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/majority-v1/manifest.json",
+        "sha256": "c1abb90940b4a5969a30dbe69de757095fbcb5a06ae41d11c2cd3955db96c349",
+        "size_bytes": 1820
+      },
+      "run_manifest_identical_to_original": false,
+      "score_bytes_identical": null,
+      "test_metrics": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/reproduction-check/majority-v1/metrics.test.json",
+        "sha256": "d48fb1f033af8a41541a40f179cded898b068ce31994a6002aead46bf6cd1de4",
+        "size_bytes": 655
+      },
+      "test_metrics_identical": true,
+      "test_predictions": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/reproduction-check/majority-v1/predictions.test.jsonl",
+        "sha256": "63af784f5753ca83a6293abdc831459a09e4d2f3c2fd4f5e27e761d3d3439e8d",
+        "size_bytes": 104000
+      },
+      "test_predictions_identical": true,
+      "validation_predictions": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/majority-v1/predictions.val.jsonl",
+        "sha256": "140a6ea31374ba50d31daaa4ad3a52cfd48160c3fdeecf2aef364d19c64c92be",
+        "size_bytes": 53976
+      },
+      "validation_predictions_identical": true
+    },
+    {
+      "bundle_manifest": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/bundles/mean-pool-mlp-regularized-seed29-v1/manifest.json",
+        "sha256": "a7051d50926fbe6b28616b50107e51d635a634499aeb9ec2b90492a1a2471b9b",
+        "size_bytes": 1159
+      },
+      "bundle_manifest_identical_to_original": false,
+      "model_id": "mean-pool-mlp-regularized-seed29-v1",
+      "model_payload": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/mean-pool-mlp-regularized-seed29-v1/checkpoints/best.pt",
+        "sha256": "4c6e7ab18523aa81fbe0d88a53aa06f179f3632b151af188c1f0215969d4d6a4",
+        "size_bytes": 1556057
+      },
+      "model_payload_identical": true,
+      "run_manifest": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/mean-pool-mlp-regularized-seed29-v1/manifest.json",
+        "sha256": "acb3a91b43bddb6b1ef7561924cdddb3c039c4fe4c6d4cb8000791d42cb6b664",
+        "size_bytes": 22577
+      },
+      "run_manifest_identical_to_original": false,
+      "score_bytes_identical": true,
+      "test_metrics": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/reproduction-check/mean-pool-mlp-regularized-seed29-v1/metrics.test.json",
+        "sha256": "7ad5fa0e4788ded56be06ff84dbc190ddaed65001881ee56806e25bdb4c7d8ec",
+        "size_bytes": 777
+      },
+      "test_metrics_identical": true,
+      "test_predictions": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/reproduction-check/mean-pool-mlp-regularized-seed29-v1/predictions.test.jsonl",
+        "sha256": "d1f355aba82e0ec832eec808dc40a08bd2de4d018d6ae790307c9d3097650d95",
+        "size_bytes": 104000
+      },
+      "test_predictions_identical": true,
+      "validation_predictions": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/mean-pool-mlp-regularized-seed29-v1/predictions.val.jsonl",
+        "sha256": "91d22e8c5cdf9ee0cc90078a5fa56e53af3f0aaaeb4bed8863aa50043033ad2b",
+        "size_bytes": 53976
+      },
+      "validation_predictions_identical": true
+    },
+    {
+      "bundle_manifest": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/bundles/mean-pool-mlp-regularized-seed43-v1/manifest.json",
+        "sha256": "58e27d49d75678934a3237ba56cdff81923fb389cb014dcdd27ddc1b3a9099d3",
+        "size_bytes": 1159
+      },
+      "bundle_manifest_identical_to_original": false,
+      "model_id": "mean-pool-mlp-regularized-seed43-v1",
+      "model_payload": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/mean-pool-mlp-regularized-seed43-v1/checkpoints/best.pt",
+        "sha256": "b284e82c2e108daac483488685b48dfdb6587cceac9a5102b0286d32be8b84bc",
+        "size_bytes": 1556057
+      },
+      "model_payload_identical": true,
+      "run_manifest": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/mean-pool-mlp-regularized-seed43-v1/manifest.json",
+        "sha256": "d83be9847e0dae11803b1eafe27e78e20be4ac7506b3dc9ea15b2269cb785e46",
+        "size_bytes": 22578
+      },
+      "run_manifest_identical_to_original": false,
+      "score_bytes_identical": true,
+      "test_metrics": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/reproduction-check/mean-pool-mlp-regularized-seed43-v1/metrics.test.json",
+        "sha256": "51e712d5dcced60d64dffbf3ef76249c104ebb76fb96cc0c236b95b5b78a88f9",
+        "size_bytes": 778
+      },
+      "test_metrics_identical": true,
+      "test_predictions": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/reproduction-check/mean-pool-mlp-regularized-seed43-v1/predictions.test.jsonl",
+        "sha256": "2aef75bc38bcad1c2cff58d807dfe26f854cac23f7258f1a79ac7d0b49748a7d",
+        "size_bytes": 104000
+      },
+      "test_predictions_identical": true,
+      "validation_predictions": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/mean-pool-mlp-regularized-seed43-v1/predictions.val.jsonl",
+        "sha256": "58462b200997f5c9b62ba44ef2b3fd51b806bc1d28f970fc1d12bcb51082f0fa",
+        "size_bytes": 53976
+      },
+      "validation_predictions_identical": true
+    },
+    {
+      "bundle_manifest": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/bundles/mean-pool-mlp-regularized-v1/manifest.json",
+        "sha256": "652fb4fcebb9e9ba8e0bee5c7cd69f07a3a1fcbb62387bb417288d1ad176c7e0",
+        "size_bytes": 1145
+      },
+      "bundle_manifest_identical_to_original": false,
+      "model_id": "mean-pool-mlp-regularized-v1",
+      "model_payload": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/mean-pool-mlp-regularized-v1/checkpoints/best.pt",
+        "sha256": "564282e17ac5eddfa1ce904826730a7f8a48315148782614b39bfba94bd8364f",
+        "size_bytes": 1556057
+      },
+      "model_payload_identical": true,
+      "run_manifest": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/mean-pool-mlp-regularized-v1/manifest.json",
+        "sha256": "8e1fe2fddae045e1a0782c1a5e873b43a1b816378d0128b27d6e87fa03030d97",
+        "size_bytes": 22570
+      },
+      "run_manifest_identical_to_original": false,
+      "score_bytes_identical": true,
+      "test_metrics": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/reproduction-check/mean-pool-mlp-regularized-v1/metrics.test.json",
+        "sha256": "56dfaee0a5030f09c2d9f4dc099e66434d02d47165fc604490d706c0c230fede",
+        "size_bytes": 778
+      },
+      "test_metrics_identical": true,
+      "test_predictions": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/reproduction-check/mean-pool-mlp-regularized-v1/predictions.test.jsonl",
+        "sha256": "b80162aa7ca60cc20ab9bef94c76bc4bdf91d14e08f140fd966588e0f5885ff0",
+        "size_bytes": 104000
+      },
+      "test_predictions_identical": true,
+      "validation_predictions": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/mean-pool-mlp-regularized-v1/predictions.val.jsonl",
+        "sha256": "2f5acee1ea7aa05099494efd630bf5cfdf08e0c552fc7bb8d522f48524a22ea0",
+        "size_bytes": 53976
+      },
+      "validation_predictions_identical": true
+    },
+    {
+      "bundle_manifest": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/bundles/tfidf-bigram-c10-v1/manifest.json",
+        "sha256": "cdf41b43740e5e1c27db1a49ccf8b2bcdd1b70483fe8f8259edf80d1d29ccc77",
+        "size_bytes": 992
+      },
+      "bundle_manifest_identical_to_original": false,
+      "model_id": "tfidf-bigram-c10-v1",
+      "model_payload": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/tfidf-bigram-c10-v1/model.joblib",
+        "sha256": "e59dc2f247ddbd2b1bda85a989367e15a42dfdd58bf14b852e134e0bb94576e5",
+        "size_bytes": 302717
+      },
+      "model_payload_identical": true,
+      "run_manifest": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/tfidf-bigram-c10-v1/manifest.json",
+        "sha256": "6a0d5af7d789efdf0a53676acdccabc284a940711e8e471d2b4e9fc25ca506f1",
+        "size_bytes": 2970
+      },
+      "run_manifest_identical_to_original": false,
+      "score_bytes_identical": true,
+      "test_metrics": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/reproduction-check/tfidf-bigram-c10-v1/metrics.test.json",
+        "sha256": "cb7a115ada04da5713e8e8b61a224ccd7b856fa24b6bcd3b0574dff93a5ec420",
+        "size_bytes": 777
+      },
+      "test_metrics_identical": true,
+      "test_predictions": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/reproduction-check/tfidf-bigram-c10-v1/predictions.test.jsonl",
+        "sha256": "921bb5fcb4109dc338b860c88430d0c8a0b32ea03dd9d72c92b7fb6890d05156",
+        "size_bytes": 104000
+      },
+      "test_predictions_identical": true,
+      "validation_predictions": {
+        "path": "artifacts/reproduction-v1/rebuilt/artifacts/runs/tfidf-bigram-c10-v1/predictions.val.jsonl",
+        "sha256": "56785f9ee752639512daf96db0010f426ddaf9e8b627363e3b0301a07cbf19df",
+        "size_bytes": 53976
+      },
+      "validation_predictions_identical": true
+    }
+  ],
+  "new_hyperparameter_configurations": 0,
+  "prior_test_exposure": "The original final campaign and error analysis were complete. This is technical reproduction, not a new independent evaluation.",
+  "recorded_at_utc": "2026-09-17T16:51:11.946966+00:00",
+  "remote_ci_triggered": false,
+  "schema_version": 1,
+  "scope": "Fixed-recipe reconstruction and software verification for the completed CPU modeling/local-inference project.",
+  "software_checks": {
+    "format": {
+      "exit_code": 0,
+      "files_checked": 132,
+      "log": {
+        "path": "artifacts/reproduction-v1/format.log",
+        "sha256": "5b8e82f27798cc2eff06701078bbd450d009abc1203470c6e1797343e9fe23fc",
+        "size_bytes": 28
+      }
+    },
+    "git_diff_check": {
+      "exit_code": 0
+    },
+    "mypy": {
+      "exit_code": 0,
+      "log": {
+        "path": "artifacts/reproduction-v1/mypy.log",
+        "sha256": "8e71d79dbad0b69ea084d2b82ffa1e884da682da321d892911c2549f0a4a4d72",
+        "size_bytes": 44
+      },
+      "source_files": 55
+    },
+    "pytest": {
+      "command": ".venv/bin/python -I -m pytest tests -m \"\" --junitxml=<local-artifact-directory>/tests.xml",
+      "elapsed_seconds": 149.879,
+      "environment": {
+        "FSC_REQUIRE_WHEEL": "1",
+        "MLFLOW_DISABLE_AGENT_HINT": "1",
+        "MLFLOW_DISABLE_TELEMETRY": "true",
+        "MPLCONFIGDIR": "<temporary-directory>"
+      },
+      "errors": 0,
+      "failures": 0,
+      "imported_package": "Fresh environment site-packages; no editable installation.",
+      "junit": {
+        "path": "artifacts/reproduction-v1/tests.xml",
+        "sha256": "35e12346872b1b0e5782e050aa85ebfe33a734bcebfd1903a7467c7165b185fe",
+        "size_bytes": 1178585
+      },
+      "log": {
+        "path": "artifacts/reproduction-v1/tests.log",
+        "sha256": "6cde4620100e60b032fef98c245420588e3b208690eaa1f0cc73cdbc7afed2fb",
+        "size_bytes": 5568
+      },
+      "passed": 919,
+      "skipped": 0
+    },
+    "ruff": {
+      "exit_code": 0,
+      "log": {
+        "path": "artifacts/reproduction-v1/ruff.log",
+        "sha256": "82b3e6a6c090a57601d22943bd23fca9218d1031dbe5a7b754092f9a156b4f18",
+        "size_bytes": 19
+      }
+    }
+  },
+  "source": {
+    "base_git_commit": "31caaa933b6c01b093b24fd4b3382e3c92977fa7",
+    "demo_input": {
+      "path": "examples/sentences.jsonl",
+      "sha256": "e18f03387ac33c8cd8f1033dee5757490d55dce7eb6a9cf2a54baf39022976f6",
+      "size_bytes": 150
+    },
+    "imported_code_sha256": {
+      "__init__.py": "e1d13c02abf15d9d5744bbb593db19e396ac8d7c94d5b72a24d6b184e035995c",
+      "__main__.py": "7355d87bce8624ba466fcef31fe7f5a2904e5461bfa44500e4d82fabe48985c8",
+      "artifacts.py": "8c869d0fde47d7c3912d26acce719b0a8b91ac4b3410894f049e623e21c44219",
+      "baselines/__init__.py": "a4cb10fdc93defb0711dbd6268f887cb0a2c1b8e1bcb0c1ad1dd8d67c3425c89",
+      "baselines/config.py": "9b8c8a7966a9cbb2f0af2e8f3b2eba75f58aeb786debd8890a4831a3879a3019",
+      "baselines/majority.py": "29994fd284f6098d3a808f7e4dcd9473f838da98fb34df5b4814525a388e943d",
+      "baselines/run.py": "8689631c64dba9166b16f3002254a7099fe1f6add5ead8e32a47f8ffa160f0a3",
+      "baselines/tfidf.py": "e95734ac19ea3718a2e1e2595993c840bb15a303e5958df8b98fcae72785863b",
+      "baselines/tfidf_run.py": "4637ec1bdcedf04642eff1d24652c37cf69f36a08fbf9ef91305bb52302b8336",
+      "cli.py": "a83ef625042dcbe87e79755ee5dcad51d696bf34de23c141893fbc7e84c0e5d0",
+      "data/__init__.py": "615559e361359c93a151f774ffad1c15ccd5e4b44aaa96c6dad1766e6ba0c28a",
+      "data/audit.py": "9e09fa4d0b9c208c86f5c43465ba0acfbb23d454c7651bb7339ebac40a8a7e4c",
+      "data/cleaning.py": "fe3acfe815aee727389bc961441adbce7dd6b6b12224a179458fc8af30425243",
+      "data/collate.py": "c98d06fd4be8a4484f28b20f48d192607e5c5541e98a4580aab25f0198f9cee2",
+      "data/dataloader.py": "4f577bf03a46ea2924402270910f2b799ea8857408f25a98eb832b03ab151d4c",
+      "data/dataset.py": "7e6b3837b9e6728694d00b4c5ca75b84e4688f67fff6dc5ad0cab6b692bae056",
+      "data/fls.py": "1eef777d4ee154382ea598bb72f6c1eedecb66b6880ae0b0a69ce8aafc36640e",
+      "data/heldout.py": "aba3b8b1a06017bb8fc0e5035a8dda7c474731ae915315d03ce4450d5f44d123",
+      "data/loading.py": "84897cecbfd2f6b9453196884bc61523a82da65c9bef70d4ca81a42d21cc4401",
+      "data/partition.py": "bd2b8be9d00725f10fdde87366a1ff0c1f8a5e87032346327e6115c18e470b23",
+      "data/prepare.py": "6898476e92c0e9d2db84e443af797f52bed66c7edc36031be261a094a813b00f",
+      "data/source.py": "760d27548ca7c2cfefc4465853ab9731e355a2707168ed22e941110e6566e571",
+      "data/spec.py": "093e6a67065d7656699aa1689bd03d6f5bcb5f211e16779ab699a7ef17aab9f5",
+      "data/split.py": "d924147dfef6253edb88a29e0c9989d55614cdb95c1ebd485cbb4ed6071c44b2",
+      "data/vocabulary.py": "4b5c6026ff9aa05674bb8f8bc65d29b41b67ce13240022ee216b165884e38bdf",
+      "evaluation/__init__.py": "84a6e4d9c16813494f2e48c0bcda5f05d9cc1ef7c4e80b1eba758453beda9c26",
+      "evaluation/campaign.py": "d4c4c13bb915f6fb9c2555dff32b2dce439bfc8f3ca5613f30480be5a791cfb1",
+      "evaluation/evaluate.py": "8711a730d0490ec1589926ef98b7bee7363c82dfb6402a20ac1ee0e28d92ccfb",
+      "evaluation/metrics.py": "f0640b1763625a10a31dd10efc03f84fb13fd69a2a95aa7d8cd61be41d6d2a7d",
+      "exporting.py": "937979e19bac960e0904c98aac79f17be970b2b0c4f8adf5a0069f00c92ea67b",
+      "inference/__init__.py": "b9995af857d15f9487e37770f745d0aa1d120eee15fe2d6462e83664d177d103",
+      "inference/benchmark.py": "1dac172e8f798babbad89e9ec3625d2093ad6f9aca8d5fcf799ee762537c5afd",
+      "inference/compatibility.py": "0fb142043effd6b37d751ca1561e57e3fefc1265f2fb0a5c17c689687e79f353",
+      "inference/contracts.py": "6e930f8c869427b512536a79c281c7e91a1db33265808deb652f5d52709fe347",
+      "inference/jsonl.py": "57dee9db89dd4ce6daa12510a1506c473623e203598a802da3a28e0d53d1fcb6",
+      "inference/predictor.py": "caefbcaff17246c9efeebb9d24e891e6d306bf6cb4ee8586f89fdec58670e737",
+      "inference/pytorch.py": "beda6dc51d3fa46d2a565fabd68cb9021873e4043936907a022940966a26aa79",
+      "inference/tfidf.py": "dae4ab46b08730c71a58b1c82de80e2290a4c65fb04d81289ca4a19ebdbee89e",
+      "models/__init__.py": "c25fa2cc1dbdfba148a06dee626cd771987033223d8a89351b265ab286f00f48",
+      "models/mean_pool_mlp.py": "d161f394ffb5a245e9a9ba66a57865fc75382a450f8d2379412e60ca07177350",
+      "text/__init__.py": "78c9f4ff9b6e14a37ad94532830c75a110cd40bed5eec44216b786acba6d9b78",
+      "text/encoding.py": "65b4bbd7a48d307f1e55faedf1b958b35480c3a4f86dd257de6c8b728c2dd101",
+      "text/tokenization.py": "37cd7696d0c2bc92712883952ed7cf06bce08c79e32c7e7132434cab04924895",
+      "text/vocabulary.py": "ad7146afc3fcfa2b04d819f6ef81caf0420ccdf0befd27d6b7300eab3620f59f",
+      "training/__init__.py": "1e672970ee688cdbfeb4157e0351256b4dcbc288b48c6343b2f9e9b0d656914c",
+      "training/artifacts.py": "bad3848be382856c7c9385f950d0b16f753f6fce1c6b3229d736d2c5d76eff4a",
+      "training/checkpoints.py": "6e58ce1e1d443263eb50e533660d852221fb55ec7a2938de5f14514109f993fd",
+      "training/config.py": "a03fa606140a9df898bf9a09e8a3c5d91e43d1e57268f133702f2148123f1b68",
+      "training/engine.py": "468187f3cb5e823755066c2934bc3dc94653d02e0484ac96cf968968f7498cd8",
+      "training/fit.py": "6fc7690d7f1542abafdd0c79be0f49acff7f3787edfe43d5463ce227c06bf911",
+      "training/optimizers.py": "8a5e241ec70b0a9dc33d087b7785bb11372c563ee40ee33e5f8149ff92518d85",
+      "training/plots.py": "a7687045343b477a1d0087fa38c59b494a9de107af147863edbcc40f5b04da85",
+      "training/reproducibility.py": "e0be49217d1447e452b846c8481c3a72b775173a828832eac3c182319ccc022f",
+      "training/run.py": "9a02835d634603b3e49e7d97f9238a716d98c6a57b6370b9654c27cb26aa0249",
+      "training/tracking.py": "bf5ed5e632ec6a432029e2c92bab6e5594d48b5723d2feb09219b239b29d9ae1"
+    },
+    "imported_module_count": 55,
+    "metadata": {
+      ".python-version": {
+        "path": ".python-version",
+        "sha256": "6388dd213929792fb622424feab43c41be73739cf33c96b8fc3eef2537c45481",
+        "size_bytes": 7
+      },
+      "pyproject.toml": {
+        "path": "pyproject.toml",
+        "sha256": "46df69c2738dfbf0300939e8f24851289d28ff43b8ed01c684d9314199010752",
+        "size_bytes": 1867
+      },
+      "uv.lock": {
+        "path": "uv.lock",
+        "sha256": "8ad5a5040f0a6f14961c6b5330a2072f6c7600791c13c4d2cf1b89623f343ebc",
+        "size_bytes": 644409
+      }
+    },
+    "package_sources_unchanged_from_base_commit": true,
+    "recipe_snapshot_directory": "artifacts/reproduction-v1/recipe-source",
+    "verification_script": {
+      "path": "scripts/verify_reproduction.py",
+      "sha256": "44467dac79624c013c1d743609369c9fbaecc343b02c938cab911d2fdc2e2932",
+      "size_bytes": 11877
+    }
+  },
+  "stage": "project_closure_reproduction",
+  "status": "completed",
+  "test_driven_tuning": false,
+  "wheel": {
+    "path": "artifacts/reproduction-v1/filing_sentence_classifier-0.1.0-py3-none-any.whl",
+    "sha256": "ee9e7205237538cc6b840c1a7960293675e66e0096addcc5965cdc6938a7519b",
+    "size_bytes": 112698
+  }
+}
