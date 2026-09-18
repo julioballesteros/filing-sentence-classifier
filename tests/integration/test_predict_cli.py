@@ -10,6 +10,7 @@ from importlib.metadata import version
 
 import pytest
 import torch
+from rich.text import Text
 from typer.testing import CliRunner
 
 from filing_sentence_classifier.artifacts import BundleFile, BundleManifest
@@ -314,7 +315,10 @@ def test_invalid_options_fail_before_loading_a_bundle(args):
     assert result.stdout == ""
 
 
-def test_prediction_help_and_import_need_no_model_runtime(tmp_path):
+@pytest.mark.parametrize(
+    "github_actions", [False, True], ids=["plain", "github-actions"]
+)
+def test_prediction_help_and_import_need_no_model_runtime(tmp_path, github_actions):
     script = """import builtins, sys
 original = builtins.__import__
 blocked = {'torch', 'sklearn', 'numpy', 'scipy', 'joblib', 'mlflow', 'matplotlib', 'pyarrow', 'huggingface_hub'}
@@ -330,9 +334,18 @@ app()
         cwd=tmp_path,
         capture_output=True,
         text=True,
+        env={
+            **os.environ,
+            "GITHUB_ACTIONS": "true" if github_actions else "",
+            "TERM": "xterm-256color" if github_actions else "dumb",
+            "NO_COLOR": "",
+            "_TYPER_FORCE_DISABLE_TERMINAL": "",
+        },
     )
     assert result.returncode == 0, result.stderr
-    assert "--bundle" in result.stdout
+    assert ("\x1b[" in result.stdout) is github_actions
+    # Rich may insert ANSI styles between an option's two leading hyphens.
+    assert "--bundle" in Text.from_ansi(result.stdout).plain
 
 
 def test_stdout_keeps_complete_batches_and_reports_late_errors(bundle):
